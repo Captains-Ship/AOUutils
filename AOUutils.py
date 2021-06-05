@@ -51,6 +51,22 @@ async def help(ctx):
     await ctx.send('To get help dont just say "help me" or "it doesnt work". Please __State your issue__,')
 
 
+@client.command()
+async def ping(ctx):
+    await ctx.send(str(round(client.latency * 100)) + "ms")
+
+
+@client.command()
+async def pog(ctx):
+    await ctx.send('<:pog:850783102086807582>')
+
+
+
+@client.command()
+async def cracked(ctx):
+    await ctx.send('We do not support cracked versions of the game. Please buy it.')
+
+
 
 @client.command()
 async def ban(ctx):
@@ -133,7 +149,9 @@ async def on_ready():
 
 
 
-
+@client.command()
+async def html(ctx):
+    await ctx.send('HTML is not a programming language. it is a markdown language. theres a difference.')
 
 
 
