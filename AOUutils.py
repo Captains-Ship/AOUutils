@@ -28,7 +28,7 @@ with open('config.json', 'r') as conf:
 
 
 client = commands.Bot(
-    command_prefix =commands.when_mentioned_or("aou "),
+    command_prefix =commands.when_mentioned_or('aou ', 'AOU ', 'Aou '),
     case_insensitive=True,
     status=discord.Status.dnd,
     activity=discord.Game(f"AOU"),
@@ -44,6 +44,100 @@ client = commands.Bot(
 client.remove_command('help')
 bot = client
 
+"""
+<:pog:850783102086807582>
+<a:Yes:850974892366757930>
+<a:X_:850974940282748978> these are emotes of AOUutils dev
+"""
+
+@client.group()
+async def rule(ctx):
+    if ctx.invoked_subcommand is None:
+        await ctx.reply('Unknown Rule')
+
+@rule.command(name='1')
+async def _1(ctx):
+    await ctx.send('No NSFW - This is a simple and basic rule that everyone needs to follow. If you post any kind of NSFW it will result in a mute. Continuing will result in a ban. (THIS INCLUDES BORDERLINE NSFW).')
+
+@rule.command(name='2')
+async def _2(ctx):
+    await ctx.send('No bullying - Being a jerk to others is not allowed. Bullying will result in a warn. Continuing will result in a kick.')
+
+@rule.command(name='3')
+async def _3(ctx):
+    await ctx.send('No harassment - If you are here just to harass others because of what they are, you need to leave. We do not accept this. Will result in a mute. Continuation will result in a ban.'
+)
+@rule.command(name='4')
+async def _4(ctx):
+    await ctx.send('NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will result in a kick and so on. Just bring it to DM\'s please.')
+
+@rule.command(name='5')
+async def _5(ctx):
+    await ctx.send('No Advertising - This includes DM advertising.')
+
+
+@rule.command(name='6')
+async def _6(ctx):
+    await ctx.send('No Impersonation - Impersonating others will result in a nickname change.')
+
+
+
+@rule.command(name='7')
+async def _7(ctx):
+    await ctx.send('No illegal Activity of any kind. - Any illegal activity that follows under US Laws or other countries will result in a permanent ban and we will contact Discord support.')
+
+@rule.command(name='8')
+async def _8(ctx):
+    await ctx.send('Follow the Discord Terms of Service. - Example: Being underage will result in a ban. No raiding either.')
+
+
+@rule.command(name='9')
+async def _9(ctx):
+    await ctx.send('HAVE COMMON SENSE. - Think before you post or ask something. Do not post any memes about tragic events like 9/11 or animal abuse. That will result in a mute. Continuation will result in a Ban. This does include keeping stuff in the correct channel.')
+
+
+
+
+@rule.command(name='10')
+async def _10(ctx):
+    await ctx.send('No ghost pinging. - Ghost pinging is pinging someone and then deleting the ping. Will result in a warn. Spam pinging will result in a mute.')
+
+
+
+@rule.command(name='11')
+async def _11(ctx):
+    await ctx.send('No loophooling. - Loopholing is basically breaking a rule and saying how something isn\'t a rule even though it is. This will result in a warn or ban.')
+
+@rule.command(name='12')
+async def _12(ctx):
+    await ctx.send('No videos that crash peoples clients. - Videos that crashes peoples discord application will result it from being deleted and you will get muted.')
+
+
+
+
+@client.command()
+async def tou(ctx):
+    await ctx.send('We are **NOT** Town Of Us, We are **All Of Us**.')
+
+
+
+@client.command(aliases=['timezone', 'timesones', 'timesone'])
+async def timezones(ctx):
+    await ctx.send('```UTC+5: Vedant (Moderator)\n\nUTC+2: Captain (Head Staff)\n\nUTC+1: Wulfstrex (Moderator), EnderBoyHD (Admin), Mathew (Moderator)\n\nUTC0: Ariana Pierer (Community Manager), Shadows (Moderator)\n\nUTC-3: funnynumber (Main-Dev), XtraCube (Main-Dev), Ruthless (Moderator), Neil (Moderator)\n\nUTC-4: Doggo (Moderator), TheDreamChicken (Admin)\n\nUTC-5: Pure (Owner), angxl wtf (Owner), Joshua TDM (Community Manager), Skylario (Head Staff), Jameyiscool (Moderator), Pikanaruto (Admin)\n\nUTC-7: Popcat (Moderator)```')
+
+
+@client.command()
+async def screenshot(ctx):
+    await ctx.send('To take a screenshot:\nwindows: hold Windows key + SHIFT + S\nMacOS: cmd + shift + 4')
+
+
+@client.command()
+async def purge(ctx, limit=0):
+    if limit != 0 and limit < 301:
+        await ctx.channel.purge(limit=limit + 1)
+        await ctx.send(f'Purged {limit}', delete_after=5)
+    else:
+        await ctx.reply('Either you purged nothing or above 300 messages.')
 
 
 @client.command()
