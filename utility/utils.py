@@ -4,7 +4,7 @@ import discord
 def countOnlineMember(guild):
     memberList = ['']
     for member in guild.members:
-        if member.status == discord.Status.online:
+        if member.status != discord.Status.offline:
             memberList.append(member)
     return memberList
 
