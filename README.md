@@ -1,3 +1,3 @@
-# AOUutils
-The bot for AOU.
+# AOUUtils
 
+AOU Bot for 'All of Us'
