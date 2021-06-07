@@ -22,9 +22,15 @@ class Tags(commands.Cog):
     async def html(self, ctx):
         await ctx.send('HTML ISNT A PROGRAMMING LANGUAGE')
     
+
+
     @commands.command()
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Helper)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Helper), EnderBoyHD (🔰Staff), Mathew (🔰Helper)\n\nUTC0: Ariana Pierer (🔰Co-Owner), Shadows (🔰Staff)\n\nUTC-3: funnynumber (📞Main-Dev), XtraCube (🔰Co-Owner), Ruthless (🔰Staff), Neil (🔰Helper)\n\nUTC-4: Doggo (🔰Helper), TheDreamChicken (🔰Staff)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Helper), Pikanaruto (🔰Staff)\n\nUTC-7: Popcat (🔰Staff)```')
+        await ctx.reply('```UTC+5: Vedant (🔰Helper), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Helper), EnderBoyHD (🔰Staff), Mathew (🔰Helper)\n\nUTC0: Ariana Pierer (🔰Co-Owner), Shadows (🔰Staff)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (🔰Co-Owner), Ruthless (🔰Staff), Neil (🔰Helper)\n\nUTC-4: Doggo (🔰Helper), TheDreamChicken (🔰Staff)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Helper), Pikanaruto (🔰Staff)\n\nUTC-7: Popcat (🔰Staff)```')
+
+    @commands.command()
+    async def virus(self, ctx):
+        await ctx.send('The mod is not a virus. Some antivirus software dont like `dll` files. please disable your antivirus or add an exception.')
 
     @commands.command()
     async def SHC(self, ctx):
