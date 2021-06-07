@@ -15,6 +15,23 @@ class Moderation(commands.Cog):
         else:
             await ctx.reply('I cannot send nothing')
 
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, member: discord.Member=None, reason=None):
+        if member != None:
+            embed = discord.Embed(
+                title='You were banned from All Of Us',
+                description=f'Reason:\n{Reason}',
+                colour=discord.Colour.red()
+            )
+            embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
+            try:
+                await member.send(embed=embed)
+            except:
+                pass
+            await ctx.guild.ban(member, reason=reason)
+        else:
+            await ctx.send('http://bit.ly/launchpadbanappeal')
 
 def setup(client):
     client.add_cog(Moderation(client))
