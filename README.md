@@ -1,7 +1,11 @@
-# AOUUtils
+# AOUutils
 
 AOU Bot for 'All of Us'
 
 # Features:
 
-Listed soon:tm:
+Cogs
+
+AutoResponse
+
+Ea Sports

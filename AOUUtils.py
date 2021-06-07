@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 client = commands.Bot(
-    command_prefix=commands.when_mentioned_or('aou '),
+    command_prefix=commands.when_mentioned_or('aou ', 'AOU', 'Aou'),
     case_insensitive=True,
     status=discord.Status.dnd,
     activity=discord.Game(f'AOU'),
@@ -25,13 +25,13 @@ client.remove_command('help')
 bot = client
 
 
-@client.command()
+@client.command(aliases=['load'])
 @commands.has_permissions(administrator=True)
 async def loadExtension(ctx, extension):
     client.load_extension(f'cogs.{extension} loaded')
 
 
-@client.command()
+@client.command(aliases=['unload'])
 @commands.has_permissions(administrator=True)
 async def unloadExtension(ctx, extension):
     client.unload_extension(f'cogs.{extension} unloaded')
