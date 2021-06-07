@@ -9,15 +9,14 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, limit: int=None):
-        if limit != None:
-            if limit <= 300:
-                if limit > 0:
-                    await ctx.channel.purge(limit=limit)
-                await ctx.reply('ah yes purge nothing')
+    async def purge(self, ctx, limit=0):
+        if limit < 301:
+            if limit > 0:
+                await ctx.channel.purge(limit=limit)
             else:
-                await ctx.reply('Max to purge is `300`')
-        await ctx.reply('ah yes purge nothing')
+                await ctx.reply('ah yes purge nothing')
+        else:
+            await ctx.reply('Max to purge is `300`')
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
