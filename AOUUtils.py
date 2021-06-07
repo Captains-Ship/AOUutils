@@ -28,13 +28,15 @@ bot = client
 @client.command(aliases=['load'])
 @commands.has_permissions(administrator=True)
 async def loadExtension(ctx, extension):
-    client.load_extension(f'cogs.{extension} loaded')
+    client.load_extension(f'cogs.{extension}')
+    await ctx.reply('loaded!')
 
 
 @client.command(aliases=['unload'])
 @commands.has_permissions(administrator=True)
 async def unloadExtension(ctx, extension):
-    client.unload_extension(f'cogs.{extension} unloaded')
+    client.unload_extension(f'cogs.{extension}')
+    await ctx.reply('unloaded!')
 
 
 for filename in os.listdir('./cogs'):
