@@ -10,15 +10,16 @@ class Admin(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-    
+    async def check(self, ctx):
+     return not str(ctx.author.id) in self.client.blacklist
 
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def reboot(self, ctx):
         await ctx.reply('ok')
-        os.run('run.bat')
-        self.client.close()
+        os.system('C:\\Users\\RCG\\Downloads\\Bots\\AOUutils\\run.bat')
+        await self.client.close()
 
 
 

@@ -32,9 +32,7 @@ class Listener(commands.Cog):
             return
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
-            blacklist = []
-        if message.author.id not in blacklist:
-            await self.client.process_commands(message)
+
 
 
 def setup(client):

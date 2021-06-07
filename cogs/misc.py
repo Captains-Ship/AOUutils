@@ -14,6 +14,7 @@ class Misc(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def echo(self, ctx, *, text=" "):
         if text != ' ':
+            await ctx.message.delete()
             await ctx.send(text)
         else:
             await ctx.reply('I cannot send nothing')

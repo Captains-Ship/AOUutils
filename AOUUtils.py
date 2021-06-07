@@ -17,7 +17,7 @@ client = commands.Bot(
         replied_user=True
     )
 )
-
+client.blacklist = ['675474604533219360', '347366054806159360']
 with open('config.json', 'r') as config:
     token = json.load(config)
 
