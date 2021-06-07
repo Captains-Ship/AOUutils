@@ -9,7 +9,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, limit=None):
+    async def purge(self, ctx, limit: int=None):
         if limit != None:
             if limit <= 300:
                 if limit > 0:
