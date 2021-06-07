@@ -21,7 +21,7 @@ client.blacklist = ['675474604533219360', '347366054806159360']
 with open('config.json', 'r') as config:
     token = json.load(config)
 
-client.remove_command('help')
+#client.remove_command('help')
 bot = client
 
 

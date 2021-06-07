@@ -8,7 +8,30 @@ class Tags(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def help(self, ctx):
+    async def man(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851472289542307870/unknown.png')
+
+    @commands.command(aliases=['oldtimes', 'old'])
+    async def nostalgia(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851499238839418970/unknown.png')
+    @commands.command()
+    async def man2(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851491959273291776/unknown.png')
+
+    @commands.command()
+    async def html(self, ctx):
+        await ctx.send('HTML ISNT A PROGRAMMING LANGUAGE')
+    
+    @commands.command()
+    async def timezones(self, ctx):
+        await ctx.reply('```UTC+5: Vedant (🔰Helper)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Helper), EnderBoyHD (🔰Staff), Mathew (🔰Helper)\n\nUTC0: Ariana Pierer (🔰Co-Owner), Shadows (🔰Staff)\n\nUTC-3: funnynumber (📞Main-Dev), XtraCube (🔰Co-Owner), Ruthless (🔰Staff), Neil (🔰Helper)\n\nUTC-4: Doggo (🔰Helper), TheDreamChicken (🔰Staff)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Helper), Pikanaruto (🔰Staff)\n\nUTC-7: Popcat (🔰Staff)```')
+
+    @commands.command()
+    async def SHC(self, ctx):
+        await ctx.send('SextraHornyCube')
+
+    @commands.command()
+    async def idw(self, ctx):
         await ctx.send('To get help dont just say "help me" or "it doesnt work". Please __State your issue__!')
 
     @commands.command()

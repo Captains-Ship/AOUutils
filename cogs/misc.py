@@ -44,6 +44,7 @@ class Misc(commands.Cog):
         )
         embed.add_field(name='Devs', value='Captain, GingerGigiCat, EnderB0YHD')
         embed.add_field(name='Main Linecount', value=lineCount())
+        await ctx.reply(embed=embed)
 
 
 
