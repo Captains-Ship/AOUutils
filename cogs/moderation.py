@@ -13,7 +13,7 @@ class Moderation(commands.Cog):
     async def purge(self, ctx, limit: int=0):
         if limit < 301:
             if limit > 0:
-                await ctx.channel.purge(limit=limit)
+                await ctx.channel.purge(limit=limit + 1)
             else:
                 await ctx.reply('ah yes purge nothing')
         else:
