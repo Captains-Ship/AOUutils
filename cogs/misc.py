@@ -42,11 +42,15 @@ class Misc(commands.Cog):
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()
         )
-        embed.set_footer(icon_url=ctx.guild.avatar_url, text='Devs: Captain, GingerGigiCat, EnderB0YHD, Toasty')
+        embed.set_footer(icon_url=ctx.guild.icon_url, text='Devs: Captain, GingerGigiCat, EnderB0YHD, Toasty')
         embed.add_field(name='Main Linecount', value=lineCount())
         await ctx.reply(embed=embed)
     
+
+
+
     @commands.command()
+    @commands.cooldown(1, 15, type=discord.ext.commands.BucketType.user)
     async def staff(self, ctx):
         embed = discord.Embed(
             title = 'Staff Team of AOU',
@@ -69,13 +73,13 @@ class Misc(commands.Cog):
             memrol = []
             if m.top_role.id in rolelist:
                 if m.top_role == android:
-                    androidteam.append(m.mention)
+                    androidteam.append(m.name)
                 if m.top_role == dev:
-                    devteam.append(m.mention)
+                    devteam.append(m.name)
                 if m.top_role == adm:
-                    admteam.append(m.mention)
+                    admteam.append(m.name)
                 if m.top_role == mod:
-                    modteam.append(m.mention)
+                    modteam.append(m.name)
             else:
                 for role in m.roles:
                     if role.id in rolelist:
@@ -83,19 +87,27 @@ class Misc(commands.Cog):
                 memrol.reverse()
                 try:
                     if memrol[0] == android:
-                        androidteam.append(m.mention)
+                        androidteam.append(m.name)
                     if memrol[0] == dev:
-                        devteam.append(m.mention)
+                        devteam.append(m.name)
                     if memrol[0] == adm:
-                        admteam.append(m.mention)
+                        admteam.append(m.name)
                     if memrol[0] == mod:
-                        modteam.append(m.mention)
+                        modteam.append(m.name)
                 except:
                     pass
         androidteam = str(androidteam).replace('\', \'', '\n')
         devteam = str(devteam).replace('\', \'', '\n')
         admteam = str(admteam).replace('\', \'', '\n')
         modteam = str(modteam).replace('\', \'', '\n')
+        androidteam = str(androidteam).replace('[\'', '\n')
+        devteam = str(devteam).replace('[\'', '\n')
+        admteam = str(admteam).replace('[\'', '\n')
+        modteam = str(modteam).replace('[\'', '\n')
+        androidteam = str(androidteam).replace('\']', '\n')
+        devteam = str(devteam).replace('\']', '\n')
+        admteam = str(admteam).replace('\']', '\n')
+        modteam = str(modteam).replace('\']', '\n')
         for team in teams:
             if team == 'android team':
                embed.add_field(name=team, value=androidteam, inline=False)
@@ -108,17 +120,11 @@ class Misc(commands.Cog):
                         
 
         embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.author}')
+        embed.set_author(name='Values may or may not be incorrect due to the wacky way i implemented this.')
         await ctx.reply(embed=embed)
 
 
-    @commands.command()
-    async def sketch(self, ctx):
-        embed = discord.Embed(title='h', description='h', colour=discord.Colour.red())
-        embed.add_field(name='Admins', value='...', inline=False)
-        embed.add_field(name='Moderators', value='...', inline=False)
-        embed.add_field(name='Devs', value='...', inline=False)
-        embed.add_field(name='Android Devs', value='...', inline=False)
-        await ctx.send(embed=embed)
+
         
 
 def setup(client):

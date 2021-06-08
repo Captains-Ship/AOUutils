@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import traceback
 
 
 class Listener(commands.Cog):
@@ -32,8 +33,12 @@ class Listener(commands.Cog):
             return
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
-
-
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+        else:
+         print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 
 def setup(client):
     client.add_cog(Listener(client))
