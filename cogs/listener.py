@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 import traceback
+import datetime
 
 
 class Listener(commands.Cog):
@@ -37,8 +38,29 @@ class Listener(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+        elif isinstance(error, commands.CommandNotFound):
+            embed = discord.Embed(
+                title='Error!',
+                description='Command Not Found!',
+                colour=discord.Colour.blurple(),
+                timestamp=datetime.datetime.utcnow()
+            )
+            await ctx.reply(embed=embed)
         else:
-         print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
+            if ctx.author.guild_permissions.administrator:
+                embed = discord.Embed(
+                    title='Error!',
+                    description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+                    colour=discord.Colour.red())
+            else:
+                embed = discord.Embed(
+                    title='Error!',
+                    #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+                    colour=discord.Colour.red())
+
+            embed.add_field(name='Simplified Error!', value=error)
+            await ctx.reply(embed=embed)
+            print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 
 def setup(client):
     client.add_cog(Listener(client))

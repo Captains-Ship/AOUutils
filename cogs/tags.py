@@ -301,6 +301,14 @@ class Tags(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @rule.command(name='34')
+    async def _34(self, ctx):
+        embed = discord.Embed(
+            title='Rule #34',
+            description='no',
+            colour=discord.Colour.red()
+        )
+        await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(Tags(client))

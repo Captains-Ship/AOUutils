@@ -15,6 +15,7 @@ class Admin(commands.Cog):
 
 
     @commands.command()
+    @commands.is_owner()
     @commands.has_permissions(administrator=True)
     async def reboot(self, ctx):
         await ctx.reply('ok')

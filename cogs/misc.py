@@ -23,7 +23,7 @@ class Misc(commands.Cog):
     async def info(self, ctx):
         embed = discord.Embed(
             title='Info About All Of Us',
-            description=f'Owner={ctx.guild.Owner}',
+            description=f'Owner={ctx.guild.owner}',
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()
         )
