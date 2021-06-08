@@ -22,6 +22,13 @@ class Admin(commands.Cog):
         os.system('C:\\Users\\RCG\\Downloads\\Bots\\AOUutils\\run.bat')
         await self.client.close()
 
+    @commands.command()
+    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
+    async def close(self, ctx):
+        await ctx.reply('ok')
+        await self.client.close()
+
 
 
     

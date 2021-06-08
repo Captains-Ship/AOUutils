@@ -8,6 +8,7 @@ class Moderation(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int=0):
         if limit < 301:
@@ -20,6 +21,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ban(self, ctx, member: discord.Member=None, *,  reason=None):
         if member != None:
             if ctx.author.top_role > member.top_role:
@@ -40,6 +42,7 @@ class Moderation(commands.Cog):
             await ctx.send('http://bit.ly/launchpadbanappeal')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member=None, *, reason=None):
         if member != None:

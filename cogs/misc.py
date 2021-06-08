@@ -11,6 +11,7 @@ class Misc(commands.Cog):
 
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def echo(self, ctx, *, text=" "):
         if text != ' ':
@@ -20,6 +21,7 @@ class Misc(commands.Cog):
             await ctx.reply('I cannot send nothing')
     
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def info(self, ctx):
         embed = discord.Embed(
             title='Info About All Of Us',
@@ -35,6 +37,7 @@ class Misc(commands.Cog):
         await ctx.reply(embed=embed)
     
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def botinfo(self, ctx):
         embed = discord.Embed(
             title='Bot Info',

@@ -8,55 +8,68 @@ class Tags(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def man(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851472289542307870/unknown.png')
 
     @commands.command(aliases=['oldtimes', 'old'])
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def nostalgia(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851499238839418970/unknown.png')
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def man2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851491959273291776/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def html(self, ctx):
         await ctx.send('HTML ISNT A PROGRAMMING LANGUAGE')
     
 
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
         await ctx.reply('```UTC+5: Vedant (🔰Helper), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Helper), EnderBoyHD (🔰Staff), Mathew (🔰Helper)\n\nUTC0: Ariana Pierer (🔰Co-Owner), Shadows (🔰Staff)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (🔰Co-Owner), Ruthless (🔰Staff), Neil (🔰Helper)\n\nUTC-4: Doggo (🔰Helper), TheDreamChicken (🔰Staff)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Helper), Pikanaruto (🔰Staff)\n\nUTC-7: Popcat (🔰Staff)```')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def virus(self, ctx):
         await ctx.send('The mod is not a virus. Some antivirus software dont like `dll` files. please disable your antivirus or add an exception.')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def SHC(self, ctx):
         await ctx.send('SextraHornyCube')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def idw(self, ctx):
         await ctx.send('To get help dont just say "help me" or "it doesnt work". Please __State your issue__!')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def appeal(self, ctx):
         await ctx.send('http://bit.ly/launchpadbanappeal')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def epic(self, ctx):
         await ctx.send('The mod and 100 player battle royale works on epic games')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def helpMe(self, ctx):
         await ctx.send('If you need help go to <#809192430935080960>')
 
     @commands.command(aliases=['ticket'])
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def blankTicket(self, ctx):
         await ctx.send('In the next **24 hours**, please either close this ticket or state your issue, or we will consider it a troll ticket and warn you. Thanks!')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def punishment(self, ctx):
         embed = discord.Embed(
             title='Punishments',
@@ -141,6 +154,7 @@ class Tags(commands.Cog):
                 await ctx.send(embed=embed)
 
     @rule.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def full(self, ctx):
         embed = discord.Embed(
             title='Rules',
@@ -191,6 +205,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='1')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _1(self, ctx):
         embed = discord.Embed(
             title='Rule #1',
@@ -202,6 +217,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='2')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _2(self, ctx):
         embed = discord.Embed(
             title='Rule #2',
@@ -212,6 +228,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='3')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _3(self, ctx):
         embed = discord.Embed(
             title='Rule #3',
@@ -222,6 +239,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='4')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _4(self, ctx):
         embed = discord.Embed(
             title='Rule #4',
@@ -232,6 +250,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='5')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _5(self, ctx):
         embed = discord.Embed(
             title='Rule #5',
@@ -242,6 +261,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='6')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _6(self, ctx):
         embed = discord.Embed(
             title='Rule #6',
@@ -251,6 +271,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='7')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _7(self, ctx):
         embed = discord.Embed(
             title='Rule #7',
@@ -261,6 +282,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='8')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _8(self, ctx):
         embed = discord.Embed(
             title='Rule #8',
@@ -271,6 +293,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='9')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _9(self, ctx):
         embed = discord.Embed(
             title='Rule #9',
@@ -282,6 +305,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='10')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _10(self, ctx):
         embed = discord.Embed(
             title='Rule #10',
@@ -292,6 +316,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='11')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _11(self, ctx):
         embed = discord.Embed(
             title='Rule #11',
@@ -302,6 +327,7 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @rule.command(name='34')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _34(self, ctx):
         embed = discord.Embed(
             title='Rule #34',
@@ -309,6 +335,10 @@ class Tags(commands.Cog):
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def html2(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
 
 def setup(client):
     client.add_cog(Tags(client))

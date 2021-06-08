@@ -48,10 +48,13 @@ class Listener(commands.Cog):
             await ctx.reply(embed=embed)
         else:
             if ctx.author.guild_permissions.administrator:
-                embed = discord.Embed(
-                    title='Error!',
-                    description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
-                    colour=discord.Colour.red())
+                try:
+                    embed = discord.Embed(
+                        title='Error!',
+                        description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+                        colour=discord.Colour.red())
+                except:
+                    print(''.join(traceback.format_exception(type(error), error, error.__traceback__)))
             else:
                 embed = discord.Embed(
                     title='Error!',
