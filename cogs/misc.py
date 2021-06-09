@@ -38,6 +38,15 @@ class Misc(commands.Cog):
     
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def ping(self, ctx):
+        embed = discord.Embed(
+            title='Ping',
+            description=str(round(self.client.latency * 1000)) + "ms",
+            colour=discord.Colour.red() 
+        )
+        await ctx.reply(embed=embed)
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def botinfo(self, ctx):
         embed = discord.Embed(
             title='Bot Info',
