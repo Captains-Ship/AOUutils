@@ -215,6 +215,12 @@ class Tags(commands.Cog):
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
+        
+    @rule.command(name='69')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def _69(self, ctx):
+        await ctx.send("https://media.discordapp.net/attachments/842450788998578236/851014341276598302/unknown.png")
+
 
     @rule.command(name='2')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
