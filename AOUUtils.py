@@ -25,7 +25,9 @@ with open('config.json', 'r') as config:
 bot = client
 
 
+
 @client.command(aliases=['load'])
+@commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def loadExtension(ctx, extension):
     client.load_extension(f'cogs.{extension}')
@@ -33,10 +35,19 @@ async def loadExtension(ctx, extension):
 
 
 @client.command(aliases=['unload'])
+@commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def unloadExtension(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.reply('unloaded!')
+
+
+@client.command(aliases=['reload'])
+@commands.is_owner()
+@commands.has_permissions(administrator=True)
+async def reloadExtension(ctx, extension):
+    client.reload_extension(f'cogs.{extension}')
+    await ctx.reply('Reloaded!')
 
 
 for filename in os.listdir('./cogs'):

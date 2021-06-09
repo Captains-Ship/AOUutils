@@ -31,7 +31,7 @@ class Tags(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Helper), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Helper), EnderBoyHD (🔰Staff), Mathew (🔰Helper)\n\nUTC0: Ariana Pierer (🔰Co-Owner), Shadows (🔰Staff)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (🔰Co-Owner), Ruthless (🔰Staff), Neil (🔰Helper)\n\nUTC-4: Doggo (🔰Helper), TheDreamChicken (🔰Staff)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Helper), Pikanaruto (🔰Staff)\n\nUTC-7: Popcat (🔰Staff)```')
+        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
