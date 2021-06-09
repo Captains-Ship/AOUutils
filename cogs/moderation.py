@@ -16,9 +16,10 @@ class Moderation(commands.Cog):
                 await ctx.channel.purge(limit=limit + 1)
                 embed = discord.Embed(
                     title="Purge Command",
-                    description=f'Requested by: {ctx.message.author.name}',
+                    description=f'Purged {limit} message(s)',
                     colour=discord.Colour.red()
                 )
+                embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by: {ctx.message.author.name}')
                 await ctx.send(embed=embed)
             else:
                 await ctx.reply('ah yes purge nothing')

@@ -38,7 +38,10 @@ class Tags(commands.Cog):
     async def virus(self, ctx):
         await ctx.send('The mod is not a virus. Some antivirus software dont like `dll` files. please disable your antivirus or add an exception.')
 
-
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def rcg(self, ctx):
+        await ctx.send('Yes i know my acc name is `RCG` please shut up about it its the default account name')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

@@ -55,6 +55,10 @@ class Listener(commands.Cog):
                         colour=discord.Colour.red())
                 except:
                     print(''.join(traceback.format_exception(type(error), error, error.__traceback__)))
+                    embed = discord.Embed(
+                        title='Error!',
+                        #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+                        colour=discord.Colour.red())
             else:
                 embed = discord.Embed(
                     title='Error!',
@@ -62,7 +66,7 @@ class Listener(commands.Cog):
                     colour=discord.Colour.red())
 
             embed.add_field(name='Simplified Error!', value=error)
-            await ctx.reply(embed=embed)
+            await ctx.send(embed=embed)
             print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 
 
