@@ -219,7 +219,24 @@ class Tags(commands.Cog):
     @rule.command(name='69')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _69(self, ctx):
-        await ctx.send("https://media.discordapp.net/attachments/842450788998578236/851014341276598302/unknown.png")
+        embed = discord.Embed(
+            title='Rule #69',
+            colour=discord.Colour.red()
+        )
+        embed.set_image(url='https://media.discordapp.net/attachments/842450788998578236/851014341276598302/unknown.png')
+        
+        await ctx.send(embed=embed)
+
+    @rule.command(name='63')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def _63(self, ctx):
+        embed = discord.Embed(
+            title='Rule #63',
+            description='No.',
+            colour=discord.Colour.red()
+        )
+
+        await ctx.send(embed=embed)
 
 
     @rule.command(name='2')
