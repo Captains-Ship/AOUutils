@@ -14,6 +14,12 @@ class Moderation(commands.Cog):
         if limit < 301:
             if limit > 0:
                 await ctx.channel.purge(limit=limit + 1)
+                embed = discord.Embed(
+                    title="Purge Command",
+                    description=f'Requested by: {ctx.message.author.name}',
+                    colour=discord.Colour.red()
+                )
+                await ctx.send(embed=embed)
             else:
                 await ctx.reply('ah yes purge nothing')
         else:
