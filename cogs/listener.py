@@ -65,5 +65,14 @@ class Listener(commands.Cog):
             await ctx.reply(embed=embed)
             print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 
+
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
+            chandler = member.guild.get_channel(852186132111556690)
+            await chandler.send(f'{member.mention} has been banned due to the keyword "h0nde"')
+            await member.send('Hi! you have been removed from the server due to a keyword, if this was a mistake add Captain#3175')
+            await member.guild.ban(member, reason='h o n d a')
 def setup(client):
     client.add_cog(Listener(client))
