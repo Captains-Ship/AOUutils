@@ -31,20 +31,24 @@ class Moderation(commands.Cog):
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ban(self, ctx, member: discord.Member=None, *,  reason=None):
         if member != None:
-            if ctx.author.top_role > member.top_role:
-                embed = discord.Embed(
-                    title='You were banned from All Of Us',
-                    description=f'Reason:\n{reason}',
-                    colour=discord.Colour.red()
-                )
-                embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
-                try:
-                    await member.send(embed=embed)
-                except:
-                    pass
-                await ctx.guild.ban(member, reason=reason)
+            if self.client.user.top_role > member.top_role:
+                if ctx.author.top_role > member.top_role:
+                    embed = discord.Embed(
+                        title='You were banned from All Of Us',
+                        description=f'Reason:\n{reason}',
+                        colour=discord.Colour.red()
+                    )
+                    embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
+                    try:
+                        await member.send(embed=embed)
+                    except:
+                        pass
+                    await ctx.guild.ban(member, reason=reason)
+                    await ctx.send(f'{ctx.author} banned {member}')
+                else:
+                    await ctx.reply('role hierachy moment')
             else:
-                await ctx.reply('role hierachy moment')
+                await ctx.send('Bot under member. cant ban')        
         else:
             await ctx.send('http://bit.ly/launchpadbanappeal')
 
