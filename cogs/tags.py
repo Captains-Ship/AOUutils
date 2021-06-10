@@ -26,7 +26,9 @@ class Tags(commands.Cog):
     async def html(self, ctx):
         await ctx.send('HTML ISNT A PROGRAMMING LANGUAGE')
     
-
+    @commands.command()
+    async def python(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/850668209148395524/852622410044669955/unknown.png')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

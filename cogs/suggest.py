@@ -8,7 +8,7 @@ class Suggest(commands.Cog, name="Suggest"):
 
     @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'])
     async def h(self, ctx, *, Suggestion=None):
-        blacklist = [328661975250894850, 841330839685431336]
+        blacklist = [328661975250894850, 841330839685431336, 675474604533219360, 721745855207571627, 476549192362229791, 468134163493421076]
         if ctx.author.id not in blacklist:
             guild = self.bot.get_guild(850668209148395520)
             chandler = guild.get_channel(851880033428570113)

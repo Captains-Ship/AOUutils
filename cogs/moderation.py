@@ -57,7 +57,16 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member=None, *, reason=None):
         if member != None:
-            await member.send(f'You have been kicked from AOU for:\n{reason}')
-            await ctx.guild.kick(member, reason=reason)
+            if ctx.author.top_role > member.top_role:
+                try:
+                    await member.send(embed=embed)
+                except:
+                    pass
+                try:
+                    await ctx.guild.kick(member, reason=reason)
+                except commands.discordForbidden:
+                    await ctx.reply('their role is above mine')
+            else:
+                await ctx.reply('**role hierachy moment**')
 def setup(client):
     client.add_cog(Moderation(client))
