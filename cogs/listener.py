@@ -32,6 +32,23 @@ class Listener(commands.Cog):
             return
         if message.guild is None:
             return
+        # check binary, smh imagine not using // as comments3
+        is_binary = True
+        for letter in message.content.replace(" ", ""):
+            if letter != "0" and letter != "1": # this syntax is cringe
+                is_binary = False # imagine using `False` and not `false`
+
+        if is_binary:
+            array = message.content.split()
+            ascii_string = ""
+            for binary_value in array:
+                an_integer = int(binary_value, 2)
+                ascii_character = chr(an_integer)
+                ascii_string += ascii_character
+
+            await message.reply(f"`{ascii_string}`")
+            return
+        
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
     @commands.Cog.listener()
