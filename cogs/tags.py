@@ -57,6 +57,13 @@ class Tags(commands.Cog):
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def epic(self, ctx):
         await ctx.send('The mod and 100 player battle royale works on epic games')
+        
+        
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def shc(self, ctx):
+        await ctx.send('SextraHornyCube')
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
