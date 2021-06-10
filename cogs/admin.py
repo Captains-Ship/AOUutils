@@ -19,7 +19,7 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def reboot(self, ctx):
         await ctx.reply('ok')
-        os.system('C:\\Users\\RCG\\Downloads\\Bots\\AOUutils\\run.bat')
+        os.system('run.bat')
         await self.client.close()
 
     @commands.command()
