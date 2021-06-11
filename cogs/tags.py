@@ -49,6 +49,14 @@ class Tags(commands.Cog):
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def idw(self, ctx):
         await ctx.send('To get help dont just say "help me" or "it doesnt work". Please __State your issue__!')
+        
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def hex(self, ctx):
+        hex_string = ctx.message.content.replace("aou hex ", "")
+        bytes_object = bytes.fromhex(hex_string)
+        ascii_string = bytes_object.decode("ASCII")
+        await ctx.reply(f"`{ascii_string}`")
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
