@@ -56,7 +56,14 @@ class Tags(commands.Cog):
         hex_string = ctx.message.content.replace("aou hex ", "")
         bytes_object = bytes.fromhex(hex_string)
         ascii_string = bytes_object.decode("ASCII")
-        await ctx.reply(f"`{ascii_string}`")
+        embed = discord.Embed(
+            title="Converted Hex to ASCII",
+            description=f'{ascii_string}',
+            colour=discord.Colour.red()
+        )
+        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
+        await ctx.reply(embed=embed)
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
