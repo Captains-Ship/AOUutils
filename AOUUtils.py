@@ -23,10 +23,10 @@ with open('config.json', 'r') as config:
 
 #client.remove_command('help')
 bot = client
+client.remove_command('help')
 
 
-
-@client.command(aliases=['load'])
+@client.command(aliases=['load'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def loadExtension(ctx, extension):
@@ -34,7 +34,7 @@ async def loadExtension(ctx, extension):
     await ctx.reply('loaded!')
 
 
-@client.command(aliases=['unload'])
+@client.command(aliases=['unload'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def unloadExtension(ctx, extension):
@@ -43,7 +43,7 @@ async def unloadExtension(ctx, extension):
 
 
 
-@client.command(aliases=['reload'])
+@client.command(aliases=['reload'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def reloadExtension(ctx, extension):

@@ -63,7 +63,9 @@ class Listener(commands.Cog):
             )
             await ctx.reply(embed=embed)
         else:
-            if ctx.author.guild_permissions.administrator:
+            devserv = self.client.get_guild(850668209148395520)
+            if ctx.author in devserv.members:
+                """
                 try:
                     embed = discord.Embed(
                         title='Error!',
@@ -75,13 +77,20 @@ class Listener(commands.Cog):
                         title='Error!',
                         #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
                         colour=discord.Colour.red())
+                """
+                paginator = commands.Paginator()
+                paginator.add_line(''.join(traceback.format_exception(type(error), error, error.__traceback__)))
+
+
+                for page in paginator.pages:
+                    await ctx.send(page)
             else:
                 embed = discord.Embed(
                     title='Error!',
                     #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
                     colour=discord.Colour.red())
 
-            embed.add_field(name='Simplified Error!', value=error)
+            embed.add_field(name='The Error:', value=error)
             await ctx.send(embed=embed)
             print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 

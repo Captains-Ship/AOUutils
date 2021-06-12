@@ -68,5 +68,36 @@ class Moderation(commands.Cog):
                     await ctx.reply('their role is above mine')
             else:
                 await ctx.reply('**role hierachy moment**')
+
+
+
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def mute(self, ctx, member: discord.Member, *, reason=None):
+        if ctx.author.top_role > member.top_role:
+            guild = ctx.guild
+            mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")
+
+            if not mutedRole:
+                mutedRole = await guild.create_role(name="🔇 Muted")
+
+                for channel in guild.channels:
+                    await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
+            eh = discord.Embed(title="muted", description=f"{member.mention} was muted ", colour=discord.Colour.red())
+            eh.add_field(name="reason:", value=reason, inline=False)
+            await ctx.send(embed=eh)
+            await member.add_roles(mutedRole, reason=reason)
+            await member.send(f" you have been muted from: {guild.name} reason: {reason}")
+        else:
+            await ctx.send('**role hierachy moment**')
+
+    @commands.command(description="Unmutes a specified user.")
+    @commands.has_permissions(manage_roles=True)
+    async def unmute(self, ctx, member: discord.Member):
+        mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
+
+        await member.remove_roles(mutedRole)
+        he = discord.Embed(title="unmute", description=f" unmuted {member.mention}",colour=discord.Colour.blurple())
+        await ctx.send(embed=he)
 def setup(client):
     client.add_cog(Moderation(client))
