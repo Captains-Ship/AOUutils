@@ -21,6 +21,7 @@ class Misc(commands.Cog):
             await ctx.reply('I cannot send nothing')
     
     @commands.command()
+    @commands.has_permissions(manage_messages=True)
     async def embed(self, ctx, color=None, *, emb="** **"):
         gray = '#2f3136'
         if not "#" in color:
@@ -42,6 +43,7 @@ class Misc(commands.Cog):
                 colour=readableHex
             )
         await ctx.send(embed=embed)
+        await ctx.message.delete()
     @commands.command(help='info about AOU')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def info(self, ctx):
