@@ -10,7 +10,7 @@ class Misc(commands.Cog):
         self.client = client
 
 
-    @commands.command()
+    @commands.command(help='makes the bot say something.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def echo(self, ctx, *, text=" "):
@@ -21,6 +21,16 @@ class Misc(commands.Cog):
             await ctx.reply('I cannot send nothing')
     
     @commands.command()
+    async def embed(self, ctx, *, emb="** **"):
+        dahex = '#2f3136'
+        sixteenIntegerHex = int(dahex.replace("#", ""), 16)
+        readableHex = int(hex(sixteenIntegerHex), 0)
+        embed = discord.Embed(
+            description=emb,
+            colour=readableHex
+        )
+        await ctx.send(embed=embed)
+    @commands.command(help='info about AOU')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def info(self, ctx):
         embed = discord.Embed(

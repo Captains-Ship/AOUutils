@@ -32,6 +32,17 @@ class Listener(commands.Cog):
             return
         if message.guild is None:
             return
+        if "cs:go" in message.content.lower():
+            if "trade" in message.content.lower():
+                if "giving" in message.content.lower():
+                    if "http" in message.content.lower():
+                        if not message.author.bot:
+                            await message.delete()
+                            await message.author.send('You have been warned by the automatic Anti-Steam-Scam system')
+                            chandler = self.client.get_channel(853191467941494784)
+                            await chandler.send(f'{message.author.mention} Sent a steam scam!')
+                            muterole = message.guild.get_role(799839676479176705)
+                            await message.author.add_roles(muterole)
         # check binary, smh imagine not using // as comments3
         is_binary = True
         for letter in message.content.replace(" ", ""):
@@ -69,6 +80,8 @@ class Listener(commands.Cog):
                 timestamp=datetime.datetime.utcnow()
             )
             await ctx.reply(embed=embed)
+        elif isinstance(error, commands.NotOwner):
+            await ctx.reply('Unowner moment')
         else:
             devserv = self.client.get_guild(850668209148395520)
             if ctx.author in devserv.members:
@@ -94,11 +107,13 @@ class Listener(commands.Cog):
             else:
                 embed = discord.Embed(
                     title='Error!',
-                    #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
+                    description=error,
                     colour=discord.Colour.red())
 
-            embed.add_field(name='The Error:', value=error)
-            await ctx.send(embed=embed)
+            try:
+              await ctx.send(embed=embed)
+            except:
+                pass
             print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
 
 

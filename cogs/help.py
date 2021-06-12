@@ -20,7 +20,7 @@ class Help(commands.Cog):
                embed.add_field(name=command, value=command.help, inline=True)
         await ctx.send(embed=embed)
     """
-    @commands.command()
+    @commands.command(help='h')
     async def help(self, ctx, cmd=None):
         if cmd == None:
             embed=discord.Embed(
