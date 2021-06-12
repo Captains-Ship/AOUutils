@@ -22,24 +22,24 @@ class Misc(commands.Cog):
     
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def embed(self, ctx, color=None, *, emb="** **"):
+    async def embed(self, ctx, color='** **', *, emb="** **"):
         gray = '#2f3136'
         if not "#" in color:
           dahex = '#' + color.upper()
         else:
             dahex = color
-        try:
+        if len(color) == 7 or len(color) == 6:
             sixteenIntegerHex = int(dahex.upper().replace("#", ""), 16)
             readableHex = int(hex(sixteenIntegerHex), 0)
             embed = discord.Embed(
                 description=emb,
                 colour=readableHex
             )
-        except:
+        else:
             sixteenIntegerHex = int(gray.upper().replace("#", ""), 16)
             readableHex = int(hex(sixteenIntegerHex), 0)
             embed = discord.Embed(
-                description=emb,
+                description=f'{color} {emb}',
                 colour=readableHex
             )
         await ctx.send(embed=embed)

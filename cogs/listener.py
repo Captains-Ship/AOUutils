@@ -32,24 +32,26 @@ class Listener(commands.Cog):
             return
         if message.guild is None:
             return
+            print('h')
         if "cs:go" in message.content.lower():
             if "trade" in message.content.lower():
                 if "giving" in message.content.lower():
                     if "http" in message.content.lower():
-                        if not message.author.bot:
-                            await message.delete()
-                            await message.author.send('You have been warned by the automatic Anti-Steam-Scam system')
-                            chandler = self.client.get_channel(853191467941494784)
-                            await chandler.send(f'{message.author.mention} Sent a steam scam!')
-                            muterole = message.guild.get_role(799839676479176705)
-                            await message.author.add_roles(muterole)
+                        if not message.author.guild_permissions.administrator:
+                            if not message.author.bot:
+                                await message.delete()
+                                await message.author.send('You have been warned by the automatic Anti-Steam-Scam system')
+                                chandler = self.client.get_channel(853191467941494784)
+                                await chandler.send(f'{message.author.mention} Sent a steam scam!')
+                                muterole = message.guild.get_role(799839676479176705)
+                                await message.author.add_roles(muterole)
         # check binary, smh imagine not using // as comments3
         is_binary = True
         for letter in message.content.replace(" ", ""):
             if letter != "0" and letter != "1":  # this syntax is cringe
                 is_binary = False  # imagine using `False` and not `false`
 
-        if is_binary and not message.attachments:
+        if is_binary and not message.attachments and not message.stickers:
             array = message.content.split()
             ascii_string = ""
             for binary_value in array:
