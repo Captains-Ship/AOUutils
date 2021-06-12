@@ -21,14 +21,26 @@ class Misc(commands.Cog):
             await ctx.reply('I cannot send nothing')
     
     @commands.command()
-    async def embed(self, ctx, *, emb="** **"):
-        dahex = '#2f3136'
-        sixteenIntegerHex = int(dahex.replace("#", ""), 16)
-        readableHex = int(hex(sixteenIntegerHex), 0)
-        embed = discord.Embed(
-            description=emb,
-            colour=readableHex
-        )
+    async def embed(self, ctx, color=None, *, emb="** **"):
+        gray = '#2f3136'
+        if not "#" in color:
+          dahex = '#' + color.upper()
+        else:
+            dahex = color
+        try:
+            sixteenIntegerHex = int(dahex.upper().replace("#", ""), 16)
+            readableHex = int(hex(sixteenIntegerHex), 0)
+            embed = discord.Embed(
+                description=emb,
+                colour=readableHex
+            )
+        except:
+            sixteenIntegerHex = int(gray.upper().replace("#", ""), 16)
+            readableHex = int(hex(sixteenIntegerHex), 0)
+            embed = discord.Embed(
+                description=emb,
+                colour=readableHex
+            )
         await ctx.send(embed=embed)
     @commands.command(help='info about AOU')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
