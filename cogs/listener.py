@@ -35,8 +35,8 @@ class Listener(commands.Cog):
         # check binary, smh imagine not using // as comments3
         is_binary = True
         for letter in message.content.replace(" ", ""):
-            if letter != "0" and letter != "1": # this syntax is cringe
-                is_binary = False # imagine using `False` and not `false`
+            if letter != "0" and letter != "1":  # this syntax is cringe
+                is_binary = False  # imagine using `False` and not `false`
 
         if is_binary and not message.attachments:
             array = message.content.split()
@@ -46,8 +46,15 @@ class Listener(commands.Cog):
                 ascii_character = chr(an_integer)
                 ascii_string += ascii_character
 
-            await message.reply(f"`{ascii_string}`")
+            embed = discord.Embed(
+                title="Converted Binary to ASCII",
+                description=f"{ascii_string}",
+                colour=discord.Colour.red()
+            )
+            embed.set_footer(icon_url=message.author.avatar_url, text=f'Requested by {message.author.name}')
+            await message.reply(embed=embed)
             return
+        
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
     @commands.Cog.listener()

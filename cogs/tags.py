@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+from utility.rules import rules
 
 class Tags(commands.Cog):
 
@@ -60,7 +60,14 @@ class Tags(commands.Cog):
         hex_string = ctx.message.content.replace("aou hex ", "")
         bytes_object = bytes.fromhex(hex_string)
         ascii_string = bytes_object.decode("ASCII")
-        await ctx.reply(f"`{ascii_string}`")
+        embed = discord.Embed(
+            title="Converted Hex to ASCII",
+            description=f'{ascii_string}',
+            colour=discord.Colour.red()
+        )
+        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
+        await ctx.reply(embed=embed)
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -105,59 +112,9 @@ class Tags(commands.Cog):
                     title='Rules',
                     colour=discord.Colour.red()
                 )
-                embed.add_field(name="Rule #1", value="No NSFW - This is a simple and basic rule that everyone needs "
-                                                      "to "
-                                                      "follow. If you post any kind of NSFW it will result in a mute. "
-                                                      "Continuing will result in a ban. (THIS INCLUDES BORDERLINE "
-                                                      "NSFW).",
-                                inline=False)
+                for index, rule in enumerate(rules, start=1):
+                    embed.add_field(name=f"Rule #{index}", value=rule, inline=False)
 
-                embed.add_field(name="Rule #2", value="No bullying - Being a jerk to others is not allowed. Bullying "
-                                                      "will "
-                                                      "result in a warn. Continuing will result in a kick.", inline=False)
-
-                embed.add_field(name="Rule #3",
-                                value="No harassment - If you are here just to harass others because of what "
-                                      "they are, you need to leave. We do not accept this. Will result in a "
-                                      "mute. Continuation will result in a ban.", inline=False)
-
-                embed.add_field(name="Rule #4",
-                                value="NO DRAMA - Arguments that happens in any chat will result in a mute. "
-                                      "Continuation will result in a kick and so on. Just bring it to DM's "
-                                      "please.", inline=False)
-
-                embed.add_field(name="Rule #5",
-                                value="No Advertising - This includes DM advertising. The only place you are "
-                                      "allowed to advertise is in #deleted-channel. We only allow YouTube "
-                                      "links here.", inline=False)
-
-                embed.add_field(name="Rule #6", value="No Impersonation - Impersonating others will result in a "
-                                                      "nickname "
-                                                      "change.", inline=False)
-
-                embed.add_field(name="Rule #7",
-                                value="No illegal Activity of any kind. - Any illegal activity that follows "
-                                      "under US Laws or other countries will result in a permanent ban and we"
-                                      " will contact Discord support.", inline=False)
-
-                embed.add_field(name="Rule #8", value="Follow the Discord Terms of Service. - Example: Being underage "
-                                                      "will "
-                                                      "result in a ban. No raiding either.", inline=False)
-
-                embed.add_field(name="Rule #9", value="HAVE COMMON SENSE. - Think before you post or ask something. "
-                                                      "Do not post any memes about tragic events like 9/11 or animal "
-                                                      "abuse. That will result in a mute. Continuation will result in "
-                                                      "a Ban. This does include keeping stuff in the correct channel.", inline=False)
-
-                embed.add_field(name="Rule #10", value="No ghost pinging. - Ghost pinging is pinging someone and then "
-                                                       "deleting the ping. Will result in a warn. Spam pinging will "
-                                                       "result in "
-                                                       " a mute.", inline=False)
-
-                embed.add_field(name="Rule #11",
-                                value="No loophooling. - Loopholing is basically breaking a rule and saying "
-                                      "how something isn't a rule even though it is. This will result in a "
-                                      "warn or ban.", inline=True)
                 await ctx.send(embed=embed)
             else:
                 embed = discord.Embed(
@@ -174,48 +131,10 @@ class Tags(commands.Cog):
             title='Rules',
             colour=discord.Colour.red()
         )
-        embed.add_field(name="Rule #1", value="No NSFW - This is a simple and basic rule that everyone needs to "
-                                              "follow. If you post any kind of NSFW it will result in a mute. "
-                                              "Continuing will result in a ban. (THIS INCLUDES BORDERLINE NSFW).",
-                        inline=False)
 
-        embed.add_field(name="Rule #2", value="No bullying - Being a jerk to others is not allowed. Bullying will "
-                                              "result in a warn. Continuing will result in a kick.", inline=False)
+        for index, rule in enumerate(rules):
+            embed.add_field(name=f"Rule #{index}", value=rule, inline=False)
 
-        embed.add_field(name="Rule #3", value="No harassment - If you are here just to harass others because of what "
-                                              "they are, you need to leave. We do not accept this. Will result in a "
-                                              "mute. Continuation will result in a ban.", inline=False)
-
-        embed.add_field(name="Rule #4", value="NO DRAMA - Arguments that happens in any chat will result in a mute. "
-                                              "Continuation will result in a kick and so on. Just bring it to DM's "
-                                              "please.", inline=False)
-
-        embed.add_field(name="Rule #5", value="No Advertising - This includes DM advertising. The only place you are "
-                                              "allowed to advertise is in #deleted-channel. We only allow YouTube "
-                                              "links here.", inline=False)
-
-        embed.add_field(name="Rule #6", value="No Impersonation - Impersonating others will result in a nickname "
-                                              "change.", inline=False)
-
-        embed.add_field(name="Rule #7", value="No illegal Activity of any kind. - Any illegal activity that follows "
-                                              "under US Laws or other countries will result in a permanent ban and we"
-                                              " will contact Discord support.", inline=False)
-
-        embed.add_field(name="Rule #8", value="Follow the Discord Terms of Service. - Example: Being underage will "
-                                              "result in a ban. No raiding either.", inline=False)
-
-        embed.add_field(name="Rule #9", value="HAVE COMMON SENSE. - Think before you post or ask something. Do not "
-                                              "post any memes about tragic events like 9/11 or animal abuse. That "
-                                              "will result in a mute. Continuation will result in a Ban. This does "
-                                              "include keeping stuff in the correct channel.", inline=False)
-
-        embed.add_field(name="Rule #10", value="No ghost pinging. - Ghost pinging is pinging someone and then "
-                                               "deleting the ping. Will result in a warn. Spam pinging will result in"
-                                               " a mute.", inline=False)
-
-        embed.add_field(name="Rule #11", value="No loophooling. - Loopholing is basically breaking a rule and saying "
-                                               "how something isn't a rule even though it is. This will result in a "
-                                               "warn or ban.", inline=True)
         await ctx.send(embed=embed)
 
     @rule.command(name='1')
@@ -223,9 +142,7 @@ class Tags(commands.Cog):
     async def _1(self, ctx):
         embed = discord.Embed(
             title='Rule #1',
-            description='No NSFW - This is a simple and basic rule that everyone needs to follow. If you post any '
-                        'kind of NSFW it will result in a mute. Continuing will result in a ban. (THIS INCLUDES '
-                        'BORDERLINE NSFW).',
+            description=rules[0],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -258,8 +175,7 @@ class Tags(commands.Cog):
     async def _2(self, ctx):
         embed = discord.Embed(
             title='Rule #2',
-            description='No bullying - Being a jerk to others is not allowed. Bullying will result in a warn. '
-                        'Continuing will result in a kick.',
+            description=rules[1],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -269,8 +185,7 @@ class Tags(commands.Cog):
     async def _3(self, ctx):
         embed = discord.Embed(
             title='Rule #3',
-            description='No harassment - If you are here just to harass others because of what they are, you need to '
-                        'leave. We do not accept this. Will result in a mute. Continuation will result in a ban.',
+            description=rules[2],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -280,8 +195,7 @@ class Tags(commands.Cog):
     async def _4(self, ctx):
         embed = discord.Embed(
             title='Rule #4',
-            description='NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will '
-                        'result in a kick and so on. Just bring it to DM\'s please.',
+            description=rules[3],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -291,8 +205,7 @@ class Tags(commands.Cog):
     async def _5(self, ctx):
         embed = discord.Embed(
             title='Rule #5',
-            description='No Advertising - This includes DM advertising. The only place you are allowed to advertise '
-                        'is in #deleted-channel. We only allow YouTube links here.',
+            description=rules[4],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -302,7 +215,7 @@ class Tags(commands.Cog):
     async def _6(self, ctx):
         embed = discord.Embed(
             title='Rule #6',
-            description='No Impersonation - Impersonating others will result in a nickname change.',
+            description=rules[5],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -312,8 +225,7 @@ class Tags(commands.Cog):
     async def _7(self, ctx):
         embed = discord.Embed(
             title='Rule #7',
-            description='No illegal Activity of any kind. - Any illegal activity that follows under US Laws or other '
-                        'countries will result in a permanent ban and we will contact Discord support.',
+            description=rules[6],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -323,8 +235,7 @@ class Tags(commands.Cog):
     async def _8(self, ctx):
         embed = discord.Embed(
             title='Rule #8',
-            description='Follow the Discord Terms of Service. - Example: Being underage will result in a ban. No '
-                        'raiding either.',
+            description=rules[7],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -334,9 +245,7 @@ class Tags(commands.Cog):
     async def _9(self, ctx):
         embed = discord.Embed(
             title='Rule #9',
-            description='HAVE COMMON SENSE. - Think before you post or ask something. Do not post any memes about '
-                        'tragic events like 9/11 or animal abuse. That will result in a mute. Continuation will '
-                        'result in a Ban. This does include keeping stuff in the correct channel.',
+            description=rules[8],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -346,8 +255,7 @@ class Tags(commands.Cog):
     async def _10(self, ctx):
         embed = discord.Embed(
             title='Rule #10',
-            description='No ghost pinging. - Ghost pinging is pinging someone and then deleting the ping. Will result '
-                        'in a warn. Spam pinging will result in a mute.',
+            description=rules[9],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
@@ -357,8 +265,7 @@ class Tags(commands.Cog):
     async def _11(self, ctx):
         embed = discord.Embed(
             title='Rule #11',
-            description='No loophooling. - Loopholing is basically breaking a rule and saying how something isn\'t a '
-                        'rule even though it is. This will result in a warn or ban.',
+            description=rules[10],
             colour=discord.Colour.red()
         )
         await ctx.send(embed=embed)
