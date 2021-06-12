@@ -283,6 +283,12 @@ class Tags(commands.Cog):
     @commands.command()
     async def html2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
+        
+    @commands.command()
+    async def code(self, ctx):
+        await ctx.send("Please **DO NOT** put any other codes beside **AOU MOD** as this the All of Us Discord "
+                       "Server. If you want any other mod, please consider joining their Discord Server. Also dont "
+                       "spam the code too. Thank you")
 
 def setup(client):
     client.add_cog(Tags(client))
