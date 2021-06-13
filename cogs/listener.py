@@ -87,25 +87,7 @@ class Listener(commands.Cog):
         else:
             devserv = self.client.get_guild(850668209148395520)
             if ctx.author in devserv.members:
-                """
-                try:
-                    embed = discord.Embed(
-                        title='Error!',
-                        description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
-                        colour=discord.Colour.red())
-                except:
-                    print(''.join(traceback.format_exception(type(error), error, error.__traceback__)))
-                    embed = discord.Embed(
-                        title='Error!',
-                        #description=''.join(traceback.format_exception(type(error), error, error.__traceback__)),
-                        colour=discord.Colour.red())
-                """
-                paginator = commands.Paginator()
-                paginator.add_line(''.join(traceback.format_exception(type(error), error, error.__traceback__)))
-
-
-                for page in paginator.pages:
-                    await ctx.send(page)
+                print(f'Ignoring exception:\n' + ''.join(traceback.format_exception(type(error), error, error.__traceback__)))
             else:
                 embed = discord.Embed(
                     title='Error!',

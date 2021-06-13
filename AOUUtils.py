@@ -50,7 +50,7 @@ async def reloadExtension(ctx, extension):
     client.reload_extension(f'cogs.{extension}')
     await ctx.reply('Reloaded!')
 
-bot.load_extension('jishaku')
+#client.load_extension('jishaku')
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
