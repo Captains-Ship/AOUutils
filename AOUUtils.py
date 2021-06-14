@@ -1,11 +1,24 @@
 import json
 import os
-
+from jishaku.cog import Jishaku
 import discord
 from discord.ext import commands
+import json
+import traceback
+import sys
+def get_prefix(client, message):
+    with open('prefix.json', 'r') as f:
+        prefixes = json.load(f)
+    try:
+        print(prefixes[str(message.author.id)])
+        return commands.when_mentioned_or(prefixes[str(message.author.id)])
+    except:
+        return commads.when_mentioned_or('aou ')
+
+            
 
 client = commands.Bot(
-    command_prefix=commands.when_mentioned_or('aou ', 'AOU', 'Aou'),
+    command_prefix=commands.when_mentioned_or('aou'),
     case_insensitive=True,
     status=discord.Status.dnd,
     activity=discord.Game(f'AOU'),
@@ -49,7 +62,7 @@ async def unloadExtension(ctx, extension):
 async def reloadExtension(ctx, extension):
     client.reload_extension(f'cogs.{extension}')
     await ctx.reply('Reloaded!')
-
+bot.load_extension('jishaku')
 #client.load_extension('jishaku')
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):

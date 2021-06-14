@@ -25,6 +25,8 @@ class Moderation(commands.Cog):
                 await ctx.reply('ah yes purge nothing')
         else:
             await ctx.reply('Max to purge is `300`')
+    
+
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

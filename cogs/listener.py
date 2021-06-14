@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import traceback
 import datetime
-
+from discord.ext.commands import *
 
 class Listener(commands.Cog):
 
@@ -45,35 +45,11 @@ class Listener(commands.Cog):
                                 await chandler.send(f'{message.author.mention} Sent a steam scam!')
                                 muterole = message.guild.get_role(799839676479176705)
                                 await message.author.add_roles(muterole)
-        # check binary, smh imagine not using // as comments3
-        is_binary = True
-        for letter in message.content.replace(" ", ""):
-            if letter != "0" and letter != "1":  # this syntax is cringe
-                is_binary = False  # imagine using `False` and not `false`
 
-        if is_binary and not message.attachments and not message.stickers:
-            array = message.content.split()
-            ascii_string = ""
-            for binary_value in array:
-                an_integer = int(binary_value, 2)
-                ascii_character = chr(an_integer)
-                ascii_string += ascii_character
-
-            embed = discord.Embed(
-                title="Converted Binary to ASCII",
-                description=f"{ascii_string}",
-                colour=discord.Colour.red()
-            )
-            embed.set_footer(icon_url=message.author.avatar_url, text=f'Requested by {message.author.name}')
-            await message.reply(embed=embed)
-            return
         
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+        """
         elif isinstance(error, commands.CommandNotFound):
             embed = discord.Embed(
                 title='Error!',
@@ -82,23 +58,24 @@ class Listener(commands.Cog):
                 timestamp=datetime.datetime.utcnow()
             )
             await ctx.reply(embed=embed)
+        """
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+        elif isinstance(error, commands.CommandNotFound):
+            pass
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.reply('unknown member')
+        elif ctx.command.name.lower() == 'purge':
+            if not isinstance(error, MissingPermissions):
+                await ctx.send('Nice integer Mate, next time gimmie a number')
+        elif isinstance(error, OverflowError):
+            await ctx.send('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
         else:
-            devserv = self.client.get_guild(850668209148395520)
-            if ctx.author in devserv.members:
-                print(f'Ignoring exception:\n' + ''.join(traceback.format_exception(type(error), error, error.__traceback__)))
-            else:
-                embed = discord.Embed(
-                    title='Error!',
-                    description=error,
-                    colour=discord.Colour.red())
-
-            try:
-              await ctx.send(embed=embed)
-            except:
-                pass
-            print(''.join(traceback.format_exception(type(error), error, error.__traceback__))) 
+            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
 
 
 

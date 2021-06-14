@@ -20,6 +20,29 @@ class Misc(commands.Cog):
         else:
             await ctx.reply('I cannot send nothing')
     
+    @commands.command(aliases=['bin'])
+    async def binary(self, ctx, *, bin):
+        is_binary = True
+        for letter in bin.replace(" ", ""):
+            if letter != "0" and letter != "1":  # this syntax is cringe
+                is_binary = False  # imagine using `False` and not `false`
+
+        if is_binary:
+            array = bin.split()
+            ascii_string = ""
+            for binary_value in array:
+                an_integer = int(binary_value, 2)
+                ascii_character = chr(an_integer)
+                ascii_string += ascii_character
+
+            embed = discord.Embed(
+                title="Converted Binary to ASCII",
+                description=f"{ascii_string}",
+                colour=discord.Colour.red()
+            )
+            embed.set_footer(icon_url=ctx.message.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
+            await ctx.reply(embed=embed)
+
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def embed(self, ctx, color='** **', *, emb="** **"):

@@ -16,38 +16,27 @@ class Altdentifier(commands.Cog):
     async def verified(self, member):
         inverif.remove(member)
 
-    async def verify(self, member):
+    async def verifymom(self, member):
         inverif.append(member)
     
-    async def checkverif(self, member):
-        for id in inverif:
-            if id == member:
-                yes = 1
-            else:
-                pass
-        try:
-            if yes == 1:
-                return True
-            else:
-                return False
-        except:
-            return False
+
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def bypass(self, ctx, member: discord.Member):
-        if await self.checkverif(member.id):
-            await self.verify(self, member.id)
-            await ctx.reply(f'**Bypasses {member}**')
+        if member.id in inverif:
+            await self.verifymom(member.id)
+            await ctx.reply(f'**Bypassed {member}**')
         else:
             await ctx.send(f'{member} isnt being verified.')
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def verify(self, ctx, member: discord.Member):
-        if await self.checkverif(member.id):
-            await self.verify(self, member.id)
+        if member.id not in inverif:
+            await self.verifymom(member.id)
             await ctx.send(f'**Started verification on {member}**')
+            await ctx.send(inverif)
         else:
             await ctx.send('They are already in verification')
 

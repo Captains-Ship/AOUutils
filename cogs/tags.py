@@ -284,5 +284,12 @@ class Tags(commands.Cog):
     async def html2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
 
+    @commands.command()
+    async def api(self, ctx):
+        await ctx.send('https://www.aouutils.com/api/v1/\n(totally real)')
+    
+    @commands.command()
+    async def js(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/850668209148395524/853954282315710484/unknown.png')
 def setup(client):
     client.add_cog(Tags(client))
