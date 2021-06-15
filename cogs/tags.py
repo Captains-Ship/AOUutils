@@ -281,6 +281,10 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    async def cry(self, ctx):
+        await ctx.send('<a:catcry:823088052331216917>')
+
+    @commands.command()
     async def html2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
 

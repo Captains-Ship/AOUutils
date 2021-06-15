@@ -13,6 +13,8 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('AOUUtils is ready')
+        chandler = self.client.get_channel(854333051852685333)
+        await chandler.send('Bot is now up!')
         guild = self.client.get_guild(794950428756410429)
         await self.client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f'AOU | {guild.member_count} members'))
 
@@ -33,9 +35,9 @@ class Listener(commands.Cog):
         if message.guild is None:
             return
             print('h')
-        if "cs:go" in message.content.lower():
+        if "cs:go" in message.content.lower() or "csgo" in message.content.lower():
             if "trade" in message.content.lower():
-                if "giving" in message.content.lower():
+                if "g" in message.content.lower():
                     if "http" in message.content.lower():
                         if not message.author.guild_permissions.administrator:
                             if not message.author.bot:
@@ -62,7 +64,10 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+            if ctx.author.id != 347366054806159360:
+                await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+            else:
+                await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
             pass
         elif isinstance(error, commands.NotOwner):

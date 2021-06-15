@@ -6,19 +6,13 @@ from discord.ext import commands
 import json
 import traceback
 import sys
-def get_prefix(client, message):
-    with open('prefix.json', 'r') as f:
-        prefixes = json.load(f)
-    try:
-        print(prefixes[str(message.author.id)])
-        return commands.when_mentioned_or(prefixes[str(message.author.id)])
-    except:
-        return commads.when_mentioned_or('aou ')
+from discord_slash import *
+
 
             
 
 client = commands.Bot(
-    command_prefix=commands.when_mentioned_or('aou'),
+    command_prefix=commands.when_mentioned_or('aou '),
     case_insensitive=True,
     status=discord.Status.dnd,
     activity=discord.Game(f'AOU'),
@@ -31,6 +25,7 @@ client = commands.Bot(
     )
 )
 client.blacklist = ['675474604533219360', '347366054806159360']
+client.curblack = [742976057761726514]
 with open('config.json', 'r') as config:
     token = json.load(config)
 

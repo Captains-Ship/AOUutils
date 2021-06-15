@@ -20,4 +20,4 @@ def memcount(guild):
     memlist = ['']
     for m in guild.members:
         memlist.append(m)
-    return len(memlist) #test commit
+    return len(memlist)
