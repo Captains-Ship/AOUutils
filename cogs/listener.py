@@ -3,7 +3,7 @@ import discord
 import traceback
 import datetime
 from discord.ext.commands import *
-
+import json
 class Listener(commands.Cog):
 
     def __init__(self, client):
@@ -64,8 +64,26 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            if ctx.author.id != 347366054806159360:
-                await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+            if True:#ctx.author.id != 347366054806159360:
+                if ctx.command.name == 'work':
+                    try:
+                        with open('cur.json', 'r') as f:
+                            jason = json.load(f)
+                            if str(jason[str(ctx.author.id)]) != '500': 
+                                timeleftins = error.retry_after
+                                timeleftformat = str(datetime.timedelta(seconds=timeleftins))
+                                timelol = timeleftformat.split(':')
+                                m3 = timelol[2]
+                                m2 = m3.split('.')
+                                m = m2[0]
+                                s = timelol[1]
+                                await ctx.send(f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
+                            else:
+                                await ctx.reinvoke()
+                    except:
+                        await ctx.reply('You dont have an account! do `aou start`')
+                else:
+                    await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
             else:
                 await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
