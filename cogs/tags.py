@@ -37,7 +37,7 @@ class Tags(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
+        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -54,19 +54,7 @@ class Tags(commands.Cog):
     async def idw(self, ctx):
         await ctx.send('To get help dont just say "help me" or "it doesnt work". Please __State your issue__!')
         
-    @commands.command()
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def hex(self, ctx):
-        hex_string = ctx.message.content.replace("aou hex ", "")
-        bytes_object = bytes.fromhex(hex_string)
-        ascii_string = bytes_object.decode("ASCII")
-        embed = discord.Embed(
-            title="Converted Hex to ASCII",
-            description=f'{ascii_string}',
-            colour=discord.Colour.red()
-        )
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
-        await ctx.reply(embed=embed)
+
 
 
     @commands.command()
@@ -270,6 +258,14 @@ class Tags(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def toastydum(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854625562722435072/unknown.png')
+    
+    @commands.command()
+    async def ari(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854629185838645268/unknown.png')
+
     @rule.command(name='34')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def _34(self, ctx):
@@ -280,6 +276,13 @@ class Tags(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def joke(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854623492989124608/unknown.png')
+
+    @commands.command()
+    async def scam(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/850693035826479114/854621486853652480/unknown.png')
 
     @commands.command()
     async def skid(self, ctx):

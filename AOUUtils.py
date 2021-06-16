@@ -25,7 +25,7 @@ client = commands.Bot(
     )
 )
 client.blacklist = ['675474604533219360', '347366054806159360']
-client.curblack = [742976057761726514]
+client.curblack = []
 with open('config.json', 'r') as config:
     token = json.load(config)
 

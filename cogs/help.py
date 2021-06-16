@@ -28,12 +28,16 @@ class Help(commands.Cog):
                 colour=discord.Colour.red()
             )
             cmdlist = ""
+            taglist = ""
             for command in self.client.commands:
                 if command.cog_name != 'Tags':
-                    cmdlist = cmdlist + ', ' + str(command)
+                    cmdlist = cmdlist + ', ' + str(command.name)
+                else:
+                    taglist = taglist + ', ' + str(command.name)
             cmdlist = cmdlist.replace(', ', '\n')
+            taglist = taglist[2:]
             embed.add_field(name='Command List', value=cmdlist, inline=False)
-            embed.add_field(name='And a bunch more tags', value='cant be bothered adding them here sorry', inline=False)
+            embed.add_field(name='Tag list', value=taglist, inline=False)
             await ctx.send(embed=embed)
         else:
             for command in self.client.commands:

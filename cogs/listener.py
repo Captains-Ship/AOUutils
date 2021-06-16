@@ -73,10 +73,10 @@ class Listener(commands.Cog):
                                 timeleftins = error.retry_after
                                 timeleftformat = str(datetime.timedelta(seconds=timeleftins))
                                 timelol = timeleftformat.split(':')
-                                m3 = timelol[2]
-                                m2 = m3.split('.')
-                                m = m2[0]
-                                s = timelol[1]
+                                s3 = timelol[2]
+                                s2 = s3.split('.')
+                                s = s2[0]
+                                m = timelol[1]
                                 await ctx.send(f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
                             else:
                                 await ctx.reinvoke()
