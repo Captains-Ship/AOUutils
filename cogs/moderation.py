@@ -26,9 +26,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.reply('Max to purge is `300`')
     
-    @commands.command()
-    async def unban(self, ctx, member: discord.User):
-        
+
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

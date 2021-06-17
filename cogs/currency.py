@@ -11,7 +11,26 @@ class Currency(commands.Cog):
         self.client = client
 
 
+    @commands.command()
+    @commands.is_owner()
+    async def list(self, ctx, member: discord.Member, type='blacklist', *, reason='None Provided'):
+        if member == ctx.author:
+            await ctx.send('no')
+        else:
+            if type.lower() == 'blacklist' or type.lower() == 'whitelist':
+    
+                with open('blacklist.json', 'r') as f:
+                    jason = json.load(f)
+                    jason[member.id] = {}
+                    jason[member.id]['type'] = type
+                    jason[member.id]['reason'] = reason
+                with open('blacklist.json', 'w') as f:
+                    json.dump(jason, f, indent=4)
+            else:
+                await ctx.send('unknown type!\n`blacklist, whitelist`')
+
     @commands.command(name='start')
+    @commands.has_role('Elite')
     async def start(self, ctx):
         try:
             with open('cur.json', 'r') as f:
@@ -41,7 +60,7 @@ class Currency(commands.Cog):
                     description = f'{damoney}✧',
                     colour = discord.Colour.red()
                 )
-                embed.set_footer(text='👁️👄👁️')
+                embed.set_footer(text='AOUutils is still receiving updates relatively quick! no guarantees your things will be saved')
                 await ctx.send(embed=embed)
         except KeyError:
             if user == ctx.author:
@@ -57,8 +76,14 @@ class Currency(commands.Cog):
                 money = json.load(f)
                 usersmoney = int(money[str(ctx.author.id)])
                 inte = r.randrange(3000, 6000, 2)
-                usersmoney = usersmoney + inte
-                money[str(ctx.author.id)] = usersmoney
+                fail = r.choice([False, True])
+                if fail == False:
+                   usersmoney = usersmoney + inte
+                   money[str(ctx.author.id)] = usersmoney
+                elif fail == True:
+                   usersmoney = usersmoney + inte
+                   money[str(ctx.author.id)] = usersmoney
+
                 with open('cur.json', 'w') as f:
                     json.dump(money, f, indent=4)
                     replieswin = [
@@ -74,18 +99,18 @@ class Currency(commands.Cog):
                         f'You helped making AOU work on mobile and was paid {inte}✧ by Angxl',
                         f'You invested in Bitro and got {inte}✧ extra',
                         f'You played dimensionsSMP and someone gave you {r.randrange(1, 5, 2)} diamonds and you made that into {inte}✧',
-                        f'You hacked AOUutils and gave yourself {inte}✧'
+                        f'You hacked AOUutils and gave yourself {inte}✧',
+                        f'You said piss and Amaan gave you {inte}✧'
                     ]
+                    repliesloss = [
+                        f'Robin saw you were rich and stole {inte}✧ from you'
+                    ]
+
                     await ctx.reply(r.choice(replieswin))
         except KeyError:
             await ctx.reply('You do not yet have an account, create one with `aou start`')
     
-    @commands.command()
-    @commands.is_owner()
-    async def debug(self, ctx):
-        with open('cur.json', 'r') as f:
-            jason = json.load(f)
-            await ctx.send(f'```json\n{jason}```')
+
 
 
 

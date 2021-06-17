@@ -28,6 +28,20 @@ class Listener(commands.Cog):
         guild = self.client.get_guild(794950428756410429)
         await self.client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f'AOU | {guild.member_count} members'))
 
+    #flags a message for steam scam
+    async def flag(self, message: discord.Message):
+        member = message.author
+        if message.guild.id == 794950428756410429:
+            channel = self.client.get_channel(853191467941494784)
+            embed = discord.Embed(
+                title = 'Possible Steam Scam!',
+                description = f'{member} sent the following in {message.channel.mention}:\n`{message.content}`\n\nTo ban the user to the following:\n`aou ban {message.author.id} Steam Scam`',
+                colour = discord.Colour.red()
+            )
+            await message.delete()
+            await channel.send(embed=embed)
+            await member.send(f'You have been automatically flagged for `Steam Scam` by the automod. Sorry if its too strict but try it doesnt autoban/automute, it only flags it for the moderators to see. the moderators have common sense so you will probably be alright.')
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
@@ -35,20 +49,10 @@ class Listener(commands.Cog):
         if message.guild is None:
             return
             print('h')
-        if "cs:go" in message.content.lower() or "csgo" in message.content.lower():
-            if "trade" in message.content.lower():
-                if "g" in message.content.lower():
-                    if "http" in message.content.lower():
-                        if not message.author.guild_permissions.administrator:
-                            if not message.author.bot:
-                                await message.delete()
-                                await message.author.send('You have been warned by the automatic Anti-Steam-Scam system')
-                                chandler = self.client.get_channel(853191467941494784)
-                                await chandler.send(f'{message.author.mention} Sent a steam scam!')
-                                muterole = message.guild.get_role(799839676479176705)
-                                await message.author.add_roles(muterole)
-
-        
+        if "cs:go" in message.content.lower() or "csgo" in message.content.lower() and not message.author.guild_permissions.administrator:
+            await self.flag(message)
+        if "trade" in message.content.lower() and not message.author.guild_permissions.administrator:
+            await self.flag(message)
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
         """
@@ -64,7 +68,7 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            if True:#ctx.author.id != 347366054806159360:
+            if ctx.author.id != 347366054806159360:
                 if ctx.command.name == 'work':
                     try:
                         with open('cur.json', 'r') as f:
@@ -100,7 +104,13 @@ class Listener(commands.Cog):
         else:
             await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
 
-
+    @commands.command()
+    @commands.is_owner()
+    async def debugger(self, ctx):
+        if self.client.debug == False:
+            self.client.debug = True
+        else:
+            self.client.debug = False
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

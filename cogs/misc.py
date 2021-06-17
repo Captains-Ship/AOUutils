@@ -47,7 +47,7 @@ class Misc(commands.Cog):
             array = bin.split()
             ascii_string = ""
             for binary_value in array:
-                an_integer = int(binary_value, 2)
+                an_integer = binary_value
                 ascii_character = chr(an_integer)
                 ascii_string += ascii_character
 

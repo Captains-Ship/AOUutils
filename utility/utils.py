@@ -1,5 +1,6 @@
 import discord
 
+
 # Members online
 def countOnlineMember(guild):
     memberList = []
@@ -15,14 +16,14 @@ def lineCount():
             pass
 
     return i + 1
-
+#membercount
 def memcount(guild):
     memlist = []
     for m in guild.members:
         memlist.append(m)
     return len(memlist)
-
-def botcount(guild)
+#bot count
+def botcount(guild):
     botlist = []
     for m in guild.members:
         if m.bot:

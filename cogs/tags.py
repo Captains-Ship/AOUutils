@@ -40,6 +40,15 @@ class Tags(commands.Cog):
         await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
 
     @commands.command()
+    async def masswarn(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/802743745032355850/855073669835390976/unknown.png')
+
+    @commands.command()
+    async def massclearwarn(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/802743745032355850/855073841285562398/unknown.png')
+
+
+    @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def virus(self, ctx):
         await ctx.send('The mod is not a virus. Some antivirus software dont like `dll` files. please disable your antivirus or add an exception.')
@@ -276,9 +285,6 @@ class Tags(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def joke(self, ctx):
-        await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854623492989124608/unknown.png')
 
     @commands.command()
     async def scam(self, ctx):

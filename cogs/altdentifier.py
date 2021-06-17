@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from utility.rules import rules
+import datetime
 
 class Altdentifier(commands.Cog):
 
@@ -25,7 +26,7 @@ class Altdentifier(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def bypass(self, ctx, member: discord.Member):
         if member.id in inverif:
-            await self.verifymom(member.id)
+            await self.verified(member.id)
             await ctx.reply(f'**Bypassed {member}**')
         else:
             await ctx.send(f'{member} isnt being verified.')

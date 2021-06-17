@@ -24,6 +24,7 @@ client = commands.Bot(
         replied_user=True
     )
 )
+client.debug = False
 client.blacklist = ['675474604533219360', '347366054806159360']
 client.curblack = []
 with open('config.json', 'r') as config:
@@ -32,6 +33,8 @@ with open('config.json', 'r') as config:
 #client.remove_command('help')
 bot = client
 client.remove_command('help')
+
+
 
 
 @client.command(aliases=['load'], hidden=True)
