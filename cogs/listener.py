@@ -49,9 +49,7 @@ class Listener(commands.Cog):
         if message.guild is None:
             return
             print('h')
-        if "cs:go" in message.content.lower() or "csgo" in message.content.lower() and not message.author.guild_permissions.administrator:
-            await self.flag(message)
-        if "trade" in message.content.lower() and not message.author.guild_permissions.administrator:
+        if "https://steancomunnity.ru/" in message.content.lower() and not message.author.guild_permissions.administrator:
             await self.flag(message)
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
