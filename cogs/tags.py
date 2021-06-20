@@ -285,6 +285,13 @@ class Tags(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def piss(self, ctx):
+        await ctx.send('#pisscult\nhttps://cdn.discordapp.com/attachments/854416080717348874/855376400063660052/unknown.png')
+
+    @commands.command()
+    async def toastydum2(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/842450788998578236/855358370708717578/unknown.png')
 
     @commands.command()
     async def scam(self, ctx):

@@ -47,7 +47,7 @@ class Misc(commands.Cog):
             array = bin.split()
             ascii_string = ""
             for binary_value in array:
-                an_integer = binary_value
+                an_integer = int(binary_value, 2)
                 ascii_character = chr(an_integer)
                 ascii_string += ascii_character
 
@@ -88,7 +88,7 @@ class Misc(commands.Cog):
     async def info(self, ctx):
         embed = discord.Embed(
             title='Info About All Of Us',
-            description=f'Owner={ctx.guild.owner}',
+            description=f'Owner: {ctx.guild.owner}',
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()
         )

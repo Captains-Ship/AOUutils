@@ -4,6 +4,7 @@ import traceback
 import datetime
 from discord.ext.commands import *
 import json
+from traceback import *
 class Listener(commands.Cog):
 
     def __init__(self, client):
@@ -40,18 +41,25 @@ class Listener(commands.Cog):
             )
             await message.delete()
             await channel.send(embed=embed)
-            await member.send(f'You have been automatically flagged for `Steam Scam` by the automod. Sorry if its too strict but try it doesnt autoban/automute, it only flags it for the moderators to see. the moderators have common sense so you will probably be alright.')
+            await member.send(f'You have been automatically flagged for `Steam Scam` by the automod. Sorry if its too strict but it doesnt autoban/automute, it only flags it for the moderators to see. the moderators have common sense so you will probably be alright.')
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
             return
-        if message.guild is None:
-            return
-            print('h')
-        if "cs:go" in message.content.lower() or "csgo" in message.content.lower() and not message.author.guild_permissions.administrator:
+        if self.client.http.token in message.content:
+            cap = self.client.get_user(347366054806159360)
+            await cap.send('OH GOD OH FUCK RESET THE FUCKING TOKEN NOW ITS BEEN LEAKED')
+            try:
+                await message.delete()
+            except:
+                pass
+        role = message.guild.get_role(795034661805359134)
+        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles:
             await self.flag(message)
-        if "trade" in message.content.lower() and not message.author.guild_permissions.administrator:
+        if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles:
+            await self.flag(message)
+        if "steancomunnity" in message.content.lower() and not role in message.author.roles:
             await self.flag(message)
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
@@ -67,8 +75,10 @@ class Listener(commands.Cog):
         """
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            if ctx.author.id != 347366054806159360:
+        if isinstance(error, commands.CheckFailure):
+            pass
+        elif isinstance(error, commands.CommandOnCooldown):
+            if not ctx.author.guild_permissions.administrator:
                 if ctx.command.name == 'work':
                     try:
                         with open('cur.json', 'r') as f:
@@ -89,9 +99,13 @@ class Listener(commands.Cog):
                 else:
                     await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
             else:
-                await ctx.reinvoke()
+                if ctx.command.name.lower() != 'jishaku':
+                    if str(ctx.command.cog).lower() != 'admin':
+                        await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
             pass
+        elif isinstance(error, commands.MissingPermissions):
+            await ctx.send('Missing permissions!')
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):
@@ -102,8 +116,10 @@ class Listener(commands.Cog):
         elif isinstance(error, OverflowError):
             await ctx.send('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
         else:
-            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
-
+#            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
+            await ctx.reply(f'Piss\n{error}')
+            e = error
+            print("".join(format_exception(e, e, e.__traceback__)))
     @commands.command()
     @commands.is_owner()
     async def debugger(self, ctx):

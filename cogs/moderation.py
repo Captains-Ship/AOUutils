@@ -32,27 +32,30 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ban(self, ctx, member: discord.Member=None, *,  reason=None):
-        if member != None:
-            if ctx.author.top_role > member.top_role:
-                embed = discord.Embed(
-                    title='You were banned from All Of Us',
-                    description=f'Reason:\n{reason}',
-                    colour=discord.Colour.red()
-                )
-                embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
-                try:
-                    await member.send(embed=embed)
-                except:
-                    pass
-                try:
-                    await ctx.guild.ban(member, reason=reason)
-                    await ctx.send(f'**{ctx.author}** Banned **{member}**')
-                except discord.Forbidden:
-                    await ctx.send('above my top role, cant ban')
+        if ctx.author.id != 742976057761726514:
+            if member != None:
+                if ctx.author.top_role > member.top_role:
+                    embed = discord.Embed(
+                        title='You were banned from All Of Us',
+                        description=f'Reason:\n{reason}',
+                        colour=discord.Colour.red()
+                    )
+                    embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
+                    try:
+                        await member.send(embed=embed)
+                    except:
+                        pass
+                    try:
+                        await ctx.guild.ban(member, reason=reason)
+                        await ctx.send(f'**{ctx.author}** Banned **{member}**')
+                    except discord.Forbidden:
+                        await ctx.send('above my top role, cant ban')
+                else:
+                    await ctx.reply('**role hierachy moment**')
             else:
-                await ctx.reply('**role hierachy moment**')
+                await ctx.send('http://bit.ly/launchpadbanappeal')
         else:
-            await ctx.send('http://bit.ly/launchpadbanappeal')
+            await ctx.send('Nah mate you have banned too many people by accident')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
