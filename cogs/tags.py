@@ -9,6 +9,11 @@ class Tags(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def beta(self, ctx):
+        await ctx.send('http://bit.ly/AOUutilsBETA')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def man(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851472289542307870/unknown.png')
 
@@ -27,10 +32,12 @@ class Tags(commands.Cog):
         await ctx.send('HTML ISNT A PROGRAMMING LANGUAGE')
     
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def python(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/850668209148395524/852622410044669955/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def toasty(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/850693035826479114/852964926300881017/unknown.png')
 
@@ -40,10 +47,12 @@ class Tags(commands.Cog):
         await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def masswarn(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/802743745032355850/855073669835390976/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def massclearwarn(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/802743745032355850/855073841285562398/unknown.png')
 
@@ -268,10 +277,12 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def toastydum(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854625562722435072/unknown.png')
     
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ari(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854629185838645268/unknown.png')
 
@@ -286,30 +297,37 @@ class Tags(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def piss(self, ctx):
         await ctx.send('#pisscult\nhttps://cdn.discordapp.com/attachments/854416080717348874/855376400063660052/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def toastydum2(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/842450788998578236/855358370708717578/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def scam(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/850693035826479114/854621486853652480/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def skid(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/842450788998578236/854336292652187668/unknown.png')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def html2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def api(self, ctx):
         await ctx.send('https://www.aouutils.com/api/v1/\n(totally real)')
     
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def js(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/850668209148395524/853954282315710484/unknown.png')
 def setup(client):

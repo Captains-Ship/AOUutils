@@ -36,7 +36,7 @@ class Listener(commands.Cog):
             channel = self.client.get_channel(853191467941494784)
             embed = discord.Embed(
                 title = 'Possible Steam Scam!',
-                description = f'{member} sent the following in {message.channel.mention}:\n`{message.content}`\n\nTo ban the user to the following:\n`aou ban {message.author.id} Steam Scam`',
+                description = f'{member} sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} Steam Scam```',
                 colour = discord.Colour.red()
             )
             await message.delete()
@@ -54,12 +54,16 @@ class Listener(commands.Cog):
                 await message.delete()
             except:
                 pass
-        role = message.guild.get_role(795034661805359134)
-        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles:
+        try:
+            role = message.guild.get_role(795034661805359134)
+            admin = message.guild.get_role(849669487783444490)
+        except:
+            pass
+        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
             await self.flag(message)
-        if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles:
+        if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
             await self.flag(message)
-        if "steancomunnity" in message.content.lower() and not role in message.author.roles:
+        if "steancomunnity" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
             await self.flag(message)
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
@@ -75,37 +79,51 @@ class Listener(commands.Cog):
         """
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CheckFailure):
-            pass
-        elif isinstance(error, commands.CommandOnCooldown):
-            if not ctx.author.guild_permissions.administrator:
-                if ctx.command.name == 'work':
-                    try:
-                        with open('cur.json', 'r') as f:
-                            jason = json.load(f)
-                            if str(jason[str(ctx.author.id)]) != '500': 
-                                timeleftins = error.retry_after
-                                timeleftformat = str(datetime.timedelta(seconds=timeleftins))
-                                timelol = timeleftformat.split(':')
-                                s3 = timelol[2]
-                                s2 = s3.split('.')
-                                s = s2[0]
-                                m = timelol[1]
-                                await ctx.send(f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
-                            else:
-                                await ctx.reinvoke()
-                    except:
-                        await ctx.reply('You dont have an account! do `aou start`')
-                else:
-                    await ctx.send(f'This command is on cooldown. Please wait {error.retry_after:.2f}s')
+        if isinstance(error, commands.CommandOnCooldown):
+            if ctx.author.id == 347366054806159360:
+                await ctx.reinvoke()
             else:
-                if ctx.command.name.lower() != 'jishaku':
-                    if str(ctx.command.cog).lower() != 'admin':
-                        await ctx.reinvoke()
+                if not ctx.author.guild_permissions.administrator:
+                    if ctx.command.name == 'work':
+                        try:
+                            with open('cur.json', 'r') as f:
+                                jason = json.load(f)
+                                if str(jason[str(ctx.author.id)]['wallet']) != '500': 
+                                    timeleftins = error.retry_after
+                                    timeleftformat = str(datetime.timedelta(seconds=timeleftins))
+                                    timelol = timeleftformat.split(':')
+                                    s3 = timelol[2]
+                                    s2 = s3.split('.')
+                                    s = s2[0]
+                                    m = timelol[1]
+                                    await ctx.send(f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
+                                else:
+                                    await ctx.reinvoke()
+                        except:
+                            await ctx.reply('You dont have an account! do `aou start`')
+                    else:
+                        timeleftins = error.retry_after
+                        timeleftformat = str(datetime.timedelta(seconds=timeleftins))
+                        timelol = timeleftformat.split(':')
+                        s3 = timelol[2]
+                        s2 = s3.split('.')
+                        s = s2[0]
+                        m = timelol[1]
+                        await ctx.send(f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
+                else:
+                    if ctx.command.name.lower() != 'jishaku':
+                        if str(ctx.command.cog).lower() != 'admin':
+                            await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
             pass
         elif isinstance(error, commands.MissingPermissions):
-            await ctx.send('Missing permissions!')
+            if ctx.author.id == 347366054806159360:
+                await ctx.reinvoke()
+            else:
+                if ctx.guild == None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
+                    await ctx.reinvoke()
+                else:
+                    await ctx.send('Missing permissions!')
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):

@@ -21,6 +21,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
     """
     @commands.command(help='h')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def help(self, ctx, cmd=None):
         if cmd == None:
             embed=discord.Embed(

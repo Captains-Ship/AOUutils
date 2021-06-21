@@ -14,12 +14,11 @@ class Currency(commands.Cog):
 
     def dev():
         async def predicate(ctx):
-            devs = [742976057761726514, 347366054806159360]
+            devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627]
             return ctx.author.id in devs
         return commands.check(predicate)
 
     @commands.command()
-    @dev()
     async def bal(self, ctx, member: discord.Member=None):
         member = member or ctx.author
         try:
@@ -43,7 +42,6 @@ class Currency(commands.Cog):
 
 
     @commands.command()
-    @dev()
     async def start(self, ctx):
         with open('cur.json', 'r') as f:
             money = json.load(f)
@@ -63,7 +61,6 @@ class Currency(commands.Cog):
             await ctx.send('You have made an account, and got some sweet starter money!')
 
     @commands.command()
-    @dev()
     async def inv(self, ctx):
         with open('cur.json', 'r') as f:
             money = json.load(f)
@@ -83,7 +80,6 @@ class Currency(commands.Cog):
         await ctx.send(embed=embed)    
 
     @commands.command()
-    @dev()
     async def shop(self, ctx, *, item=None):
         if item == None:
             afford = ", "
@@ -164,7 +160,6 @@ class Currency(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3600, type=discord.ext.commands.BucketType.user)
-    @dev()
     async def work(self, ctx):
         try:
             with open('cur.json', 'r') as f:
@@ -227,7 +222,6 @@ class Currency(commands.Cog):
     
 
     @commands.command(aliases=['dep'])
-    @dev()
     async def deposit(self, ctx, *, amount: int=0):
         if amount > 0:
             with open('cur.json', 'r') as f:
@@ -246,7 +240,6 @@ class Currency(commands.Cog):
             await ctx.send('Dont try to break me!')
 
     @commands.command(aliases=['with'])
-    @dev()
     async def withdraw(self, ctx, *, amount: int=0):
         if amount > 0:
             with open('cur.json', 'r') as f:
@@ -264,14 +257,39 @@ class Currency(commands.Cog):
         else:
             await ctx.send('Dont try to break me!')
 
-#1️⃣2️⃣3️⃣4️⃣5️⃣
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CheckFailure):
-            await ctx.send(
-                'its not done yet have some patience please.'
-                '\nits about 56% done'
-            )
-
+    @commands.command()
+    async def give(self, ctx, user: discord.Member=None, amount: int=0):
+        if user != None and user != ctx.author:
+            if amount > 0:
+                with open('cur.json', 'r') as f:
+                    money = json.load(f)
+                    author = money[str(ctx.author.id)]
+                    userlol = money[str(ctx.author.id)]
+                    amon = author['wallet']
+                    umon = userlol['wallet']
+                    if int(amon) > amount - 1:
+                        amon = amon - 1
+                        umon = umon + amount
+                        await ctx.send('Transaction Complete!')
+                    else:
+                        await ctx.send('Yeah dont try to break me please')
+                with open('cur.json', 'w') as f:
+                    json.dump(money, f, indent=4)
+            else:
+                await ctx.send('dont try to break me')
+        else:
+            await ctx.send('Please enter a user, if you did enter a user make sure it isnt you.')
+"""
+    @commands.command()
+    @dev()
+    async def beg(self, ctx):
+        with open('cur.json', 'r') as f:
+            cur = json.load(f)
+            try:
+                monehr.randrange(7000, 12000, 2)
+"""
+"""
+    #1️⃣2️⃣3️⃣4️⃣5️⃣
+"""
 def setup(client):
     client.add_cog(Currency(client))

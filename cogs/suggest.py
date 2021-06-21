@@ -7,6 +7,7 @@ class Suggest(commands.Cog, name="Suggest"):
         self.bot = bot
 
     @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'])
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def h(self, ctx, *, Suggestion=None):
         if Suggestion:
             blacklist = [328661975250894850, 841330839685431336, 675474604533219360, 721745855207571627, 476549192362229791, 468134163493421076]
@@ -20,7 +21,9 @@ class Suggest(commands.Cog, name="Suggest"):
                         colour = discord.Colour.red()
                         )
                     e.set_footer(icon_url=ctx.author.avatar_url, text=f'Suggested by {ctx.message.author.name}')
-                    await chandler.send(embed=e)
+                    msg = await chandler.send(embed=e)
+                    await msg.add_reaction('<a:Yes:850974892366757930>')
+                    await msg.add_reaction('<a:X_:850974940282748978>')
                 await ctx.reply('Suggestion Sent!')
             else:
                 await ctx.reply('blacklist moment')

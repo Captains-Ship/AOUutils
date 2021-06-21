@@ -30,7 +30,6 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ban(self, ctx, member: discord.Member=None, *,  reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
@@ -58,17 +57,14 @@ class Moderation(commands.Cog):
             await ctx.send('Nah mate you have banned too many people by accident')
 
     @commands.command()
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member=None, *, reason=None):
         if member != None:
             if ctx.author.top_role > member.top_role:
                 try:
-                    await member.send(embed=embed)
-                except:
-                    pass
-                try:
                     await ctx.guild.kick(member, reason=reason)
+                    await member.send(embed=embed)
+                    await ctx.send(f'**{ctx.author} Kicked {member}**')
                 except commands.discordForbidden:
                     await ctx.reply('their role is above mine')
             else:

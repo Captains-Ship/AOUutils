@@ -1,0 +1,34 @@
+{
+    "captain's hat": {
+        "buffs": {
+            "earnmore": 2,
+            "robprot": 2
+        }
+    },
+    "amaan's account": {
+        "buffs": {
+            "jobs": {
+                "aoumod": {
+                    "earnmore": 2
+                }
+            }
+        },
+        "debuffs": {
+            "jobs": {
+                "aoumod": {
+                    "fail": 2
+                }
+            }
+        }
+    },
+    "pandora's vault": {
+        "buffs": {
+            "trap": 86400
+        }
+    },
+    "that ridge wallet on youtube": {
+        "buffs": {
+            "robprot": 100
+        }
+    }
+}

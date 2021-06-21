@@ -7,12 +7,23 @@ import json
 import traceback
 import sys
 from discord_slash import *
+from traceback import *
 
-
+async def get_pre(client, message):
+    if message.guild == None:
+        return ''
+    else:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+            try:
+                h = prefixes[str(message.author.id)]
+                return commands.when_mentioned_or(prefixes[str(message.author.id)])(bot, message)
+            except:
+                return commands.when_mentioned_or('aou ', 'aou')(bot, message)
             
 
 client = commands.Bot(
-    command_prefix=commands.when_mentioned_or('aou '),
+    command_prefix=get_pre,
     case_insensitive=True,
     status=discord.Status.dnd,
     activity=discord.Game(f'AOU'),
@@ -22,10 +33,11 @@ client = commands.Bot(
         everyone=False,
         roles=False,
         replied_user=True
-    )
+    ),
+    strip_after_prefix=True
 )
 client.debug = False
-client.blacklist = ['718915806754504766', '662290904203264010', '675474604533219360', '347366054806159360']
+client.blacklist = ['718915806754504766', '662290904203264010', '675474604533219360']
 client.curblack = []
 with open('config.json', 'r') as config:
     token = json.load(config)
@@ -34,6 +46,14 @@ with open('config.json', 'r') as config:
 bot = client
 client.remove_command('help')
 
+@client.command()
+async def prefix(ctx, *, prefix='aou '):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+        prefixes[str(ctx.author.id)] = str(prefix)
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+        await ctx.send(f'Changed your prefix to `{prefix}`!')
 
 
 

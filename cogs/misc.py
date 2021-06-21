@@ -15,7 +15,10 @@ class Misc(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def echo(self, ctx, *, text=" "):
         if text != ' ':
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except:
+                pass
             await ctx.send(text)
         else:
             await ctx.reply('I cannot send nothing')
@@ -37,6 +40,7 @@ class Misc(commands.Cog):
 
 
     @commands.command(aliases=['bin'])
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def binary(self, ctx, *, bin):
         is_binary = True
         for letter in bin.replace(" ", ""):
@@ -60,6 +64,7 @@ class Misc(commands.Cog):
             await ctx.reply(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def embed(self, ctx, color='** **', *, emb="** **"):
         gray = '#2f3136'

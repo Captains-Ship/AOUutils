@@ -56,11 +56,15 @@
         "description": "Ari likes cats, atleast from what I've seen. Gift one of these to her to make her happy. Probably."
     },
     "Bingus": {
-        "price": 177700000,
+        "price": 177700,
         "description": "Doubles chance of finding items, and will randomly give you a duplicate of the item. In honour of Bingus My Beloved being successfully funded."
     },
     "Dev's Badge": {
-        "price": 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999,
+        "price": -1,
         "description": "This badge, only obtainable by the developers, is a confirmation they are trusted. You should always report bugs in the bot infront of these people."
+    },
+    "impostor": {
+        "price": 2200000,
+        "description": "Has a 5% change of killing any robbers."
     }
 }
