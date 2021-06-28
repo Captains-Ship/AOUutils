@@ -6,12 +6,17 @@ from discord.ext.commands import *
 import os
 
 
+
+
+
+
 class Admin(commands.Cog):
 
     def __init__(self, client):
         self.client = client
     async def check(self, ctx):
      return not str(ctx.author.id) in self.client.blacklist
+
 
 
     @commands.command()

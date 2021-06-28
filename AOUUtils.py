@@ -8,6 +8,9 @@ import traceback
 import sys
 from discord_slash import *
 from traceback import *
+from apilol import *
+import datetime
+start()
 
 async def get_pre(client, message):
     if message.guild == None:
@@ -42,15 +45,18 @@ client.curblack = []
 with open('config.json', 'r') as config:
     token = json.load(config)
 
+
+
+
 #client.remove_command('help')
 bot = client
-client.remove_command('help')
+
 
 @client.command()
-async def prefix(ctx, *, prefix='aou '):
+async def prefix(ctx, *, prefix='aou'):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
-        prefixes[str(ctx.author.id)] = str(prefix)
+        prefixes[str(ctx.author.id)] = str(prefix) + ' '
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
         await ctx.send(f'Changed your prefix to `{prefix}`!')

@@ -18,6 +18,9 @@ class Currency(commands.Cog):
             return ctx.author.id in devs
         return commands.check(predicate)
 
+
+
+
     @commands.command()
     async def bal(self, ctx, member: discord.Member=None):
         member = member or ctx.author
@@ -214,7 +217,7 @@ class Currency(commands.Cog):
                         f'XtraCube banned you with XtraCute and you were paid {inte}{ci} for a bad day of work.'
                     ]
                     if fail == True:
-                        await ctx.send(r.choice(repliesloss))
+                        await ctx.reply(r.choice(repliesloss))
                     else:
                         await ctx.reply(r.choice(replieswin))
         except KeyError:

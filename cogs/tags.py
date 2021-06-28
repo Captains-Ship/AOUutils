@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from utility.rules import rules
+import urllib.request, json
 
 class Tags(commands.Cog):
 
@@ -44,7 +45,7 @@ class Tags(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Admin)```')
+        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Moderator)```')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -90,10 +91,14 @@ class Tags(commands.Cog):
     async def helpMe(self, ctx):
         await ctx.send('If you need help go to <#809192430935080960>')
 
-    @commands.command(aliases=['ticket'])
+    @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def blankTicket(self, ctx):
-        await ctx.send('In the next **24 hours**, please either close this ticket or state your issue, or we will consider it a troll ticket and warn you. Thanks!')
+    async def blankmail(self, ctx):
+        await ctx.send('In the next **24 hours**, please state your issue, or we will consider it a troll mail and warn you. Thanks!')
+
+    @commands.command(aliases=['modmail'])
+    async def mail(self, ctx):
+        await ctx.send('Please open a modmail thread')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -321,11 +326,23 @@ class Tags(commands.Cog):
     async def html2(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851877985199980624/bruhhhh.gif')
 
-    @commands.command()
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def api(self, ctx):
-        await ctx.send('https://www.aouutils.com/api/v1/\n(totally real)')
     
+    @commands.command(name='api')
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def apimembercount(self, ctx, *, endpoint=None):
+        if endpoint != None:
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:8080/api/{endpoint}") as url:
+                    data = url.read().decode()
+                    await ctx.send(f'```json\n{data}```')
+
+            except Exception as e:
+                await ctx.send(e)      
+        else:
+            await ctx.send('List of API\'s:\n\nMembercount')  
+    
+
+
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def js(self, ctx):

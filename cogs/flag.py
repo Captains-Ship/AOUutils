@@ -5,7 +5,7 @@ from discord.ext.commands import *
 class Flag(commands.Cog):
 
     def __init__(self, client):
-        self.client = client\
+        self.client = client
 
     
 

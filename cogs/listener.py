@@ -13,7 +13,7 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('AOUUtils is ready')
+        print(f'[AOUutils/info] AOUUtils is ready')
         chandler = self.client.get_channel(854333051852685333)
         await chandler.send('Bot is now up!')
         guild = self.client.get_guild(794950428756410429)
@@ -79,6 +79,8 @@ class Listener(commands.Cog):
         """
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        print(f'[AOUutils/ERROR] An error was caught!')
+        print(error)
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.author.id == 347366054806159360:
                 await ctx.reinvoke()
@@ -148,10 +150,28 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        print(f'[AOUutils/info] A member has joined AOU')
         if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
             chandler = member.guild.get_channel(852186132111556690)
             await chandler.send(f'{member.mention} has been banned due to the keyword "h0nde"')
             await member.send('Hi! you have been removed from the server due to a keyword, if this was a mistake add Captain#3175')
             await member.guild.ban(member, reason='h o n d a')
+        else:
+            with open('memcount.json', 'r') as f:
+                memcount = json.load(f)
+                memcount['membercount'] = member.guild.member_count
+            with open('memcount.json', 'w') as f:
+                json.dump(memcount, f, indent=4)
+    
+
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        print(f'[AOUutils/info] A member has left AOU')
+        with open('memcount.json', 'r') as f:
+            memcount = json.load(f)
+            memcount['membercount'] = member.guild.member_count
+        with open('memcount.json', 'w') as f:
+            json.dump(memcount, f, indent=4)
 def setup(client):
     client.add_cog(Listener(client))

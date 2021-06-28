@@ -1,4 +1,6 @@
 import discord
+import json
+
 
 
 # Members online
@@ -29,3 +31,6 @@ def botcount(guild):
         if m.bot:
             botlist.append(m)
     return len(botlist)
+
+
+
