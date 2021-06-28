@@ -93,11 +93,12 @@ class Currency(commands.Cog):
                     users = json.load(f)
                     user = users[str(ctx.author.id)]
                     for key in shop:
-                        price = shop[key]['price']
-                        if price > user['wallet']:
-                            affordnt = affordnt + f", **{key}** ({price}{ci})"
-                        else:
-                            afford = afford + f", **{key}** ({price}{ci})"
+                        if shop[key]['price'] != -1:
+                            price = shop[key]['price']
+                            if price > user['wallet']:
+                                affordnt = affordnt + f", **{key}** ({price}{ci})"
+                            else:
+                                afford = afford + f", **{key}** ({price}{ci})"
             embed = discord.Embed(
                 title='The Shop',
                 colour = discord.Colour.red()

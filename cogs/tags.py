@@ -341,7 +341,9 @@ class Tags(commands.Cog):
         else:
             await ctx.send('List of API\'s:\n\nMembercount')  
     
-
+    @commands.command()
+    async def toastydum3(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/850668209148395524/858965742962737172/unknown.png')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

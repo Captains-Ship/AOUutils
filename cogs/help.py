@@ -19,9 +19,13 @@ class HelpUwU(commands.MinimalHelpCommand):
 class Help(commands.Cog):
 
     def __init__(self, client):
+        attributes = {
+        'name': "help",
+        'cooldown': commands.Cooldown(1, 10.0, commands.BucketType.user)
+        }
         self.client = client
         self.client.original_help = self.client.help_command
-        self.client.help_command = HelpUwU()
+        self.client.help_command = HelpUwU(command_attrs=attributes)
     def cog_unload(self):
         self.client.help_command = commands.DefaultHelpCommand()
 def setup(client):
