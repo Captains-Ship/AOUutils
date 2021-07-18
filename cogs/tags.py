@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from utility.rules import rules
 import urllib.request, json
 
 class Tags(commands.Cog):
@@ -39,13 +38,24 @@ class Tags(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def toasty(self, ctx):
-        await ctx.send('https://media.discordapp.net/attachments/850693035826479114/852964926300881017/unknown.png')
+    async def arch(self, ctx):
+        await ctx.send('I use Arch btw <:I_Use_arch_btw:861516766115004426>')
+
+    @commands.command()
+    async def vedant(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/802743745032355850/861867163845263391/unknown.png')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def badinternet(self, ctx):
+        await ctx.send('https://captain.has-no-bra.in/53twyUx2U')
+
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff)\n\nUTC+1: Wulfstrex (🔰Moderator), EnderBoyHD (🔰Admin), Mathew (🔰Moderator)\n\nUTC0: Ariana Pierer (👥Community Manager), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Moderator)```')
+        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff), Heapons (Manager)\n\nUTC+1: Wulfstrex (👥Community Manager), EnderBoyHD (🔰Admin)\n\nUTC0: Ariana Pierer (🔰Moderator), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Moderator)```')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -115,172 +125,8 @@ class Tags(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.group()
-    async def rule(self, ctx):
-        if ctx.invoked_subcommand is None:
-            if ctx.message.content.lower() == "aou rule":
-                embed = discord.Embed(
-                    title='Rules',
-                    colour=discord.Colour.red()
-                )
-                for index, rule in enumerate(rules, start=1):
-                    embed.add_field(name=f"Rule #{index}", value=rule, inline=False)
 
-                await ctx.send(embed=embed)
-            else:
-                embed = discord.Embed(
-                    title='Rules',
-                    description="Unknown Rule",
-                    colour=discord.Colour.red()
-                )
-                await ctx.send(embed=embed)
-
-    @rule.command()
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def full(self, ctx):
-        embed = discord.Embed(
-            title='Rules',
-            colour=discord.Colour.red()
-        )
-
-        for index, rule in enumerate(rules):
-            embed.add_field(name=f"Rule #{index}", value=rule, inline=False)
-
-        await ctx.send(embed=embed)
-
-    @rule.command(name='1')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _1(self, ctx):
-        embed = discord.Embed(
-            title='Rule #1',
-            description=rules[0],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-        
-    @rule.command(name='69')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _69(self, ctx):
-        embed = discord.Embed(
-            title='Rule #69',
-            colour=discord.Colour.red()
-        )
-        embed.set_image(url='https://media.discordapp.net/attachments/842450788998578236/851014341276598302/unknown.png')
-        
-        await ctx.send(embed=embed)
-
-    @rule.command(name='63')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _63(self, ctx):
-        embed = discord.Embed(
-            title='Rule #63',
-            description='No.',
-            colour=discord.Colour.red()
-        )
-
-        await ctx.send(embed=embed)
-
-
-    @rule.command(name='2')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _2(self, ctx):
-        embed = discord.Embed(
-            title='Rule #2',
-            description=rules[1],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='3')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _3(self, ctx):
-        embed = discord.Embed(
-            title='Rule #3',
-            description=rules[2],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='4')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _4(self, ctx):
-        embed = discord.Embed(
-            title='Rule #4',
-            description=rules[3],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='5')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _5(self, ctx):
-        embed = discord.Embed(
-            title='Rule #5',
-            description=rules[4],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='6')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _6(self, ctx):
-        embed = discord.Embed(
-            title='Rule #6',
-            description=rules[5],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='7')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _7(self, ctx):
-        embed = discord.Embed(
-            title='Rule #7',
-            description=rules[6],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='8')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _8(self, ctx):
-        embed = discord.Embed(
-            title='Rule #8',
-            description=rules[7],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='9')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _9(self, ctx):
-        embed = discord.Embed(
-            title='Rule #9',
-            description=rules[8],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='10')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _10(self, ctx):
-        embed = discord.Embed(
-            title='Rule #10',
-            description=rules[9],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
-    @rule.command(name='11')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _11(self, ctx):
-        embed = discord.Embed(
-            title='Rule #11',
-            description=rules[10],
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
-
+    
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def toastydum(self, ctx):
@@ -288,28 +134,50 @@ class Tags(commands.Cog):
     
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def toastydum2(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/842450788998578236/855358370708717578/unknown.png')
+
+    @commands.command()
+    async def toastydum3(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/850668209148395524/858965742962737172/unknown.png')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def toasty(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/850693035826479114/852964926300881017/unknown.png')
+
+    
+    
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def joke(self, ctx):
+        await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854623492989124608/unknown.png')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def tou(self, ctx):
+        await ctx.send('we are NOT town of us. this is all of us.')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def didntask(self, ctx):
+        if ctx.message.reference:
+            await ctx.message.reference.resolved.reply('https://cdn.discordapp.com/attachments/844943241878831164/861624113525424129/didntask.mp4')
+        else:
+            await ctx.send('https://cdn.discordapp.com/attachments/844943241878831164/861624113525424129/didntask.mp4')
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ari(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/854416080717348874/854629185838645268/unknown.png')
 
-    @rule.command(name='34')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def _34(self, ctx):
-        embed = discord.Embed(
-            title='Rule #34',
-            description='no',
-            colour=discord.Colour.red()
-        )
-        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def piss(self, ctx):
         await ctx.send('#pisscult\nhttps://cdn.discordapp.com/attachments/854416080717348874/855376400063660052/unknown.png')
 
-    @commands.command()
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def toastydum2(self, ctx):
-        await ctx.send('https://cdn.discordapp.com/attachments/842450788998578236/855358370708717578/unknown.png')
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
@@ -341,9 +209,7 @@ class Tags(commands.Cog):
         else:
             await ctx.send('List of API\'s:\n\nMembercount')  
     
-    @commands.command()
-    async def toastydum3(self, ctx):
-        await ctx.send('https://cdn.discordapp.com/attachments/850668209148395524/858965742962737172/unknown.png')
+
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

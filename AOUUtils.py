@@ -56,12 +56,17 @@ bot = client
 async def prefix(ctx, *, prefix='aou'):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
-        prefixes[str(ctx.author.id)] = str(prefix) + ' '
+        prefixes[str(ctx.author.id)] = str(prefix)
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
         await ctx.send(f'Changed your prefix to `{prefix}`!')
 
-
+@client.event
+async def on_message(msg):
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+    if not msg.author.id in config['blacklist']:
+        await client.process_commands(msg)
 
 @client.command(aliases=['load'], hidden=True)
 @commands.is_owner()

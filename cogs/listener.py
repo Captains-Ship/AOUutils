@@ -30,18 +30,18 @@ class Listener(commands.Cog):
         await self.client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f'AOU | {guild.member_count} members'))
 
     #flags a message for steam scam
-    async def flag(self, message: discord.Message):
+    async def flag(self, message: discord.Message, reason='Unspecified'):
         member = message.author
         if message.guild.id == 794950428756410429:
             channel = self.client.get_channel(853191467941494784)
             embed = discord.Embed(
-                title = 'Possible Steam Scam!',
-                description = f'{member} sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} Steam Scam```',
+                title = f'Message Flagged for {reason}!',
+                description = f'{member} sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} {reason}```',
                 colour = discord.Colour.red()
             )
             await message.delete()
             await channel.send(embed=embed)
-            await member.send(f'You have been automatically flagged for `Steam Scam` by the automod. Sorry if its too strict but it doesnt autoban/automute, it only flags it for the moderators to see. the moderators have common sense so you will probably be alright.')
+            await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -60,13 +60,15 @@ class Listener(commands.Cog):
         except:
             pass
         if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
-            await self.flag(message)
+            await self.flag(message, reason='Steam Scam')
         if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
-            await self.flag(message)
+            await self.flag(message, reason='Steam Scam')
         if "steancomunnity" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
-            await self.flag(message)
+            await self.flag(message, reason='Steam Scam')
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
+        if "discord-gifts.us" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+            await self.flag(message, reason="Nitro Scam")
         """
         elif isinstance(error, commands.CommandNotFound):
             embed = discord.Embed(
@@ -77,6 +79,31 @@ class Listener(commands.Cog):
             )
             await ctx.reply(embed=embed)
         """
+
+
+#anti hoist
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        guild = member.guild
+        for member in guild.members:
+            if member.display_name.startswith('.'):
+                await member.edit(nick=member.display_name.replace('.', ''))
+            elif member.display_name.startswith('\''):
+                await member.edit(nick=member.display_name.replace('\'', ''))
+            elif member.display_name.startswith('!'):
+                await member.edit(nick=member.display_name.replace('!', ''))
+
+    @commands.Cog.listener()
+    async def on_member_update(self, b, a):
+        member = a
+        guild = member.guild
+        if member.display_name.startswith('.'):
+            await member.edit(nick=member.display_name.replace('.', ''))
+        elif member.display_name.startswith('\''):
+            await member.edit(nick=member.display_name.replace('\'', ''))
+        elif member.display_name.startswith('!'):
+            await member.edit(nick=member.display_name.replace('!', ''))
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         print(f'[AOUutils/ERROR] An error was caught!')
@@ -173,5 +200,11 @@ class Listener(commands.Cog):
             memcount['membercount'] = member.guild.member_count
         with open('memcount.json', 'w') as f:
             json.dump(memcount, f, indent=4)
+
+    @commands.Cog.listener()
+    async def on_message(self, msg):
+        print('[AOUutils/info] A message has been recieved')
+
+
 def setup(client):
     client.add_cog(Listener(client))
