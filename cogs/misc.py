@@ -34,7 +34,7 @@ class Misc(commands.Cog):
             description=f'{ascii_string}',
             colour=discord.Colour.red()
         )
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
+        embed.set_footer(icon_url=ctx.author.avatar.url, text=f'Requested by {ctx.message.author.name}')
         await ctx.reply(embed=embed)
 
 
@@ -60,7 +60,7 @@ class Misc(commands.Cog):
                 description=f"{ascii_string}",
                 colour=discord.Colour.red()
             )
-            embed.set_footer(icon_url=ctx.message.author.avatar_url, text=f'Requested by {ctx.message.author.name}')
+            embed.set_footer(icon_url=ctx.message.author.avatar.url, text=f'Requested by {ctx.message.author.name}')
             await ctx.reply(embed=embed)
 
     @commands.command()
@@ -99,7 +99,7 @@ class Misc(commands.Cog):
         )
         embed.add_field(name='Channels', value=len(ctx.guild.channels))
         embed.add_field(name='Roles', value=len(ctx.guild.roles))
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'requested by {ctx.author}')
+        embed.set_footer(icon_url=ctx.author.avatar.url, text=f'requested by {ctx.author}')
         embed.add_field(name='Membercount', value=memcount(ctx.guild))
         embed.add_field(name='Members Online', value=countOnlineMember(ctx.guild))
         await ctx.reply(embed=embed)
@@ -199,7 +199,7 @@ class Misc(commands.Cog):
                embed.add_field(name=team, value=modteam, inline=False)
                         
 
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.author}')
+        embed.set_footer(icon_url=ctx.author.avatar.url, text=f'Requested by {ctx.author}')
         embed.set_author(name='Values may or may not be incorrect due to the wacky way i implemented this.')
         await ctx.reply(embed=embed)
 

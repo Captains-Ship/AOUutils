@@ -85,8 +85,8 @@ class Currency(commands.Cog):
     @commands.command()
     async def shop(self, ctx, *, item=None):
         if item == None:
-            afford = ", "
-            affordnt = ", "
+            afford = ""
+            affordnt = ""
             with open('shop.json', 'r') as f:
                 shop = json.load(f)
                 with open('cur.json', 'r') as f:
@@ -96,9 +96,9 @@ class Currency(commands.Cog):
                         if shop[key]['price'] != -1:
                             price = shop[key]['price']
                             if price > user['wallet']:
-                                affordnt = affordnt + f", **{key}** ({price}{ci})"
+                                affordnt = affordnt + f"\n**{key}** ({price}{ci})"
                             else:
-                                afford = afford + f", **{key}** ({price}{ci})"
+                                afford = afford + f"\n**{key}** ({price}{ci})"
             embed = discord.Embed(
                 title='The Shop',
                 colour = discord.Colour.red()

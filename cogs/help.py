@@ -11,7 +11,7 @@ class HelpUwU(commands.MinimalHelpCommand):
                 colour = discord.Colour.red(),
                 timestamp=datetime.datetime.utcnow()
                 )
-            emby.set_footer(icon_url=self.context.author.avatar_url, text=self.context.author)
+            emby.set_footer(icon_url=self.context.author.avatar.url, text=self.context.author)
             await destination.send(embed=emby)
 
 
@@ -20,8 +20,7 @@ class Help(commands.Cog):
 
     def __init__(self, client):
         attributes = {
-        'name': "help",
-        'cooldown': commands.Cooldown(1, 10.0, commands.BucketType.user)
+        'name': "help"
         }
         self.client = client
         self.client.original_help = self.client.help_command
@@ -30,3 +29,5 @@ class Help(commands.Cog):
         self.client.help_command = commands.DefaultHelpCommand()
 def setup(client):
     client.add_cog(Help(client))
+
+

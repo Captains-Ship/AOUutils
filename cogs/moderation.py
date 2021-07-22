@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+import json
 
 class Moderation(commands.Cog):
 
@@ -19,7 +19,7 @@ class Moderation(commands.Cog):
                     description=f'Purged {limit} message(s)',
                     colour=discord.Colour.red()
                 )
-                embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by: {ctx.message.author.name}')
+                embed.set_footer(icon_url=ctx.author.avatar.url, text=f'Requested by: {ctx.message.author.name}')
                 await ctx.send(embed=embed)
             else:
                 await ctx.reply('ah yes purge nothing')
@@ -100,5 +100,24 @@ class Moderation(commands.Cog):
         await member.remove_roles(mutedRole)
         he = discord.Embed(title="unmute", description=f" unmuted {member.mention}",colour=discord.Colour.blurple())
         await ctx.send(embed=he)
+
+
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def warn(self, ctx, member: discord.Member, *, reason):
+        with open('warns.json', 'r') as f:
+            warns = json.load(f)
+            try:
+                print(warns[str(member.id)])
+            except:
+                warns[str(member.id)] = {}
+                warns[str(member.id)]['']
+
+
+
+
+
+
 def setup(client):
     client.add_cog(Moderation(client))
