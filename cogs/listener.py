@@ -6,7 +6,7 @@ from discord.ext.commands import *
 import json
 from traceback import *
 import crayons
-
+from logger import logger
 
 class Listener(commands.Cog):
 
@@ -16,7 +16,7 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"{crayons.yellow('[AOUutils/listener/ready]')} AOUUtils is ready")
+        logger.info(f'Logged in as {self.client.user}. Good Morning.')
         chandler = self.client.get_channel(854333051852685333)
         await chandler.send('Bot is now up!')
         guild = self.client.get_guild(794950428756410429)
@@ -40,7 +40,7 @@ class Listener(commands.Cog):
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message, reason='Unspecified'):
-        print(f"{crayons.cyan('[AOUutils/listener/Flagger]')} A message was flagged!")
+        logger.info('A message was flagged!')
         member = message.author
         if message.guild.id == 794950428756410429:
             channel = self.client.get_channel(853191467941494784)
@@ -186,20 +186,17 @@ class Listener(commands.Cog):
             #            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
             await ctx.reply(f'Error!\n{error}')
             e = error
-            print(f"{crayons.red('[AOUutils/listener/Exception]')} An error was caught!")
-            print("".join(format_exception(e, e, e.__traceback__)))
+            logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
 
     @commands.command()
     @commands.is_owner()
     async def debugger(self, ctx):
-        if self.client.debug == False:
-            self.client.debug = True
-        else:
-            self.client.debug = False
+        self.client.debug = not self.client.debug
+        await ctx.send(f"toggled debug to {self.client.debug}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        print(f"{crayons.yellow('[AOUutils/listener/info]')} A member has joined AOU")
+        logger.info("a member has joined AOU")
         if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
             chandler = member.guild.get_channel(852186132111556690)
             await chandler.send(f'{member.mention} has been banned due to the keyword "h0nde"')
@@ -215,7 +212,7 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        print(f"{crayons.yellow('[AOUutils/listener/info]')} A member has left AOU")
+        logger.info("A member has left AOU")
         with open('memcount.json', 'r') as f:
             memcount = json.load(f)
             memcount['membercount'] = member.guild.member_count
@@ -225,8 +222,7 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if self.client.debug:
-            print(
-                f"{crayons.green('[AOUutils/listener/OnMessage]')} {message.author} ({message.author.id}) in #{message.channel.name}: \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
+            logger.info(f"{message.author} ({message.author.id}) in #{message.channel.name}: \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
 
 

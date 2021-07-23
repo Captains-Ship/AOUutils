@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
+from logger import logger
 class HelpUwU(commands.MinimalHelpCommand):
     async def send_pages(self):
         destination = self.get_destination()

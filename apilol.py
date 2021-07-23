@@ -4,7 +4,7 @@ from utility.utils import *
 import json
 from json import *
 import requests
-
+from logger import logger
 app = Flask('')
 
 

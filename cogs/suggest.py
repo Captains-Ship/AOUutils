@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 import urllib
-
+from logger import logger
 class Suggest(commands.Cog, name="Suggest"):
     def __init__(self, bot):
         self.bot = bot

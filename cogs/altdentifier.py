@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from utility.rules import rules
 import datetime
-
+from logger import logger
 class Altdentifier(commands.Cog):
 
     def __init__(self, client):

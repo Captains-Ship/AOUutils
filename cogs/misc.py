@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import datetime
 from utility.utils import *
-
+from logger import logger
 
 class Misc(commands.Cog):
 

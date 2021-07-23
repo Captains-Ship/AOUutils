@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random as r
 import json
+from logger import logger
 global ci
 
 ci = '✧'

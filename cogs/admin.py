@@ -4,7 +4,7 @@ import datetime
 from utility.utils import *
 from discord.ext.commands import *
 import os
-
+from logger import logger
 
 
 

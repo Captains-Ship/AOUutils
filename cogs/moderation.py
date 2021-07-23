@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import json
-
+from logger import logger
 class Moderation(commands.Cog):
 
     def __init__(self, client):

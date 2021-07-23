@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 #from utility.rules import rules, ruleshort
 import urllib.request, json
-
+from logger import logger
 
 class Rule(commands.Cog):
 

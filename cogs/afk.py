@@ -2,7 +2,7 @@ import discord
 import datetime
 from discord.ext import *
 import json
-
+from logger import logger
 
 class Afk(commands.Cog):
 
@@ -36,7 +36,7 @@ class Afk(commands.Cog):
             try:
                 print(afk[str(message.author.id)]['reason'])
                 del afk[str(message.author.id)]
-                return await message.channel.send(f'{message.author.mention} I have removed your afk.', delete_after=5)
+                await message.channel.send(f'{message.author.mention} I have removed your afk.', delete_after=5)
             except:
                 pass
                 for mention in message.mentions:
