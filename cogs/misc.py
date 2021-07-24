@@ -215,8 +215,8 @@ class Misc(commands.Cog):
             memberRole = ", ".join(mention)
             joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
             creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
-            memberIcon = member.avatar_url
-            authorIcon = ctx.message.author.avatar_url
+            memberIcon = member.avatar
+            authorIcon = ctx.message.author.avatar
             embed = discord.Embed(
                 title=f'{member.name}#{member.discriminator}',
                 description=f'ID: {member.id}',
