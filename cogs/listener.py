@@ -222,7 +222,7 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if self.client.debug:
-            logger.info(f"{message.author} ({message.author.id}) in #{message.channel.name}: \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
+            logger.info(f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
 
 
