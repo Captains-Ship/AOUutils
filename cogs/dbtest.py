@@ -17,6 +17,8 @@ def connect(path='config.db'):
         logger.error(str(e))
 
 
+
+
 class Dbtest(commands.Cog):
     def __init__(self, client):
         self.client = client

@@ -47,8 +47,11 @@ def error(text: str):
 
 
 def info(text: str):
-    print(f'{crayons.yellow(f"[AOUutils/info] {text}")}')
+    print(f'{crayons.green(f"[AOUutils/info] {text}")}')
 
 
 def debug(text: str):
     print(f'{crayons.cyan(f"[AOUutils/Debug] {text}")}')
+
+def warn(text: str):
+    print(f'{crayons.yellow(f"[AOUutils/Warn] {text}")}')

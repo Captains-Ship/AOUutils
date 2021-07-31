@@ -10,6 +10,7 @@ import crayons
 from buh.utils import Pag
 from logger import logger
 
+
 class Listener(commands.Cog):
 
     def __init__(self, client):
@@ -25,7 +26,7 @@ class Listener(commands.Cog):
         await self.client.change_presence(
             status=discord.Status.dnd,
             activity=discord.Activity(type=discord.ActivityType.watching,
-            name=f'AOU | {guild.member_count} members')
+                                      name=f'AOU | {guild.member_count} members')
         )
 
     @commands.Cog.listener()
@@ -34,7 +35,7 @@ class Listener(commands.Cog):
         await self.client.change_presence(
             status=discord.Status.dnd,
             activity=discord.Activity(type=discord.ActivityType.watching,
-            name=f'AOU | {guild.member_count} members')
+                                      name=f'AOU | {guild.member_count} members')
         )
 
     @commands.Cog.listener()
@@ -43,7 +44,7 @@ class Listener(commands.Cog):
         await self.client.change_presence(
             status=discord.Status.dnd,
             activity=discord.Activity(type=discord.ActivityType.watching,
-            name=f'AOU | {guild.member_count} members')
+                                      name=f'AOU | {guild.member_count} members')
         )
 
     # flags a message for steam scam
@@ -54,7 +55,7 @@ class Listener(commands.Cog):
             channel = self.client.get_channel(853191467941494784)
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
-                description=f'{member} sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} {reason}```',
+                description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} {reason}```',
                 colour=discord.Colour.red()
             )
             await message.delete()
@@ -73,24 +74,37 @@ class Listener(commands.Cog):
             except:
                 pass
         try:
-            role = message.guild.get_role(795034661805359134)
+            moderator = message.guild.get_role(795034661805359134)
             admin = message.guild.get_role(849669487783444490)
         except:
             admin = 'h'
-            role = 'h'
-        if "discords.gifts" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+            moderator = 'h'
+        if "discords.gifts" in message.content.lower() and not moderator in message.author.roles or "t.ru" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Nitro scam')
-        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles or "cs:go" in message.content.lower().replace(' ', '') and not role in message.author.roles and not admin in message.author.roles:
+        if "cs:go" in message.content.lower() and not moderator in message.author.roles or "csgo" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles or "cs:go" in message.content.lower().replace(
+                ' ', '') and not moderator in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Steam Scam')
-        if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+        if "y.ru" in message.content.lower() and not moderator in message.author.roles or "t.ru" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Steam Scam')
-        if "steancomunnity" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+        if "steancomunnity" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Steam Scam')
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply(
                 'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
-        if "discord-gifts.us" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+        if "discord-gifts.us" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason="Nitro Scam")
+        steam_scams = [
+            'steancomunnity',
+            'y.ru',
+            'cs:go',
+            'csgo',
+            't.ru'
+        ]
+        for word in steam_scams:
+            if word in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
+                await self.flag(message, reason='Steam Scam')
+                return
+
         """
         elif isinstance(error, commands.CommandNotFound):
             embed = discord.Embed(
@@ -207,9 +221,11 @@ class Listener(commands.Cog):
             e = error
             logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
             h = "".join(format_exception(e, e, e.__traceback__))
-            pager = Pag(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1, prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
+            pager = Pag(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
+                        prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
             await pager.start(ctx)
+
     @commands.command()
     @commands.is_owner()
     async def debugger(self, ctx):
@@ -244,9 +260,8 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if self.client.debug:
-            logger.info(f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
-
-
+            logger.info(
+                f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
 
 def setup(client):

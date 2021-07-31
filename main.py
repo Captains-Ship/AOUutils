@@ -46,10 +46,6 @@ client = commands.AutoShardedBot(
 )
 client.debug = False
 
-
-
-
-
 # client.remove_command('help')
 bot = client
 
@@ -100,8 +96,16 @@ async def reloadextension(ctx, extension):
 
 bot.load_extension('jishaku')
 # client.load_extension('jishaku')
-for filename in os.listdir('.\cogs'):
+for filename in os.listdir(r'.\cogs'):
     if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
+        try:
+            client.load_extension(f'cogs.{filename[:-3]}')
+        except Exception as e:
+            logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")
+
 config = getconfig()
-client.run(config['tokens']['discord'])
+try:
+    client.run(config['tokens']['discord'])
+except:
+    while True:
+        pass

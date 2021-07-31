@@ -57,7 +57,7 @@
     },
     "Dev's Badge": {
         "price": -1,
-        "description": "This badge, only obtainable by the developers, is a confirmation they are trusted. You should always report bugs in the bot infront of these people."
+        "description": "This badge, only obtainable by the developers, is a confirmation they are trusted. You should always report bugs in the bot to one of these people."
     },
     "Bingus": {
         "price": 177700,
