@@ -3,12 +3,12 @@ from discord.ext import commands
 from utility.rules import rules
 import datetime
 from logger import logger
+
+
 class Altdentifier(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-
-
 
     global inverif, leaveduringinverif
     inverif = []
@@ -19,8 +19,6 @@ class Altdentifier(commands.Cog):
 
     async def verifymom(self, member):
         inverif.append(member)
-    
-
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
@@ -51,15 +49,11 @@ class Altdentifier(commands.Cog):
                 inverif.append(member.id)
                 leaveduringverif.remove(member.id)
 
-
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         if member.id in inverif:
             inverif.remove(member.id)
             leaveduringverif.append(member.id)
-    
-
-
 
 
 def setup(client):

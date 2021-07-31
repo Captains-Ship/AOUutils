@@ -6,6 +6,8 @@ from discord.ext.commands import *
 import json
 from traceback import *
 import crayons
+
+from buh.utils import Pag
 from logger import logger
 
 class Listener(commands.Cog):
@@ -20,23 +22,29 @@ class Listener(commands.Cog):
         chandler = self.client.get_channel(854333051852685333)
         await chandler.send('Bot is now up!')
         guild = self.client.get_guild(794950428756410429)
-        await self.client.change_presence(status=discord.Status.dnd,
-                                          activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                    name=f'AOU | {guild.member_count} members'))
+        await self.client.change_presence(
+            status=discord.Status.dnd,
+            activity=discord.Activity(type=discord.ActivityType.watching,
+            name=f'AOU | {guild.member_count} members')
+        )
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         guild = self.client.get_guild(794950428756410429)
-        await self.client.change_presence(status=discord.Status.dnd,
-                                          activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                    name=f'AOU | {guild.member_count} members'))
+        await self.client.change_presence(
+            status=discord.Status.dnd,
+            activity=discord.Activity(type=discord.ActivityType.watching,
+            name=f'AOU | {guild.member_count} members')
+        )
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         guild = self.client.get_guild(794950428756410429)
-        await self.client.change_presence(status=discord.Status.dnd,
-                                          activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                    name=f'AOU | {guild.member_count} members'))
+        await self.client.change_presence(
+            status=discord.Status.dnd,
+            activity=discord.Activity(type=discord.ActivityType.watching,
+            name=f'AOU | {guild.member_count} members')
+        )
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message, reason='Unspecified'):
@@ -53,8 +61,8 @@ class Listener(commands.Cog):
             await channel.send(embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
+    @commands.Cog.listener('on_message')
+    async def boohoo(self, message):
         if message.author.bot:
             return
         if self.client.http.token in message.content:
@@ -68,8 +76,11 @@ class Listener(commands.Cog):
             role = message.guild.get_role(795034661805359134)
             admin = message.guild.get_role(849669487783444490)
         except:
-            pass
-        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+            admin = 'h'
+            role = 'h'
+        if "discords.gifts" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
+            await self.flag(message, reason='Nitro scam')
+        if "cs:go" in message.content.lower() and not role in message.author.roles or "csgo" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles or "cs:go" in message.content.lower().replace(' ', '') and not role in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Steam Scam')
         if "y.ru" in message.content.lower() and not role in message.author.roles or "t.ru" in message.content.lower() and not role in message.author.roles and not admin in message.author.roles:
             await self.flag(message, reason='Steam Scam')
@@ -133,8 +144,13 @@ class Listener(commands.Cog):
                                     s2 = s3.split('.')
                                     s = s2[0]
                                     m = timelol[1]
-                                    await ctx.send(
-                                        f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
+                                    if str(m) != "0":
+                                        await ctx.send(
+                                            f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
+                                    else:
+                                        await ctx.send(
+                                            f'This command is on cooldown. {s} seconds.')
+
                                 else:
                                     await ctx.reinvoke()
                         except:
@@ -148,13 +164,14 @@ class Listener(commands.Cog):
                         s = s2[0]
                         m = timelol[1]
                         await ctx.send(
-                            f'Error 429: You are being ratelimited. \nPlease wait {m} minutes and {s} seconds.')
+                            f'Error 429: You are being ratelimited. \nTry in a few minutes. # Please wait {m} minutes and {s} seconds.')
                 else:
                     if ctx.command.name.lower() != 'jishaku':
                         if str(ctx.command.cog).lower() != 'admin':
                             await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
             h = ctx.message.content.replace(ctx.prefix, '').split()[0]
+            ah = ctx.invoked_with
             embed = discord.Embed(
                 title=f'Unknown Command "{h}"',
                 description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
@@ -180,14 +197,19 @@ class Listener(commands.Cog):
         elif ctx.command.name.lower() == 'purge':
             if not isinstance(error, MissingPermissions):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(f'missing argument(s) `{error.param}`')
         elif isinstance(error, OverflowError):
             await ctx.send('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
         else:
             #            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
-            await ctx.reply(f'Error!\n{error}')
+            # await ctx.reply(f'Error!\n{error}')
             e = error
             logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
+            h = "".join(format_exception(e, e, e.__traceback__))
+            pager = Pag(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1, prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
+            await pager.start(ctx)
     @commands.command()
     @commands.is_owner()
     async def debugger(self, ctx):

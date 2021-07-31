@@ -5,6 +5,7 @@ import json
 from json import *
 import requests
 from logger import logger
+
 app = Flask('')
 
 
@@ -50,6 +51,11 @@ async def osdughfdsig():
     with open('cur.json', 'r') as f:
         cur = json.load(f)
         return cur
+
+
+@app.errorhandler(404)
+async def _404(h=None):
+    return render_template('404.html')
 
 
 @app.route('/api/latest')

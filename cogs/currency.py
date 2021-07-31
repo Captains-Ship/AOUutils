@@ -3,6 +3,7 @@ from discord.ext import commands
 import random as r
 import json
 from logger import logger
+
 global ci
 
 ci = '✧'
@@ -17,13 +18,11 @@ class Currency(commands.Cog):
         async def predicate(ctx):
             devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627]
             return ctx.author.id in devs
+
         return commands.check(predicate)
 
-
-
-
     @commands.command()
-    async def bal(self, ctx, member: discord.Member=None):
+    async def bal(self, ctx, member: discord.Member = None):
         member = member or ctx.author
         try:
             with open('cur.json', 'r') as f:
@@ -43,7 +42,6 @@ class Currency(commands.Cog):
                 await ctx.send('You do not have an account yet. Create one with `aou start`.')
             else:
                 await ctx.send(f'{member.name} does not have an account yet.')
-
 
     @commands.command()
     async def start(self, ctx):
@@ -76,12 +74,12 @@ class Currency(commands.Cog):
                 theitem = f'**{key}**: {amount}\n'
                 inventory = inventory + theitem
         embed = discord.Embed(
-            title = 'Inventory',
-            description = inventory,
-            colour = discord.Colour.red()
+            title='Inventory',
+            description=inventory,
+            colour=discord.Colour.red()
         )
         embed.set_footer(text=f'{ctx.author}\'s Inventory')
-        await ctx.send(embed=embed)    
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def shop(self, ctx, *, item=None):
@@ -102,7 +100,7 @@ class Currency(commands.Cog):
                                 afford = afford + f"\n**{key}** ({price}{ci})"
             embed = discord.Embed(
                 title='The Shop',
-                colour = discord.Colour.red()
+                colour=discord.Colour.red()
             )
             afford = afford.replace(', , ', '')
             affordnt = affordnt.replace(', , ', '')
@@ -125,9 +123,9 @@ class Currency(commands.Cog):
                             price = item['price']
                             desc = item['description']
                             embed = discord.Embed(
-                                title = 'The Shop',
-                                description = f'**{key}**',
-                                colour = discord.Colour.red()
+                                title='The Shop',
+                                description=f'**{key}**',
+                                colour=discord.Colour.red()
                             ).add_field(
                                 name='Price',
                                 value=f'{price}{ci}'
@@ -142,9 +140,9 @@ class Currency(commands.Cog):
                             price = item['price']
                             desc = item['description']
                             embed = discord.Embed(
-                                title = 'The Shop',
-                                description = f'**{key}**',
-                                colour = discord.Colour.red()
+                                title='The Shop',
+                                description=f'**{key}**',
+                                colour=discord.Colour.red()
                             ).add_field(
                                 name='Price',
                                 value=f'{price}{ci}'
@@ -157,11 +155,6 @@ class Currency(commands.Cog):
             except KeyError:
                 await ctx.send('Not a valid shop item.')
             await ctx.send('Not a valid shop item.')
-                
-
-
-
-
 
     @commands.command()
     @commands.cooldown(1, 3600, type=discord.ext.commands.BucketType.user)
@@ -172,7 +165,7 @@ class Currency(commands.Cog):
                 usersmoneye = money[str(ctx.author.id)]
                 usersmoneyee = usersmoneye['wallet']
                 usersmoney = int(usersmoneyee)
-                inte = r.randrange(3000, 6000, 2)
+                gained = r.randrange(3000, 6000, 2)
                 h = ['true', 'false', 'false']
                 global fail
                 fail = r.choice(h)
@@ -180,43 +173,44 @@ class Currency(commands.Cog):
                     fail = True
                 else:
                     fail = False
-                if fail == False:
-                    inte = r.randrange(7000, 12000, 2)
-                    usersmoney = usersmoney + inte
+                if not fail:
+                    gained = r.randrange(7000, 12000, 2)
+                    usersmoney = usersmoney + gained
                     money[str(ctx.author.id)]['wallet'] = usersmoney
-                elif fail == True:
-                    inte = r.randrange(3000, 6000, 2)
-                    usersmoney = usersmoney + inte
+                elif fail:
+                    gained = r.randrange(3000, 6000, 2)
+                    usersmoney = usersmoney + gained
                     money[str(ctx.author.id)]['wallet'] = usersmoney
 
                 with open('cur.json', 'w') as f:
                     json.dump(money, f, indent=4)
                     replieswin = [
-                        f'You made a mod for minecraft and was paid {inte}{ci} by Captain',
-                        f'You revived AOU for a few seconds and got paid {inte}{ci} by Heapons',
-                        f'Toasty paid you {inte}{ci} for coding in JavaScript',
-                        f'Captain paid you {inte}{ci} for coding in python',
-                        f'You worked at the bank and stole {inte}{ci} while you were there',
-                        f'Robin ran past you at work and gave you {inte}{ci}',
-                        f'Arawn paid you {inte}{ci} for an among us mod',
-                        f'You walked home with Arawn Pierer, they paid you {inte}{ci} for keeping them safe on their way home',
-                        f'You playtested Arawn Pierers game and found {r.randrange(2, 50, 2)} bugs and Arawn Pierer paid you {inte}{ci}',
-                        f'You helped making AOU work on mobile and was paid {inte}{ci} by Angxl',
-                        f'You invested in Bitro and got {inte}{ci} extra',
-                        f'You played dimensionsSMP and someone gave you {r.randrange(1, 5, 2)} diamonds and you made that into {inte}{ci}',
-                        f'You hacked AOUutils and gave yourself {inte}{ci}',
-                        f'You said piss and Amaan gave you {inte}{ci}'
+                        f'You made a mod for minecraft and was paid {gained}{ci} by Captain',
+                        f'You revived AOU for a few seconds and got paid {gained}{ci} by Heapons',
+                        f'Toasty paid you {gained}{ci} for coding in JavaScript',
+                        f'Captain paid you {gained}{ci} for coding in python',
+                        f'You worked at the bank and stole {gained}{ci} while you were there',
+                        f'Robin ran past you at work and gave you {gained}{ci}',
+                        f'Arawn paid you {gained}{ci} for an among us mod',
+                        f'You walked home with Arawn Pierer, they paid you {gained}{ci} for keeping them safe on their way home',
+                        f'You playtested Arawn Pierers game and found {r.randrange(2, 50, 2)} bugs and Arawn Pierer paid you {gained}{ci}',
+                        f'You helped making AOU work on mobile and was paid {gained}{ci} by Angxl',
+                        f'You invested in Bitro and got {gained}{ci} extra',
+                        f'You played dimensionsSMP and someone gave you {r.randrange(1, 5, 2)} diamonds and you made that into {gained}{ci}',
+                        f'You hacked AOUutils and gave yourself {gained}{ci}',
+                        f'You said piss and Amaan gave you {gained}{ci}',
+                        f'You recorded a train and Norway gave you {gained}{ci}'
                     ]
                     repliesloss = [
-                        f'You tried to steal money while working at the bank but never got an opportunity to. you were paid {inte}{ci} for an hour of work',
-                        f'You were going to work but was beat up on the way there, you got {inte}{ci} for working an hour.',
-                        f':) {inte}{ci}',
-                        f'You burnt the toast at work and was sent home early. You gained {inte}{ci}',
-                        f'You tried to training a pikachu in the Hidden Leaf Village but it didn\'t learn a thing. Paid {inte}{ci} for poor work',
-                        f'You got lost while sailing a cruise ship, and was paid {inte}{ci} for a bad 6 days of work',
-                        f'You dropped a spoon and was sent home. You got {inte}{ci}',
-                        f'I Agree disagreed with you. You got {inte}{ci} for a bad day of work',
-                        f'XtraCube banned you with XtraCute and you were paid {inte}{ci} for a bad day of work.'
+                        f'You tried to steal money while working at the bank but never got an opportunity to. you were paid {gained}{ci} for an hour of work',
+                        f'You were going to work but was beat up on the way there, you got {gained}{ci} for working an hour.',
+                        f':) {gained}{ci}',
+                        f'You burnt the toast at work and was sent home early. You gained {gained}{ci}',
+                        f'You tried to training a pikachu in the Hidden Leaf Village but it didn\'t learn a thing. Paid {gained}{ci} for poor work',
+                        f'You got lost while sailing a cruise ship, and was paid {gained}{ci} for a bad 6 days of work',
+                        f'You dropped a spoon and was sent home. You got {gained}{ci}',
+                        f'I Agree disagreed with you. You got {gained}{ci} for a bad day of work',
+                        f'XtraCube banned you with XtraCute and you were paid {gained}{ci} for a bad day of work.'
                     ]
                     if fail == True:
                         await ctx.reply(r.choice(repliesloss))
@@ -224,10 +218,9 @@ class Currency(commands.Cog):
                         await ctx.reply(r.choice(replieswin))
         except KeyError:
             await ctx.reply('You do not yet have an account, create one with `aou start`')
-    
 
     @commands.command(aliases=['dep'])
-    async def deposit(self, ctx, *, amount: int=0):
+    async def deposit(self, ctx, *, amount: int = 0):
         if amount > 0:
             with open('cur.json', 'r') as f:
                 money = json.load(f)
@@ -245,7 +238,7 @@ class Currency(commands.Cog):
             await ctx.send('Dont try to break me!')
 
     @commands.command(aliases=['with'])
-    async def withdraw(self, ctx, *, amount: int=0):
+    async def withdraw(self, ctx, *, amount: int = 0):
         if amount > 0:
             with open('cur.json', 'r') as f:
                 money = json.load(f)
@@ -263,7 +256,7 @@ class Currency(commands.Cog):
             await ctx.send('Dont try to break me!')
 
     @commands.command()
-    async def give(self, ctx, user: discord.Member=None, amount: int=0):
+    async def give(self, ctx, user: discord.Member = None, amount: int = 0):
         if user != None and user != ctx.author:
             if amount > 0:
                 with open('cur.json', 'r') as f:
@@ -284,17 +277,20 @@ class Currency(commands.Cog):
                 await ctx.send('dont try to break me')
         else:
             await ctx.send('Please enter a user, if you did enter a user make sure it isnt you.')
-"""
+
+
+
+    from utility.utils import getconfig
     @commands.command()
     @dev()
     async def beg(self, ctx):
-        with open('cur.json', 'r') as f:
-            cur = json.load(f)
-            try:
-                monehr.randrange(7000, 12000, 2)
-"""
+        cur = getconfig('cur')
+
+
 """
     #1️⃣2️⃣3️⃣4️⃣5️⃣
 """
+
+
 def setup(client):
     client.add_cog(Currency(client))

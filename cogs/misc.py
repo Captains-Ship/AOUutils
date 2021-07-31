@@ -211,7 +211,7 @@ class Misc(commands.Cog):
             for role in member.roles:
                 if role.name != "@everyone":
                     mention.append(role.mention)
-
+            mention.reverse()
             memberRole = ", ".join(mention)
             joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
             creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")

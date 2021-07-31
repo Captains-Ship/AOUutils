@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import json
 from logger import logger
+
+
 class Moderation(commands.Cog):
 
     def __init__(self, client):
@@ -10,7 +12,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, limit: int=0):
+    async def purge(self, ctx, limit: int = 0):
         if limit < 301:
             if limit > 0:
                 await ctx.channel.purge(limit=limit + 1)
@@ -25,12 +27,10 @@ class Moderation(commands.Cog):
                 await ctx.reply('ah yes purge nothing')
         else:
             await ctx.reply('Max to purge is `300`')
-    
-
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member=None, *,  reason=None):
+    async def ban(self, ctx, member: discord.Member = None, *, reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
                 if ctx.author.top_role > member.top_role:
@@ -50,7 +50,7 @@ class Moderation(commands.Cog):
                     except discord.Forbidden:
                         await ctx.send('above my top role, cant ban')
                 else:
-                    await ctx.reply('**role hierachy moment**')
+                    await ctx.reply('**role hierarchy moment**')
             else:
                 await ctx.send('http://bit.ly/launchpadbanappeal')
         else:
@@ -58,7 +58,12 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member: discord.Member=None, *, reason=None):
+    async def kick(self, ctx, member: discord.Member = None, *, reason=None):
+        embed = discord.Embed(
+            title='You were kicked from All Of Us',
+            description=f'Reason:\n{reason}',
+            colour=discord.Colour.red()
+        )
         if member != None:
             if ctx.author.top_role > member.top_role:
                 try:
@@ -68,9 +73,7 @@ class Moderation(commands.Cog):
                 except commands.discordForbidden:
                     await ctx.reply('their role is above mine')
             else:
-                await ctx.reply('**role hierachy moment**')
-
-
+                await ctx.reply('**role hierarchy moment**')
 
     @commands.command()
     @commands.has_permissions(manage_roles=True)
@@ -83,14 +86,15 @@ class Moderation(commands.Cog):
                 mutedRole = await guild.create_role(name="🔇 Muted")
 
                 for channel in guild.channels:
-                    await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
+                    await channel.set_permissions(mutedRole, speak=False, send_messages=False,
+                                                  read_message_history=True, read_messages=False)
             eh = discord.Embed(title="muted", description=f"{member.mention} was muted ", colour=discord.Colour.red())
             eh.add_field(name="reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
             await member.add_roles(mutedRole, reason=reason)
             await member.send(f" you have been muted from: {guild.name} reason: {reason}")
         else:
-            await ctx.send('**role hierachy moment**')
+            await ctx.send('**role hierarchy moment**')
 
     @commands.command(description="Unmutes a specified user.")
     @commands.has_permissions(manage_roles=True)
@@ -98,10 +102,8 @@ class Moderation(commands.Cog):
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
 
         await member.remove_roles(mutedRole)
-        he = discord.Embed(title="unmute", description=f" unmuted {member.mention}",colour=discord.Colour.blurple())
+        he = discord.Embed(title="unmute", description=f" unmuted {member.mention}", colour=discord.Colour.blurple())
         await ctx.send(embed=he)
-
-
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -113,10 +115,6 @@ class Moderation(commands.Cog):
             except:
                 warns[str(member.id)] = {}
                 warns[str(member.id)]['']
-
-
-
-
 
 
 def setup(client):

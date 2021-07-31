@@ -14,8 +14,18 @@ class Tags(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def whoasked(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/848185124037460070/870343946910466098/unknown.png')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def man(self, ctx):
         await ctx.send('https://media.discordapp.net/attachments/842450788998578236/851472289542307870/unknown.png')
+
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def iasked(self, ctx):
+        await ctx.send('https://cdn.discordapp.com/attachments/848185124037460070/870343552503267368/9dc7ec449dd253e92b676d12e3df882013afe91b4cffa144d21133888a4c5390_3.png')
 
     @commands.command(aliases=['oldtimes', 'old'])
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
