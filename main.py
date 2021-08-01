@@ -36,8 +36,6 @@ class AOUbot(commands.Bot):
         return devs
 
 
-
-
 async def get_pre(client, message):
     if not message.guild:
         return ''
@@ -127,4 +125,3 @@ for filename in os.listdir(r'.\cogs'):
 config = getconfig()
 
 client.run(config['tokens']['discord'])
-
