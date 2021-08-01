@@ -17,6 +17,14 @@ from utility.utils import getconfig
 start()
 
 
+class AOUbot(commands.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_aou(self):
+        return self.get_guild(794950428756410429)
+
+
 async def get_pre(client, message):
     if not message.guild:
         return ''
@@ -25,12 +33,12 @@ async def get_pre(client, message):
             prefixes = json.load(f)
             try:
                 h = prefixes[str(message.author.id)]
-                return commands.when_mentioned_or(prefixes[str(message.author.id)])(bot, message)
+                return commands.when_mentioned_or(prefixes[str(message.author.id)])(client, message)
             except KeyError:
-                return commands.when_mentioned_or('aou ', 'aou')(bot, message)
+                return commands.when_mentioned_or('aou ', 'aou')(client, message)
 
 
-client = commands.AutoShardedBot(
+client = AOUbot(
     command_prefix=get_pre,
     case_insensitive=True,
     status=discord.Status.dnd,
@@ -104,8 +112,6 @@ for filename in os.listdir(r'.\cogs'):
             logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")
 
 config = getconfig()
-try:
-    client.run(config['tokens']['discord'])
-except:
-    while True:
-        pass
+
+client.run(config['tokens']['discord'])
+
