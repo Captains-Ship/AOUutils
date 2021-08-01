@@ -24,6 +24,19 @@ class AOUbot(commands.Bot):
     def get_aou(self):
         return self.get_guild(794950428756410429)
 
+    def get_dev_server(self):
+        return self.get_guild(850668209148395520)
+
+    def get_bot_devs(self):
+        devrole = self.get_dev_server().get_role(866618255917580309)
+        devs = []
+        for member in self.get_dev_server().members:
+            if devrole in member.roles:
+                devs.append(member.id)
+        return devs
+
+
+
 
 async def get_pre(client, message):
     if not message.guild:
