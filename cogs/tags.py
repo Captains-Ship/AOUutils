@@ -214,16 +214,16 @@ class Tags(commands.Cog):
     @commands.command(name='api')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def apimembercount(self, ctx, *, endpoint=None):
-        if endpoint != None:
+        if endpoint is not None:
             try:
-                with urllib.request.urlopen(f"http://127.0.0.1:8080/api/{endpoint}") as url:
+                with urllib.request.urlopen(f"http://127.0.0.1:22023/api/v1/{endpoint}") as url:
                     data = url.read().decode()
                     await ctx.send(f'```json\n{data}```')
 
             except Exception as e:
                 await ctx.send(e)      
         else:
-            await ctx.send('List of API\'s:\n\nMembercount')  
+            await ctx.send('bruh')
     
 
 

@@ -14,6 +14,11 @@ def owo():
     return render_template('main.html')
 
 
+@app.route('/api')
+def getapiversions():
+    return "latest: v1"
+
+
 @app.route('/api/v1')
 def main():
     return render_template('index.html')
@@ -76,7 +81,7 @@ async def getlatestaou():
 
 
 def run():
-    app.run(host="127.0.0.1", port=8080)
+    app.run(host="127.0.0.1", port=22023)
 
 
 def start():

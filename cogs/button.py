@@ -7,7 +7,6 @@ import random
 from logger import logger
 
 
-
 class Confirm(discord.ui.View):
     def __init__(self, ctx):
         super().__init__()
@@ -72,7 +71,7 @@ class Poll(discord.ui.View):
     async def end(self, button: discord.ui.Button, interaction: discord.Interaction):
         if str(interaction.user.id) != str(self.ctx.author.id):
             return await interaction.response.send_message('You arent the creator of this poll!', ephemeral=True)
-        embed=discord.Embed(
+        embed = discord.Embed(
             title='Results'
         )
         embed.add_field(name='People agreeing:', value=f'{len(self.yes)} agreed', inline=True)
@@ -81,16 +80,29 @@ class Poll(discord.ui.View):
         await interaction.message.edit(view=None, content='Poll Ended!')
         await self.ctx.send(embed=embed)
 
+
 class Nitro(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.value = None
 
-    @discord.ui.button(label="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ACCEPT⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", style=discord.ButtonStyle.green, custom_id='nitro button')
+    @discord.ui.button(label="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ACCEPT⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", style=discord.ButtonStyle.green)
     async def accept(self, button: discord.ui.Button, interaction: discord.Interaction):
         await interaction.response.send_message('https://tenor.com/view/dance-moves-dancing-singer-groovy-gif-17029825',
                                                 ephemeral=True)
         print(f'lmao {interaction.user} got trolled')
+
+
+class Select(discord.ui.view):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    h = [discord.SelectOption(value='milk', label='milk'), discord.SelectOption(value='water', label='water')]
+
+    @discord.ui.select(placeholder="Pick one!", min_values=1, max_values=1, options=h)
+    async def select(self, select: discord.ui.Select, interaction: discord.Interaction):
+        await interaction.response.send_message(interaction.data.values())
 
 
 class Button(commands.Cog):
@@ -99,11 +111,16 @@ class Button(commands.Cog):
         self.client = client
 
     @commands.command()
+    async def select(self, ctx):
+        select = Select()
+        await ctx.reply('h', view=select)
+
+    @commands.command()
     async def poll(self, ctx, *, question=None):
         if not question:
             return await ctx.reply('nice question!')
         poller = Poll(ctx)
-        embed=discord.Embed(
+        embed = discord.Embed(
             title='Poll',
             description=question
         )

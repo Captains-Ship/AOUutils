@@ -62,6 +62,15 @@ class Listener(commands.Cog):
             await channel.send(embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
+    async def checker(self, message: discord.Message, admin, moderator, word: str):
+        if moderator in message.author.roles:
+            return False
+        if admin in message.author.roles:
+            return False
+        if word in message.content.lower():
+            return True
+        return False
+
     @commands.Cog.listener('on_message')
     async def boohoo(self, message):
         if message.author.bot:
@@ -79,20 +88,10 @@ class Listener(commands.Cog):
         except:
             admin = 'h'
             moderator = 'h'
-        if "discords.gifts" in message.content.lower() and not moderator in message.author.roles or "t.ru" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
-            await self.flag(message, reason='Nitro scam')
-        if "cs:go" in message.content.lower() and not moderator in message.author.roles or "csgo" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles or "cs:go" in message.content.lower().replace(
-                ' ', '') and not moderator in message.author.roles and not admin in message.author.roles:
-            await self.flag(message, reason='Steam Scam')
-        if "y.ru" in message.content.lower() and not moderator in message.author.roles or "t.ru" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
-            await self.flag(message, reason='Steam Scam')
-        if "steancomunnity" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
-            await self.flag(message, reason='Steam Scam')
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply(
                 'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
-        if "discord-gifts.us" in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
-            await self.flag(message, reason="Nitro Scam")
+
         steam_scams = [
             'steancomunnity',
             'y.ru',
@@ -100,9 +99,17 @@ class Listener(commands.Cog):
             'csgo',
             't.ru'
         ]
+        discord_scams = [
+            'discord-gifts.us',
+            'discords.gifts'
+        ]
         for word in steam_scams:
-            if word in message.content.lower() and not moderator in message.author.roles and not admin in message.author.roles:
+            if await self.checker(message, admin, moderator, word) is True:
                 await self.flag(message, reason='Steam Scam')
+                return
+        for word in discord_scams:
+            if await self.checker(message, admin, moderator, word) is True:
+                await self.flag(message, reason='Nitro Scam')
                 return
 
         """
@@ -178,7 +185,7 @@ class Listener(commands.Cog):
                         s = s2[0]
                         m = timelol[1]
                         await ctx.send(
-                            f'Error 429: You are being ratelimited. \nTry in a few minutes. # Please wait {m} minutes and {s} seconds.')
+                            f'Error 429: You are being ratelimited. \nTry in a few minutes.')  # Please wait {m} minutes and {s} seconds.')
                 else:
                     if ctx.command.name.lower() != 'jishaku':
                         if str(ctx.command.cog).lower() != 'admin':
@@ -213,14 +220,18 @@ class Listener(commands.Cog):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'missing argument(s) `{error.param}`')
-        elif isinstance(error, OverflowError):
-            await ctx.send('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        elif isinstance(error, commands.CommandInvokeError):
+            error = getattr(error, 'original', error)
+            if isinstance(error, ValueError):
+                print(error.args)
         else:
-            #            await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
-            # await ctx.reply(f'Error!\n{error}')
+            # await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
+            await ctx.reply(f'Error!\n{error}')
             e = error
             logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
             h = "".join(format_exception(e, e, e.__traceback__))
+            if ctx.author.id not in self.client.get_bot_devs():
+                return
             pager = Pag(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
                         prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 

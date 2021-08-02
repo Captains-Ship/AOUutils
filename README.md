@@ -8,15 +8,8 @@
 - run the bot
 
 ## Running
-- create a file called `config.json` and put the following inside it: 
-```json
-  {
-    "tokens": {
-        "discord": "token"
-    },
-    "blacklist": []
-}
-```
+- Run the file called `setup.bat` for first time launches.
+
 - now run the bot, you may use the run button
   
 ![the run button](https://cdn.discordapp.com/attachments/867110109733847120/867757152546062356/54ZcU6Z3y.png)

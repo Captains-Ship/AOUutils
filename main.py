@@ -67,7 +67,7 @@ client.debug = False
 
 # client.remove_command('help')
 bot = client
-
+AOUclient = client
 
 @client.command()
 async def prefix(ctx, *, prefix='aou'):
