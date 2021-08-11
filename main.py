@@ -16,13 +16,22 @@ from utility.utils import getconfig
 
 start()
 
+# TODO: Un-hardcode all the "all of us" scattered throughout the code.
+#  -this includes commands
 
-class AOUbot(commands.Bot):
+
+class AOUbot(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def get_aou(self):
         return self.get_guild(794950428756410429)
+
+    def get_moderator(self):
+        return self.get_aou().get_role(795034661805359134)
+
+    def get_admin(self):
+        return self.get_aou().get_role(849669487783444490)
 
     def get_dev_server(self):
         return self.get_guild(850668209148395520)
@@ -123,5 +132,7 @@ for filename in os.listdir(r'.\cogs'):
             logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")
 
 config = getconfig()
-
-client.run(config['tokens']['discord'])
+if config['beta'] == "true":
+    client.run(config['tokens']['beta-bot'])
+else:
+    client.run(config['tokens']['discord'])

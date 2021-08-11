@@ -218,6 +218,10 @@ class Tags(commands.Cog):
             try:
                 with urllib.request.urlopen(f"http://127.0.0.1:22023/api/v1/{endpoint}") as url:
                     data = url.read().decode()
+                    with open('./templates/404.html') as f:
+                        h = f.read()
+                        if str(data) == str(h):
+                            raise Exception('404 NOT FOUND')
                     await ctx.send(f'```json\n{data}```')
 
             except Exception as e:

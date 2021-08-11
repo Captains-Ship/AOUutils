@@ -1,8 +1,12 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 import datetime
 
 from discord.ext.buttons import Paginator
+from discord.ext.commands import CommandError
+
 from logger import logger
 
 
@@ -18,12 +22,16 @@ class HelpUwU(commands.MinimalHelpCommand):
             f"You can also use `{self.context.clean_prefix}{command_name} [category]` for more info on a category. (CASE SENSITIVE)"
         )
 
+    async def on_help_command_error(self, ctx, error):
+        await ctx.send(error)
+
     def add_bot_commands_formatting(self, commands, heading):
         if commands:
-            # U+2002 Middle Dot
+            # U+2002 Middle
             joined = ', '.join(c.name for c in commands)
             self.paginator.add_line(f'__**{heading}**__')
             self.paginator.add_line(joined)
+            self.filter_commands(commands)
 
     async def send_pages(self):
         destination = self.get_destination()
@@ -42,8 +50,38 @@ class HelpUwU(commands.MinimalHelpCommand):
         return """Bot Provided by the AOUutils Team.  
                   EnderB0YHD, Toasty, GingerGigiCat, Captain."""
 
+    async def filter_commands(self, commands, *, sort=False, key=None):
+        if sort and key is None:
+            key = lambda c: c.name
+
+        iterator = commands if self.show_hidden else filter(lambda c: not c.hidden, commands)
+
+        if self.verify_checks is False:
+            return sorted(iterator, key=key) if sort else list(iterator)
+
+        if self.verify_checks is None and not self.context.guild:
+            return sorted(iterator, key=key) if sort else list(iterator)
+
+        async def predicate(cmd):
+            try:
+                return await cmd.can_run(self.context)
+            except CommandError:
+                return False
+
+        ret = []
+        for cmd in iterator:
+            valid = await predicate(cmd)
+            if valid:
+                ret.append(cmd)
+
+        if sort:
+            ret.sort(key=key)
+        return ret
+
 
 class Help(commands.Cog):
+
+
 
     def __init__(self, client):
         attributes = {

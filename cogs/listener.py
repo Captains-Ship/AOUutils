@@ -62,10 +62,10 @@ class Listener(commands.Cog):
             await channel.send(embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
-    async def checker(self, message: discord.Message, admin, moderator, word: str):
-        if moderator in message.author.roles:
+    async def checker(self, message: discord.Message, word: str):
+        if self.client.get_moderator() in message.author.roles:
             return False
-        if admin in message.author.roles:
+        if self.client.get_admin() in message.author.roles:
             return False
         if word in message.content.lower():
             return True
@@ -104,11 +104,11 @@ class Listener(commands.Cog):
             'discords.gifts'
         ]
         for word in steam_scams:
-            if await self.checker(message, admin, moderator, word) is True:
+            if await self.checker(message, word) is True:
                 await self.flag(message, reason='Steam Scam')
                 return
         for word in discord_scams:
-            if await self.checker(message, admin, moderator, word) is True:
+            if await self.checker(message, word) is True:
                 await self.flag(message, reason='Nitro Scam')
                 return
 

@@ -25,8 +25,8 @@ class Misc(commands.Cog):
     
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def hex(self, ctx):
-        hex_string = ctx.message.content.replace("aou hex ", "")
+    async def hex(self, ctx, *, hexed):
+        hex_string = hexed
         bytes_object = bytes.fromhex(hex_string)
         ascii_string = bytes_object.decode("ASCII")
         embed = discord.Embed(
@@ -88,11 +88,12 @@ class Misc(commands.Cog):
             )
         await ctx.send(embed=embed)
         await ctx.message.delete()
+
     @commands.command(help='info about AOU')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def info(self, ctx):
         embed = discord.Embed(
-            title='Info About All Of Us',
+            title=f'Info About {ctx.guild.name}',
             description=f'Owner: {ctx.guild.owner}',
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()

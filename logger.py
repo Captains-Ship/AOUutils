@@ -53,5 +53,6 @@ def info(text: str):
 def debug(text: str):
     print(f'{crayons.cyan(f"[AOUutils/Debug] {text}")}')
 
+
 def warn(text: str):
     print(f'{crayons.yellow(f"[AOUutils/Warn] {text}")}')

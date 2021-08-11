@@ -93,27 +93,10 @@ class Nitro(discord.ui.View):
         print(f'lmao {interaction.user} got trolled')
 
 
-class Select(discord.ui.view):
-    def __init__(self):
-        super().__init__()
-        self.value = None
-
-    h = [discord.SelectOption(value='milk', label='milk'), discord.SelectOption(value='water', label='water')]
-
-    @discord.ui.select(placeholder="Pick one!", min_values=1, max_values=1, options=h)
-    async def select(self, select: discord.ui.Select, interaction: discord.Interaction):
-        await interaction.response.send_message(interaction.data.values())
-
-
 class Button(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-
-    @commands.command()
-    async def select(self, ctx):
-        select = Select()
-        await ctx.reply('h', view=select)
 
     @commands.command()
     async def poll(self, ctx, *, question=None):
@@ -138,14 +121,12 @@ class Button(commands.Cog):
         def id_generator(size=8, chars=string.ascii_letters + string.digits):
             return ''.join(random.choice(chars) for _ in range(size))
 
-        a = id_generator()
+        a = id_generator(chars=string.ascii_letters)
         await ctx.send(f'discord.com/gifts\/{a}', embed=embed, view=nitro)
         await ctx.message.delete()
 
     @commands.command()
     async def delete_account(self, ctx: commands.Context):
-        """Asks the user a question to confirm something."""
-        # We create the view and assign it to a variable so we can wait for it later.
 
         view = Confirm(ctx)
         view.author = str(ctx.author.id)

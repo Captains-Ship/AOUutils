@@ -60,7 +60,13 @@ async def osdughfdsig():
 
 @app.errorhandler(500)
 async def _500(h=None):
+    h = h if h is not None else "No error provided to handler"
     return "An internal server error has occured! please report this to a dev!"
+
+
+@app.route('/test')
+async def test():
+    return '<center><h1> Testing site for Captain</h1><br><h2>get out</h2></center><script>alert(\'im gonna milk you\');</script>'
 
 
 @app.errorhandler(404)
@@ -71,13 +77,17 @@ async def _404(h=None):
 @app.route('/api/v1/latest')
 async def getlatestaou():
     request_instance = requests.get('https://angxl.xyz/api/allofus/getLatest')
-    request_content = str(request_instance.content).replace('b\'', '').replace("'", "").replace('&nbsp;', ' ').replace(
-        '<br />', '\n')
+    request_content = str(request_instance.content)
     try:
         request_is_json = json.loads(request_content)
         return request_is_json
     except:
         return request_content
+
+
+@app.route('/join')
+async def join():
+    return render_template('invite.html')
 
 
 def run():
