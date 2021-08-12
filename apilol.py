@@ -1,10 +1,7 @@
 from flask import *
 from threading import Thread
-from utility.utils import *
 import json
-from json import *
 import requests
-from logger import logger
 
 app = Flask('')
 
@@ -16,7 +13,45 @@ def owo():
 
 @app.route('/api')
 def getapiversions():
-    return "latest: v1"
+    latestapi = [
+        'v1'
+    ]
+    apis = [
+        'v1'
+    ]
+    milk = f"<A href=\"/api/{latestapi[0]}\">Latest ({latestapi[0]})</a><br><br>"
+    for api in apis:
+        milk = milk + f"\n<A href=\"/api/{api}\">{api}</a><br><br>"
+    return milk
+
+
+def validate_dev_token(token):
+    if token == 'CQDgrhUrVQVKHXag':
+        return True
+    else:
+        return False
+
+
+@app.route('/api/dev')
+async def dev():
+    token = 'CQDgrhUrVQVKHXag'
+    key = request.args.get('key')
+    if key is None:
+        return 'Missing API Key'
+    else:
+        if key == token:
+            return "pog"
+        else:
+            return 'invalid API key'
+
+
+@app.route('/api/dev/test')
+async def dev_test():
+    key = request.args.get('key')
+    if validate_dev_token(key) is True:
+        return 'im gonna milk you'
+    else:
+        return 'Invalid API key'
 
 
 @app.route('/api/v1')
@@ -66,7 +101,17 @@ async def _500(h=None):
 
 @app.route('/test')
 async def test():
-    return '<center><h1> Testing site for Captain</h1><br><h2>get out</h2></center><script>alert(\'im gonna milk you\');</script>'
+    return """
+    <body style="background-color: #111111"> 
+        <h1 style="color:#FFFFFF">
+            Testing Grounds (get out)
+        </h1>
+    <script>
+        alert('You have entered an unknown realm... welcome.... to the test dimension')
+        alert('im gonna milk you now')
+    </script>
+    </body>
+    """
 
 
 @app.errorhandler(404)
@@ -91,9 +136,11 @@ async def join():
 
 
 def run():
-    app.run(host="127.0.0.1", port=22023)
+    app.run(host="127.0.0.1", port=8080)
 
 
 def start():
     server = Thread(target=run)
     server.start()
+
+
