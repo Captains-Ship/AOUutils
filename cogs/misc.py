@@ -207,29 +207,29 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def userinfo(self, ctx, member: discord.Member = None):
-        if member is not None:
-            mention = []
-            for role in member.roles:
-                if role.name != "@everyone":
-                    mention.append(role.mention)
-            mention.reverse()
-            memberRole = ", ".join(mention)
-            joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
-            creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
-            memberIcon = member.avatar
-            authorIcon = ctx.message.author.avatar
-            embed = discord.Embed(
-                title=f'{member.name}#{member.discriminator}',
-                description=f'ID: {member.id}',
-                colour=discord.Colour.random()
-            )
-            embed.add_field(name="Join Date", value=joinDate)
-            embed.add_field(name="Creation Date", value=creationDate, inline=True)
-            embed.add_field(name=chr(173), value=chr(173))
-            embed.add_field(name="Roles", value=memberRole)
-            embed.set_thumbnail(url=memberIcon)
-            embed.set_footer(icon_url=authorIcon, text=f'Requested by {ctx.message.author.name}')
-            await ctx.send(embed=embed)
+        member = member or ctx.author
+        mention = []
+        for role in member.roles:
+            if role.name != "@everyone":
+                mention.append(role.mention)
+        mention.reverse()
+        memberRole = ", ".join(mention)
+        joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
+        creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
+        memberIcon = member.avatar
+        authorIcon = ctx.message.author.avatar
+        embed = discord.Embed(
+            title=f'{member.name}#{member.discriminator}',
+            description=f'ID: {member.id}',
+            colour=member.colour
+        )
+        embed.add_field(name="Join Date", value=joinDate)
+        embed.add_field(name="Creation Date", value=creationDate, inline=True)
+        embed.add_field(name=chr(173), value=chr(173))
+        embed.add_field(name="Roles", value=memberRole)
+        embed.set_thumbnail(url=memberIcon)
+        embed.set_footer(icon_url=authorIcon, text=f'Requested by {ctx.message.author.name}')
+        await ctx.send(embed=embed)
 
             
 def setup(client):

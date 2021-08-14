@@ -1,107 +1,99 @@
 import discord
 from discord.ext import commands
-#from utility.rules import rules, ruleshort
+# from utility.rules import rules, ruleshort
 import urllib.request, json
 from logger import logger
+
 
 class Rule(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-
     rules = [
 
-    "No NSFW - This is a simple and basic rule that everyone needs to follow. If you post any kind of NSFW it will "
-    "result in a mute. Continuing will result in a ban. (THIS INCLUDES BORDERLINE NSFW).",
+        "No NSFW - This is a simple and basic rule that everyone needs to follow. If you post any kind of NSFW it will "
+        "result in a mute. Continuing will result in a ban. (THIS INCLUDES BORDERLINE NSFW).",
 
-    "No bullying - Being a jerk to others is not allowed. Bullying will "
-    "result in a warn. Continuing will result in a kick.",
+        "No bullying - Being a jerk to others is not allowed. Bullying will "
+        "result in a warn. Continuing will result in a kick.",
 
-    "No harassment - If you are here just to harass others because of what they are, you need to leave. We do not "
-    "accept this. Will result in a mute. Continuation will result in a ban.",
+        "No harassment - If you are here just to harass others because of what they are, you need to leave. We do not "
+        "accept this. Will result in a mute. Continuation will result in a ban.",
 
-    "NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will result in a kick and so "
-    "on. Just bring it to DM's please.",
+        "NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will result in a kick and so "
+        "on. Just bring it to DM's please.",
 
-    "No Advertising - This includes DM advertising. The only place you are "
-    "allowed to advertise is in #deleted-channel. We only allow YouTube links here.",
+        "No Advertising - This includes DM advertising.",
 
-    "No Impersonation - Impersonating others will result in a nickname change.",
+        "No Impersonation - Impersonating others will result in a nickname change.",
 
-    "No illegal Activity of any kind. - Any illegal activity that follows "
-    "under US Laws or other countries will result in a permanent ban and we will contact Discord support.",
+        "No illegal Activity of any kind. - Any illegal activity that follows "
+        "under US Laws or other countries will result in a permanent ban and we will contact Discord support.",
 
-    "Follow the Discord Terms of Service. - Example: Being underage "
-    "will result in a ban. No raiding either.",
+        "Follow the Discord Terms of Service. - Example: Being underage "
+        "will result in a ban. No raiding either.",
 
-    "HAVE COMMON SENSE. - Think before you post or ask something. "
-    "Do not post any memes about tragic events like 9/11 or animal "
-    "abuse. That will result in a mute. Continuation will result in "
-    "a Ban. This does include keeping stuff in the correct channel.",
+        "HAVE COMMON SENSE. - Think before you post or ask something. "
+        "Do not post any memes about tragic events like 9/11 or animal "
+        "abuse. That will result in a mute. Continuation will result in "
+        "a Ban. This does include keeping stuff in the correct channel.",
 
-    "No ghost pinging. - Ghost pinging is pinging someone and then "
-    "deleting the ping. Will result in a warn. Spam pinging will "
-    "result in  mute.",
+        "No ghost pinging. - Ghost pinging is pinging someone and then "
+        "deleting the ping. Will result in a warn. Spam pinging will "
+        "result in  mute.",
 
-    "No loophooling. - Loopholing is basically breaking a rule and saying "
-    "how something isn't a rule even though it is. This will result in a warn or ban.",
+        "No loophooling. - Loopholing is basically breaking a rule and saying "
+        "how something isn't a rule even though it is. This will result in a warn or ban.",
 
-    "No videos that crash peoples clients. - Videos that crashes peoples discord "
-    "application will result it from being deleted and you will get muted."
+        "No videos that crash peoples clients. - Videos that crashes peoples discord "
+        "application will result it from being deleted and you will get muted."
 
     ]
 
     ruleshort = [
-    
-    "No NSFW - (THIS INCLUDES BORDERLINE NSFW).",
 
-    "No bullying - Being a jerk to others is not allowed.",
+        "No NSFW - (THIS INCLUDES BORDERLINE NSFW).",
 
-    "No harassment - If you are here just to harass others because of what they are, you need to leave.",
+        "No bullying - Being a jerk to others is not allowed.",
 
-    "NO DRAMA - Just bring it to DM's please.",
+        "No harassment - If you are here just to harass others because of what they are, you need to leave.",
 
-    "No Advertising - This includes DM advertising",
+        "NO DRAMA - Just bring it to DM's please.",
 
-    "No Impersonation - Impersonating others will result in a nickname change.",
+        "No Advertising - This includes DM advertising",
 
-    "No illegal Activity of any kind. - Any illegal activity that follows "
-    "under US Laws or other countries will result in a permanent ban and we will contact Discord support.",
+        "No Impersonation - Impersonating others will result in a nickname change.",
 
-    "Follow the Discord Terms of Service. - Example: Being underage "
-    "will result in a ban. No raiding either.",
+        "No illegal Activity of any kind. - Any illegal activity that follows "
+        "under US Laws or other countries will result in a permanent ban and we will contact Discord support.",
 
-    "HAVE COMMON SENSE. - This does include keeping stuff in the correct channel.",
+        "Follow the Discord Terms of Service. - Example: Being underage "
+        "will result in a ban. No raiding either.",
 
-    "No ghost pinging. - Ghost pinging is pinging someone and then "
-    "deleting the ping",
+        "HAVE COMMON SENSE. - This does include keeping stuff in the correct channel.",
 
-    "No loophooling. - Loopholing is basically breaking a rule and saying "
-    "how something isn't a rule even though it is. This will result in a warn or ban.",
+        "No ghost pinging. - Ghost pinging is pinging someone and then "
+        "deleting the ping",
 
-    "No videos that crash peoples clients. - will result it from being deleted and you will get muted."
+        "No loophooling. - Loopholing is basically breaking a rule and saying "
+        "how something isn't a rule even though it is. This will result in a warn or ban.",
+
+        "No videos that crash peoples clients. - will result it from being deleted and you will get muted."
 
     ]
 
-
-
-
-
-
-
-
     @commands.command()
-    async def rule(self, ctx, rule: int=-1):
+    async def rule(self, ctx, rule: int = -1):
         try:
             if rule == -1:
                 embed = discord.Embed(
                     title='Rules',
                     colour=discord.Colour.red()
                 )
-                rulength = len(self.ruleshort) 
+                rulength = len(self.ruleshort)
                 for i in range(0, rulength):
-                    embed.add_field(name=f'Rule #{i + 1}', value=self.ruleshort[i], inline=False)
+                    embed.add_field(name=f'Rule #{i + 1}', value=self.rules[i], inline=False)
                 await ctx.send(embed=embed)
             else:
                 rulelul = rule - 1
@@ -116,7 +108,7 @@ class Rule(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def enforce(self, ctx, user: discord.Member=None, rule: int=9999):
+    async def enforce(self, ctx, user: discord.Member = None, rule: int = 9999):
         if rule == 9999:
             await ctx.send('bru nice rule man')
             return
@@ -129,10 +121,13 @@ class Rule(commands.Cog):
                 colour=discord.Colour.red()
             )
             embed.add_field(name=f'Rule #{rule}', value=self.rules[rule - 1], inline=False)
-            await ctx.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:', embed=embed)
-            await user.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:', embed=embed)
+            await ctx.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:',
+                           embed=embed)
+            await user.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:',
+                            embed=embed)
         except Exception as e:
             await ctx.send(e)
+
 
 def setup(client):
     client.add_cog(Rule(client))
