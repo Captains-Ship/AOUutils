@@ -70,7 +70,7 @@ class Moderation(commands.Cog):
                     await ctx.guild.kick(member, reason=reason)
                     await member.send(embed=embed)
                     await ctx.send(f'**{ctx.author} Kicked {member}**')
-                except commands.discordForbidden:
+                except discord.Forbidden:
                     await ctx.reply('their role is above mine')
             else:
                 await ctx.reply('**role hierarchy moment**')

@@ -216,7 +216,7 @@ class Tags(commands.Cog):
     async def apimembercount(self, ctx, *, endpoint=None):
         if endpoint is not None:
             try:
-                with urllib.request.urlopen(f"http://127.0.0.1:22023/api/v1/{endpoint}") as url:
+                with urllib.request.urlopen(f"http://127.0.0.1:8080/api/v1/{endpoint}") as url:
                     data = url.read().decode()
                     with open('./templates/404.html') as f:
                         h = f.read()

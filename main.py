@@ -3,16 +3,11 @@ import os
 from jishaku.cog import Jishaku
 import discord
 from discord.ext import commands
-import json
-import traceback
-import sys
 from discord_slash import *
-from traceback import *
 from apilol import *
-import datetime
-import sys
 from logger import logger
 from utility.utils import getconfig
+import aiohttp
 
 start()
 
@@ -36,6 +31,11 @@ class AOUbot(commands.AutoShardedBot):
     def get_dev_server(self):
         return self.get_guild(850668209148395520)
 
+    async def refreshHttp(self):
+        async with aiohttp.ClientSession() as cs:
+            self.cs = cs
+            return cs
+
     def get_bot_devs(self):
         devrole = self.get_dev_server().get_role(866618255917580309)
         devs = []
@@ -43,6 +43,15 @@ class AOUbot(commands.AutoShardedBot):
             if devrole in member.roles:
                 devs.append(member.id)
         return devs
+
+
+"""async def startup():
+    bot = commands.Bot(...)
+    async with aiohttp.ClientSession() as session:
+        bot.session = session
+        await bot.start(token)
+
+asyncio.run(startup())"""
 
 
 async def get_pre(client, message):

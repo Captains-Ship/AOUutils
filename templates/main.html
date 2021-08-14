@@ -5,13 +5,14 @@
     <meta content='API for the bot called "AOUutils"' property="og:description" />
     <meta content="https://cdn.discordapp.com/avatars/850025674093494303/028cfbf118ed2c90d58df7f5bd86bf67.png?size=1024" property="og:image" />
     <meta content="#FF0000" data-react-helmet="true" name="theme-color" />
+
     <TITLE>AOUutils API</TITLE>
-    <link rel="shortcut icon" href="./|favicon/favicon.ico" type="image/x-icon">
     </HEAD>
     <BODY class='body' style="background-color: 111111;">
     <h1 class='aouheader' style="color:#7289da"><center>All Of Us</center></h1>
     <h2 class='welcomeheader' style="color:#7289da"><center>Welcome to the All Of Us Utilities API! (Beta)</center></h2>
-    <div id="iframediscord"><t class="discordiframe" style="color:#7289da"><iframe src="https://canary.discord.com/widget?id=794950428756410429&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe></t></div>
+    <!--<div id="iframediscord"><t class="discordiframe" style="color:#7289da"><iframe src="https://canary.discord.com/widget?id=794950428756410429&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe></t></div>
+    -->
     <center><img width="256" height="256" class="aoulogo" src="{{url_for('static',filename = 'images/aoulogo.png')}}"></center>
     <h1></h1>
     <!-- https://canary.discord.com/widget?id=794950428756410429&theme=dark -->
@@ -31,7 +32,7 @@
 }
       .aoulogo {
         position: relative;
-        top: -450px;
+        top: 100px;
         pointer-events: none;
       }
         .apiredirect {
@@ -45,7 +46,7 @@
           cursor: pointer;
           text-align: center;
           position: relative;
-          top: -375px;
+          top: 200px;
         }
 
         .apiredirect:hover {
@@ -63,7 +64,7 @@
           cursor: pointer;
           text-align: center;
           position: relative;
-          top: -375px;
+          top: 200px;
         }
 
         .invite:hover {
@@ -80,6 +81,7 @@
     <center><button class='apiredirect' onclick="location.href='/api'">Take me to the API's!</button><button class='invite' onclick="location.href='/join'">Join All Of Us!</button></center>
     <h1></h1>
 
-    <h5 class="shamelessplug" style="color:#7289da"><center>The All Of Us Utilities API is hosted by Captain#3175.</center></h5>
+    <h5 class="shamelessplug" style="color:#7289da; position: relative; top: 200px;"><center>The All Of Us Utilities API is hosted by Captain#3175.</center></h5>
+
     </BODY>
     </HTML>

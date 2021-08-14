@@ -96,7 +96,7 @@ async def osdughfdsig():
 @app.errorhandler(500)
 async def _500(h=None):
     h = h if h is not None else "No error provided to handler"
-    return "An internal server error has occured! please report this to a dev!"
+    return "An internal server error has occured! please report this to a dev!" + f"<br><br>{h}"
 
 
 @app.route('/test')
@@ -121,8 +121,11 @@ async def _404(h=None):
 
 @app.route('/api/v1/latest')
 async def getlatestaou():
-    request_instance = requests.get('https://angxl.xyz/api/allofus/getLatest')
-    request_content = str(request_instance.content)
+    try:
+        request_instance = requests.get('https://angxl.xyz/api/allofus/getLatest')
+        request_content = str(request_instance.content)
+    except:
+        return 'Unable to access api.'
     try:
         request_is_json = json.loads(request_content)
         return request_is_json

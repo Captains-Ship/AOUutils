@@ -28,6 +28,7 @@ class Listener(commands.Cog):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name=f'AOU | {guild.member_count} members')
         )
+        await self.client.refreshHttp()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
