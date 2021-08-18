@@ -60,12 +60,36 @@ class Tags(commands.Cog):
     async def badinternet(self, ctx):
         await ctx.send('https://captain.has-no-bra.in/53twyUx2U')
 
+    """
+    UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)
 
+    UTC+2: Captain (🔰Head Staff), Heapons (Manager)
+    
+    UTC+1: Wulfstrex (👥Community Manager), EnderBoyHD (🔰Admin)
+    
+    UTC0: Ariana Pierer (🔰Moderator), Shadows (🔰Moderator)
+    
+    UTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)
+    
+    UTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)
+    
+    UTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)
+    
+    UTC-7: Popcat (🔰Moderator)
+    """
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def timezones(self, ctx):
-        await ctx.reply('```UTC+5: Vedant (🔰Moderator), Toasty (👨‍💻Developer)\n\nUTC+2: Captain (🔰Head Staff), Heapons (Manager)\n\nUTC+1: Wulfstrex (👥Community Manager), EnderBoyHD (🔰Admin)\n\nUTC0: Ariana Pierer (🔰Moderator), Shadows (🔰Moderator)\n\nUTC-3: funnynumber (👨‍💻Main-Dev), XtraCube (👨‍💻Main-Dev), Ruthless (🔰Moderator), Neil (🔰Moderator)\n\nUTC-4: Doggo (🔰Moderator), TheDreamChicken (🔰Admin)\n\nUTC-5: Pure (🔰Owner), angxl wtf (🔰Owner), Joshua TDM (👥Community Manager), Skylario (🔰Head Staff), Jameyiscool (🔰Moderator), Pikanaruto (🔰Admin)\n\nUTC-7: Popcat (🔰Moderator)```')
+        self.timezonelist = [
+                'UTC+2: Captain (manager), Heapons (manager)',
+                'UTC+1: EnderB0YHD (Admin)',
+                'UTC0: Arawn Pierer (Moderator)',
+                'UTC-4: TheDreamChicken (Owner)',
+                'UTC-5: Joshua TDM (Owner), Pikanaruto (Developer)',
+
+        ]
+        await ctx.reply('```py\n' + "\n\n".join(self.timezonelist) + '```')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

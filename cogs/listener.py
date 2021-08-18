@@ -73,7 +73,7 @@ class Listener(commands.Cog):
         return False
 
     @commands.Cog.listener('on_message')
-    async def boohoo(self, message):
+    async def on_message_two(self, message):
         if message.author.bot:
             return
         if self.client.http.token in message.content:
@@ -102,7 +102,8 @@ class Listener(commands.Cog):
         ]
         discord_scams = [
             'discord-gifts.us',
-            'discords.gifts'
+            'discords.gifts',
+            'diskord.ru'
         ]
         for word in steam_scams:
             if await self.checker(message, word) is True:
