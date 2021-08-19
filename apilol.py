@@ -107,8 +107,7 @@ async def test():
             Testing Grounds (get out)
         </h1>
     <script>
-        alert('You have entered an unknown realm... welcome.... to the test dimension')
-        alert('im gonna milk you now')
+        alert('out or im gonna milk you')
     </script>
     </body>
     """

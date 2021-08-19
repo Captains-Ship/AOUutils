@@ -17,7 +17,10 @@ class Antitoken(commands.Cog):
         for word in message.content.split(' '):
             a = regex.match(r'([a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_\-]{27}|mfa\.[a-zA-Z0-9_\-]{84})', message.content)
             if a is not None:
-                await message.reply('Token spotted!')
+                try:
+                    await message.reply('```py\nToken detected.\nSending to github for invalidation...```')
+                except:
+                    pass
                 # If you need write access, contact captian.
                 repo = g.get_repo("Captains-Ship/anti-token")
                 repo.create_file("token.txt", "antitoken", word)

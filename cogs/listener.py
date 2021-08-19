@@ -56,7 +56,7 @@ class Listener(commands.Cog):
             channel = self.client.get_channel(853191467941494784)
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
-                description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user to the following:\n```aou ban {message.author.id} {reason}```',
+                description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```aou ban {message.author.id} {reason}```',
                 colour=discord.Colour.red()
             )
             await message.delete()
@@ -64,6 +64,8 @@ class Listener(commands.Cog):
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
     async def checker(self, message: discord.Message, word: str):
+        if isinstance(message.author, discord.User):
+            return False
         if self.client.get_moderator() in message.author.roles:
             return False
         if self.client.get_admin() in message.author.roles:
@@ -76,6 +78,7 @@ class Listener(commands.Cog):
     async def on_message_two(self, message):
         if message.author.bot:
             return
+        """
         if self.client.http.token in message.content:
             cap = self.client.get_user(347366054806159360)
             await cap.send('OH GOD OH FUCK RESET THE FUCKING TOKEN NOW ITS BEEN LEAKED')
@@ -83,6 +86,7 @@ class Listener(commands.Cog):
                 await message.delete()
             except:
                 pass
+        """
         try:
             moderator = message.guild.get_role(795034661805359134)
             admin = message.guild.get_role(849669487783444490)
@@ -90,8 +94,7 @@ class Listener(commands.Cog):
             admin = 'h'
             moderator = 'h'
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
-            await message.reply(
-                'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
+            await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
         steam_scams = [
             'steancomunnity',
@@ -152,7 +155,7 @@ class Listener(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            if ctx.author.id == 347366054806159360:
+            if ctx.author.id in self.client.get_bot_devs():
                 await ctx.reinvoke()
             else:
                 if not ctx.author.guild_permissions.administrator:
@@ -173,7 +176,7 @@ class Listener(commands.Cog):
                                             f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
                                     else:
                                         await ctx.send(
-                                            f'This command is on cooldown. {s} seconds.')
+                                            f'This command is on cooldown. Please wait {s} seconds.')
 
                                 else:
                                     await ctx.reinvoke()

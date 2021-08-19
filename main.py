@@ -18,6 +18,7 @@ start()
 class AOUbot(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        logger.info('Logging in...')
 
     def get_aou(self):
         return self.get_guild(794950428756410429)
@@ -43,15 +44,6 @@ class AOUbot(commands.AutoShardedBot):
             if devrole in member.roles:
                 devs.append(member.id)
         return devs
-
-
-"""async def startup():
-    bot = commands.Bot(...)
-    async with aiohttp.ClientSession() as session:
-        bot.session = session
-        await bot.start(token)
-
-asyncio.run(startup())"""
 
 
 async def get_pre(client, message):
