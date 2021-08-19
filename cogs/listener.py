@@ -107,7 +107,8 @@ class Listener(commands.Cog):
             'discord-gifts.us',
             'discords.gifts',
             'diskord.ru',
-            'nitroosfree.ru'
+            'nitroosfree.ru',
+            'discord-nitro.link'
         ]
         for word in steam_scams:
             if await self.checker(message, word) is True:
