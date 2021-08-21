@@ -6,9 +6,8 @@ from discord.ext.commands import *
 import json
 from traceback import *
 import crayons
-
-from buh.utils import Pag
 from logger import logger
+from discord.ext.buttons import Paginator as pag
 
 
 class Listener(commands.Cog):
