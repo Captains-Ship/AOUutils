@@ -20,7 +20,7 @@ class Confirm(discord.ui.View):
     @discord.ui.button(emoji='<a:Yes:850974892366757930>', label='Confirm', style=discord.ButtonStyle.red)
     async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if not str(self.ctx.author.id) == str(interaction.user.id):
+        if str(self.ctx.author.id) != str(interaction.user.id):
             return await interaction.response.send_message('not yours dumdum', ephemeral=True)
         await interaction.response.send_message('The end is near...', ephemeral=True)
         self.value = True
@@ -29,7 +29,7 @@ class Confirm(discord.ui.View):
     # This one is similar to the confirmation button except sets the inner value to `False`
     @discord.ui.button(emoji='<a:X_:850974940282748978>', label='Cancel', style=discord.ButtonStyle.green)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if not str(self.ctx.author.id) == str(interaction.user.id):
+        if str(self.ctx.author.id) != str(interaction.user.id):
             return await interaction.response.send_message('not yours dumdum', ephemeral=True)
         await interaction.response.send_message('Cancelling, your account is safe!', ephemeral=True)
         self.value = False
