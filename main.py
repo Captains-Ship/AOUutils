@@ -4,12 +4,12 @@ from jishaku.cog import Jishaku
 import discord
 from discord.ext import commands
 from discord_slash import *
-from apilol import *
+from apilol import start
 from logger import logger
 from utility.utils import getconfig
 import aiohttp
 
-start()
+
 
 # TODO: Un-hardcode all the "all of us" scattered throughout the code.
 #  -this includes commands
@@ -74,7 +74,7 @@ client = AOUbot(
     strip_after_prefix=True
 )
 client.debug = False
-
+start(client)
 # client.remove_command('help')
 bot = client
 AOUclient = client
@@ -98,6 +98,15 @@ async def on_message(msg):
     config = getconfig()
     if not msg.author.id in config['blacklist']:
         await client.process_commands(msg)
+    else:
+        ctx = await client.get_context(msg)
+        if ctx.valid:
+            embed = discord.Embed(
+                title="Uh Oh...",
+                description=f"Looks like youve been blacklisted, so you cant run {ctx.invoked_with}",
+                colour=discord.Colour.red()
+            )
+            await ctx.send(embed=embed)
 
 
 @client.command(aliases=['load'], hidden=True)
@@ -133,8 +142,14 @@ for filename in os.listdir(r'.\cogs'):
         except Exception as e:
             logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")
 
-config = getconfig()
-if config['beta'] == "true":
-    client.run(config['tokens']['beta-bot'])
-else:
-    client.run(config['tokens']['discord'])
+
+def main():
+    config = getconfig()
+    if config['beta'] == "true":
+        client.run(config['tokens']['beta-bot'])
+    else:
+        client.run(config['tokens']['discord'])
+
+
+if __name__ == '__main__':
+    main()

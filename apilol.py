@@ -3,6 +3,7 @@ from threading import Thread
 import json
 import requests
 
+
 app = Flask('')
 
 
@@ -61,6 +62,8 @@ def main():
 
 @app.route('/api/v1/membercount')
 def mc():
+    aou = client.get_aou()
+    return r"{membercount:" + str(aou.member_count) + "}"
     with open('memcount.json', 'r') as f:
         mclol = json.load(f)
         return jsonify(mclol)
@@ -141,8 +144,9 @@ def run():
     app.run(host="127.0.0.1", port=8080)
 
 
-def start():
+def start(sus):
     server = Thread(target=run)
+    global client
+    client = sus
     server.start()
-
 
