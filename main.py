@@ -3,7 +3,6 @@ import os
 from jishaku.cog import Jishaku
 import discord
 from discord.ext import commands
-from discord_slash import *
 from apilol import start
 from logger import logger
 from utility.utils import getconfig
