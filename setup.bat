@@ -1,3 +1,4 @@
+@echo off
 title AOUutils setup
 pip install -r requirements.txt
 pip freeze > requirements.txt

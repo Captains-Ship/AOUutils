@@ -1,1 +1,1 @@
-start AOUUtils.py
+python main.py
