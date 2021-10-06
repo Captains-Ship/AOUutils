@@ -63,15 +63,18 @@ class Listener(commands.Cog):
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
     async def checker(self, message: discord.Message, word: str):
-        if isinstance(message.author, discord.User):
+        try:
+            if isinstance(message.author, discord.User):
+                return False
+            if self.client.get_moderator() in message.author.roles:
+                return False
+            if self.client.get_admin() in message.author.roles:
+                return False
+            if word in message.content.lower():
+                return True
             return False
-        if self.client.get_moderator() in message.author.roles:
+        except AttributeError:
             return False
-        if self.client.get_admin() in message.author.roles:
-            return False
-        if word in message.content.lower():
-            return True
-        return False
 
     @commands.Cog.listener('on_message')
     async def on_message_two(self, message):
@@ -239,7 +242,7 @@ class Listener(commands.Cog):
             h = "".join(format_exception(e, e, e.__traceback__))
             if ctx.author.id not in self.client.get_bot_devs():
                 return
-            pager = Pag(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
+            pager = discord.ext.buttons.Paginator(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
                         prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
             await pager.start(ctx)
