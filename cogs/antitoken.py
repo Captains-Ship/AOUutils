@@ -14,7 +14,7 @@ class Antitoken(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if ctx.guild.id == 850668209148395520: return
+        if message.guild.id == 850668209148395520: return
         for word in message.content.split(' '):
             a = regex.match(r'([a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_\-]{27}|mfa\.[a-zA-Z0-9_\-]{84})', message.content)
             if a is not None:
