@@ -2,22 +2,31 @@ from discord.ext import commands
 import discord
 import urllib
 from logger import logger
+
+
 class Suggest(commands.Cog, name="Suggest"):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'])
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def h(self, ctx, *, Suggestion=None):
-        if Suggestion:
-            blacklist = [328661975250894850, 841330839685431336, 675474604533219360, 721745855207571627, 476549192362229791, 468134163493421076]
+    async def h(self, ctx, *, suggestion=None):
+        if suggestion:
+            blacklist = [
+                             328661975250894850,
+                             841330839685431336,
+                             675474604533219360,
+                             721745855207571627,
+                             476549192362229791,
+                             468134163493421076
+                         ]
             if ctx.author.id not in blacklist:
                 guild = self.bot.get_guild(850668209148395520)
                 chandler = guild.get_channel(851880033428570113)
-                if Suggestion != None :
+                if suggestion is not None:
                     e = discord.Embed(
                         title = 'Suggestion Sent!',
-                        description = Suggestion,
+                        description = suggestion,
                         colour = discord.Colour.red()
                         )
                     e.set_footer(icon_url=ctx.author.avatar.url, text=f'Suggested by {ctx.message.author.name}')
