@@ -1,6 +1,7 @@
 import datetime
 import json
 from logger import logger
+from jishaku.paginators import PaginatorEmbedInterface
 import discord
 from discord.ext import commands
 
@@ -138,22 +139,22 @@ class Moderation(commands.Cog):
             f.write(json.dumps(warns))
             f.truncate()
 
-            # Build Embed to send to member's DM
-            embed = discord.Embed(
-                title="You have been warned at All Of Us",
-                description=f"Reason: {reason}",
-                colour=discord.Colour.red(),
-            )
+        # Build Embed to send to member's DM
+        embed = discord.Embed(
+            title="You have been warned at All Of Us",
+            description=f"Reason: {reason}",
+            colour=discord.Colour.red(),
+        )
 
-            # Send it.
-            try:
-                await member.send(embed=embed)
-            except discord.Forbidden:  # Man, they got their DMs off.
-                pass
-            suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
-            if 11 <= (warncount % 100) <= 13:
-                suffix = 'th'
-            await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
+        # Send it.
+        try:
+            await member.send(embed=embed)
+        except discord.Forbidden:  # Man, they got their DMs off.
+            pass
+        suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
+        if 11 <= (warncount % 100) <= 13:
+            suffix = 'th'
+        await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -166,28 +167,32 @@ class Moderation(commands.Cog):
         with open('warns.json', 'r') as f:
             warns = json.loads(f.read())
 
-            # Test if member had been warned before.
-            try:
-                warns[str(member.id)]
-            except KeyError:
-                await ctx.send("This member has not been warned before!")
-                return
+        # Test if member had been warned before.
+        try:
+            warns[str(member.id)]
+        except KeyError:
+            await ctx.send("This member has not been warned before!")
+            return
 
-            # Get warnings and build embed
-            embed = discord.Embed(
-                title=f"Warnings for {member}",
-                description=f"There are {len(warns[str(member.id)])} warning(s) logged against this user.",
-                colour=discord.Colour.dark_blue()
+        # Get warnings and build embed
+        embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
+
+        # Setup paginator
+        paginator = commands.Paginator(
+            prefix=f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n",
+            suffix=None, max_size=1000
+        )
+        for i, key in enumerate(warns[str(member.id)]):
+            paginator.add_line(
+                f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+                f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n"
             )
-            for i, key in enumerate(warns[str(member.id)]):
-                embed.add_field(
-                    name=f"{i + 1} - {warns[str(member.id)][key]['reason']}",
-                    value=f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
-                          f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>"
-                )
 
-            # Send it.
-            await ctx.send(embed=embed)
+        # Create interface
+        interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author, embed=embed)
+        # Send it.
+        await interface.send_to(ctx)
 
     @commands.command(aliases=["delwarn"])
     @commands.has_permissions(kick_members=True)
@@ -212,6 +217,31 @@ class Moderation(commands.Cog):
                     f.write(json.dumps(warns))
                     f.truncate()
                     break
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def clearwarns(self, ctx, member: discord.Member = None):
+        # We DO want a member.
+        if member is None:
+            await ctx.send("Whose warnings did you want to clear?")
+            return
+
+        with open('warns.json', 'r+') as f:
+            warns = json.loads(f.read())
+
+            # Test if member had been warned before.
+            try:
+                warns[str(member.id)]
+            except KeyError:
+                await ctx.send("This member has not been warned before!")
+                return
+
+            warns[str(member.id)] = {}
+            f.seek(0)
+            f.write(json.dumps(warns))
+            f.truncate()
+
+        await ctx.send(f"All warnings against **{member}** have been revoked.")
 
 
 def setup(client):
