@@ -106,8 +106,6 @@ class Moderation(commands.Cog):
         he = discord.Embed(title="unmute", description=f" unmuted {member.mention}", colour=discord.Colour.blurple())
         await ctx.send(embed=he)
 
-    # TODO: Test the whole thing.
-
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member = None, *, reason=None):
@@ -119,8 +117,9 @@ class Moderation(commands.Cog):
         if reason is None:
             await ctx.send("What did you want to warn that guy for?")
             return
-        with open('warns.json', 'w+') as f:
-            warns = json.load(f)
+        with open('warns.json', 'r+') as f:
+            warns = json.loads(f.read())
+
             # Test if the user has been warned before, if not, create their entry.
             try:
                 warns[str(member.id)]
@@ -130,12 +129,14 @@ class Moderation(commands.Cog):
             # Log warning to file.
             warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
                 "reason": reason,
-                "moderator": str(ctx.member),
+                "moderator": str(ctx.author),
                 "time": int(datetime.datetime.utcnow().timestamp())
             }
 
             # Better save this now.
+            f.seek(0)
             f.write(json.dumps(warns))
+            f.truncate()
 
             # Build Embed to send to member's DM
             embed = discord.Embed(
@@ -152,7 +153,7 @@ class Moderation(commands.Cog):
             suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
             if 11 <= (warncount % 100) <= 13:
                 suffix = 'th'
-            await ctx.send(f"{member} has been warned. This is their {str(warncount) + suffix} warning.")
+            await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -162,8 +163,8 @@ class Moderation(commands.Cog):
             await ctx.send("Whose warnings did you want to see again?")
             return
 
-        with open("warns.json", "r") as f:
-            warns = json.load(f)
+        with open('warns.json', 'r') as f:
+            warns = json.loads(f.read())
 
             # Test if member had been warned before.
             try:
@@ -175,7 +176,7 @@ class Moderation(commands.Cog):
             # Get warnings and build embed
             embed = discord.Embed(
                 title=f"Warnings for {member}",
-                description=f"There are {len(warns[str(member.id)])} warnings logged against this user.",
+                description=f"There are {len(warns[str(member.id)])} warning(s) logged against this user.",
                 colour=discord.Colour.dark_blue()
             )
             for i, key in enumerate(warns[str(member.id)]):
@@ -196,16 +197,20 @@ class Moderation(commands.Cog):
             await ctx.send("Man, I need a warning ID.")
             return
 
-        with open("warns.json", "w+") as f:
-            warns = json.load(f)
+        with open('warns.json', 'r+') as f:
+            warns = json.loads(f.read())
 
             # Definitely not the most elegant method.
             for member in warns:
                 if warn_id in warns[member].keys():
                     warns[member].pop(warn_id)
+                    # Man, MemberCacheFlags weren't enabled?
+                    member = await ctx.guild.fetch_member(member)
                     await ctx.send(
-                        f"Warning with ID {warn_id} logged against {ctx.guild.get_member(member)} has been revoked.")
-                    f.write(json.dumps(f))
+                        f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
+                    f.seek(0)
+                    f.write(json.dumps(warns))
+                    f.truncate()
                     break
 
 
