@@ -1,9 +1,9 @@
 import datetime
 import json
 from logger import logger
-from jishaku.paginators import PaginatorEmbedInterface
 import discord
 from discord.ext import commands
+from discord.ext.buttons import Paginator
 
 
 class Moderation(commands.Cog):
@@ -178,21 +178,19 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
 
         # Setup paginator
-        paginator = commands.Paginator(
-            prefix=f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n",
-            suffix=None, max_size=1000
+        paginator = Pag(
+            title=f"Warnings against {member}",
+            colour=discord.Colour.dark_blue(),
+            entries=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
+                    [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+                     f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                     f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
+                     enumerate(warns[str(member.id)])],
+            timeout=120
         )
-        for i, key in enumerate(warns[str(member.id)]):
-            paginator.add_line(
-                f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
-                f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
-                f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n"
-            )
 
-        # Create interface
-        interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author, embed=embed)
-        # Send it.
-        await interface.send_to(ctx)
+        # Start paginator
+        await paginator.start(ctx)
 
     @commands.command(aliases=["delwarn"])
     @commands.has_permissions(kick_members=True)
@@ -242,6 +240,14 @@ class Moderation(commands.Cog):
             f.truncate()
 
         await ctx.send(f"All warnings against **{member}** have been revoked.")
+
+
+class Pag(Paginator):  # from discord.ext.buttons import Paginator
+    async def teardown(self):
+        try:
+            await self.page.clear_reactions()
+        except discord.HTTPException:
+            pass
 
 
 def setup(client):
