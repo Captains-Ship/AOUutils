@@ -1,7 +1,8 @@
+import datetime
+import json
+
 import discord
 from discord.ext import commands
-import json
-from logger import logger
 
 
 class Moderation(commands.Cog):
@@ -105,16 +106,107 @@ class Moderation(commands.Cog):
         he = discord.Embed(title="unmute", description=f" unmuted {member.mention}", colour=discord.Colour.blurple())
         await ctx.send(embed=he)
 
+    # TODO: Test the whole thing.
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member: discord.Member, *, reason):
-        with open('warns.json', 'r') as f:
+    async def warn(self, ctx, member: discord.Member = None, *, reason=None):
+        # If no member is specified.
+        if member is None:
+            await ctx.send("Next time, actually get me a member to warn.")
+            return
+        # If no reason is specified.
+        if reason is None:
+            await ctx.send("What did you want to warn that guy for?")
+            return
+        with open('warns.json', 'w+') as f:
             warns = json.load(f)
+            # Test if the user has been warned before, if not, create their entry.
             try:
-                print(warns[str(member.id)])
-            except:
+                warns[str(member.id)]
+            except KeyError:
                 warns[str(member.id)] = {}
-                warns[str(member.id)]['']
+
+            # Log warning to file.
+            warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
+                "reason": reason,
+                "moderator": str(ctx.member),
+                "time": int(datetime.datetime.utcnow().timestamp())
+            }
+
+            # Better save this now.
+            f.write(json.dumps(warns))
+
+            # Build Embed to send to member's DM
+            embed = discord.Embed(
+                title="You have been warned at All Of Us",
+                description=f"Reason: {reason}",
+                colour=discord.Colour.red(),
+            )
+
+            # Send it.
+            try:
+                await member.send(embed=embed)
+            except discord.Forbidden:  # Man, they got their DMs off.
+                pass
+            suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
+            if 11 <= (warncount % 100) <= 13:
+                suffix = 'th'
+            await ctx.send(f"{member} has been warned. This is their {str(warncount) + suffix} warning.")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def warnings(self, ctx, member: discord.Member = None):
+        # We DO want a member.
+        if member is None:
+            await ctx.send("Whose warnings did you want to see again?")
+            return
+
+        with open("warns.json", "r") as f:
+            warns = json.load(f)
+
+            # Test if member had been warned before.
+            try:
+                warns[str(member.id)]
+            except KeyError:
+                await ctx.send("This member has not been warned before!")
+                return
+
+            # Get warnings and build embed
+            embed = discord.Embed(
+                title=f"Warnings for {member}",
+                description=f"There are {len(warns[str(member.id)])} warnings logged against this user.",
+                colour=discord.Colour.dark_blue()
+            )
+            for i, key in enumerate(warns[str(member.id)]):
+                embed.add_field(
+                    name=f"{i + 1} - {warns[str(member.id)][key]['reason']}",
+                    value=f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                          f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>"
+                )
+
+            # Send it.
+            await ctx.send(embed=embed)
+
+    @commands.command(aliases=["delwarn"])
+    @commands.has_permissions(kick_members=True)
+    async def removewarn(self, ctx, warn_id: str = None):
+        # We need a warn ID.
+        if warn_id is None:
+            await ctx.send("Man, I need a warning ID.")
+            return
+
+        with open("warns.json", "w+") as f:
+            warns = json.load(f)
+
+            # Definitely not the most elegant method.
+            for member in warns:
+                if warn_id in warns[member].keys():
+                    warns[member].pop(warn_id)
+                    await ctx.send(
+                        f"Warning with ID {warn_id} logged against {ctx.guild.get_member(member)} has been revoked.")
+                    f.write(json.dumps(f))
+                    break
 
 
 def setup(client):
