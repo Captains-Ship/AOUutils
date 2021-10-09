@@ -37,7 +37,7 @@ class Moderation(commands.Cog):
             if member != None:
                 if ctx.author.top_role > member.top_role:
                     embed = discord.Embed(
-                        title='You were banned from All Of Us',
+                        title=f'You were banned from {ctx.guild.name}',
                         description=f'Reason:\n{reason}',
                         colour=discord.Colour.red()
                     )
@@ -62,7 +62,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member = None, *, reason=None):
         embed = discord.Embed(
-            title='You were kicked from All Of Us',
+            title=f'You were kicked from {ctx.guild.name}',
             description=f'Reason:\n{reason}',
             colour=discord.Colour.red()
         )
@@ -118,43 +118,46 @@ class Moderation(commands.Cog):
         if reason is None:
             await ctx.send("What did you want to warn that guy for?")
             return
-        with open('warns.json', 'r+') as f:
-            warns = json.loads(f.read())
+        if ctx.author.top_role > member.top_role:
+            with open('warns.json', 'r+') as f:
+                warns = json.loads(f.read())
 
-            # Test if the user has been warned before, if not, create their entry.
+                # Test if the user has been warned before, if not, create their entry.
+                try:
+                    warns[str(member.id)]
+                except KeyError:
+                    warns[str(member.id)] = {}
+
+                # Log warning to file.
+                warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
+                    "reason": reason,
+                    "moderator": str(ctx.author),
+                    "time": int(datetime.datetime.utcnow().timestamp())
+                }
+
+                # Better save this now.
+                f.seek(0)
+                f.write(json.dumps(warns))
+                f.truncate()
+
+            # Build Embed to send to member's DM
+            embed = discord.Embed(
+                title=f"You have been warned at {ctx.guild.name}",
+                description=f"Reason: {reason}",
+                colour=discord.Colour.red(),
+            )
+
+            # Send it.
             try:
-                warns[str(member.id)]
-            except KeyError:
-                warns[str(member.id)] = {}
-
-            # Log warning to file.
-            warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
-                "reason": reason,
-                "moderator": str(ctx.author),
-                "time": int(datetime.datetime.utcnow().timestamp())
-            }
-
-            # Better save this now.
-            f.seek(0)
-            f.write(json.dumps(warns))
-            f.truncate()
-
-        # Build Embed to send to member's DM
-        embed = discord.Embed(
-            title="You have been warned at All Of Us",
-            description=f"Reason: {reason}",
-            colour=discord.Colour.red(),
-        )
-
-        # Send it.
-        try:
-            await member.send(embed=embed)
-        except discord.Forbidden:  # Man, they got their DMs off.
-            pass
-        suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
-        if 11 <= (warncount % 100) <= 13:
-            suffix = 'th'
-        await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
+                await member.send(embed=embed)
+            except discord.Forbidden:  # Man, they got their DMs off.
+                pass
+            suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
+            if 11 <= (warncount % 100) <= 13:
+                suffix = 'th'
+            await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
+        else:
+            await ctx.send("**role hierarchy moment**")
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -206,14 +209,17 @@ class Moderation(commands.Cog):
             # Definitely not the most elegant method.
             for member in warns:
                 if warn_id in warns[member].keys():
-                    warns[member].pop(warn_id)
                     # Man, MemberCacheFlags weren't enabled?
                     member = await ctx.guild.fetch_member(member)
-                    await ctx.send(
-                        f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
-                    f.seek(0)
-                    f.write(json.dumps(warns))
-                    f.truncate()
+                    if ctx.author.top_role > member.top_role:
+                        warns[member].pop(warn_id)
+                        await ctx.send(
+                            f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
+                        f.seek(0)
+                        f.write(json.dumps(warns))
+                        f.truncate()
+                    else:
+                        await ctx.send("**role hierarchy moment**")
                     break
 
     @commands.command()
@@ -224,22 +230,24 @@ class Moderation(commands.Cog):
             await ctx.send("Whose warnings did you want to clear?")
             return
 
-        with open('warns.json', 'r+') as f:
-            warns = json.loads(f.read())
+        if ctx.author.top_role > member.top_role:
+            with open('warns.json', 'r+') as f:
+                warns = json.loads(f.read())
 
-            # Test if member had been warned before.
-            try:
-                warns[str(member.id)]
-            except KeyError:
-                await ctx.send("This member has not been warned before!")
-                return
+                # Test if member had been warned before.
+                try:
+                    warns[str(member.id)]
+                except KeyError:
+                    await ctx.send("This member has not been warned before!")
+                    return
 
-            warns[str(member.id)] = {}
-            f.seek(0)
-            f.write(json.dumps(warns))
-            f.truncate()
-
-        await ctx.send(f"All warnings against **{member}** have been revoked.")
+                warns[str(member.id)] = {}
+                f.seek(0)
+                f.write(json.dumps(warns))
+                f.truncate()
+                await ctx.send(f"All warnings against **{member}** have been revoked.")
+        else:
+            await ctx.send("**role hierarchy moment**")
 
 
 class Pag(Paginator):  # from discord.ext.buttons import Paginator
