@@ -37,11 +37,12 @@ class Confirm(discord.ui.View):
 
 
 class Poll(discord.ui.View):
-    def __init__(self, ctx):
+    def __init__(self, ctx, question):
         super().__init__()
         self.ctx = ctx
         self.yes = []
         self.no = []
+        self.question = question
 
     @discord.ui.button(emoji='\U0001f44d', style=discord.ButtonStyle.green)
     async def agree(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -51,8 +52,24 @@ class Poll(discord.ui.View):
             self.no.remove(interaction.user.id)
         if interaction.user.id in self.yes:
             self.yes.remove(interaction.user.id)
+            del interaction.message.embeds[0]
+            embed = discord.Embed(
+                title='Poll',
+                description=self.question
+            )
+            embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
+            embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
+            await interaction.message.edit(embed=embed)
             return await interaction.response.send_message('Revoked!', ephemeral=True)
         self.yes.append(interaction.user.id)
+        del interaction.message.embeds[0]
+        embed = discord.Embed(
+            title='Poll',
+            description=self.question
+        )
+        embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
+        embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
+        await interaction.message.edit(embed=embed)
         interaction.response.send_message('Vote has been registered', ephemeral=True)
 
     @discord.ui.button(emoji='\U0001f44e', style=discord.ButtonStyle.red)
@@ -63,8 +80,24 @@ class Poll(discord.ui.View):
             self.yes.remove(interaction.user.id)
         if interaction.user.id in self.no:
             self.no.remove(interaction.user.id)
+            del interaction.message.embeds[0]
+            embed = discord.Embed(
+                title='Poll',
+                description=self.question
+            )
+            embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
+            embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
+            await interaction.message.edit(embed=embed)
             return await interaction.response.send_message('Revoked!', ephemeral=True)
         self.no.append(interaction.user.id)
+        del interaction.message.embeds[0]
+        embed = discord.Embed(
+            title='Poll',
+            description=self.question
+        )
+        embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
+        embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
+        await interaction.message.edit(embed=embed)
         interaction.response.send_message('Vote has been registered', ephemeral=True)
 
     @discord.ui.button(label="END", style=discord.ButtonStyle.red)
@@ -102,7 +135,7 @@ class Button(commands.Cog):
     async def poll(self, ctx, *, question=None):
         if not question:
             return await ctx.reply('nice question!')
-        poller = Poll(ctx)
+        poller = Poll(ctx, question)
         embed = discord.Embed(
             title='Poll',
             description=question

@@ -13,6 +13,10 @@ class Tags(commands.Cog):
         await ctx.send('http://bit.ly/AOUutilsBETA')
 
     @commands.command()
+    async def light(self, ctx):
+        await ctx.send("https://media.discordapp.net/attachments/802743745032355850/897544230774374470/unknown.png")
+
+    @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def whoasked(self, ctx):
         await ctx.send('https://cdn.discordapp.com/attachments/848185124037460070/870343946910466098/unknown.png')

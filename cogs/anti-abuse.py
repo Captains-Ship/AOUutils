@@ -10,6 +10,7 @@ class AntiAbuse(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, b, a):
+        if a.guild.id != 794950428756410429: return
         ch = self.client.get_channel(846389772166758432)
         br = b.roles
         ar = a.roles
@@ -43,6 +44,7 @@ class AntiAbuse(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, c):
+        if c.guild.id != 794950428756410429: return
         async for entry in c.guild.audit_logs(
                 action=discord.AuditLogAction.channel_delete,
                 limit=1,
@@ -58,6 +60,7 @@ class AntiAbuse(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, c):
+        if c.guild.id != 794950428756410429: return
         async for entry in c.guild.audit_logs(
                 action=discord.AuditLogAction.channel_create,
                 limit=1,

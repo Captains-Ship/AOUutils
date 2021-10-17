@@ -70,6 +70,10 @@ class Listener(commands.Cog):
                 return False
             if self.client.get_admin() in message.author.roles:
                 return False
+            if self.client.get_general_staff() in message.author.roles:
+                return False
+            if self.client.get_general_dev() in message.author.roles:
+                return False
             if word in message.content.lower():
                 return True
             return False
@@ -89,12 +93,6 @@ class Listener(commands.Cog):
             except:
                 pass
         """
-        try:
-            moderator = message.guild.get_role(795034661805359134)
-            admin = message.guild.get_role(849669487783444490)
-        except:
-            admin = 'h'
-            moderator = 'h'
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
@@ -158,6 +156,8 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            error = getattr(error, 'original', error)
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.author.id in self.client.get_bot_devs():
                 await ctx.reinvoke()
@@ -201,8 +201,7 @@ class Listener(commands.Cog):
                         if str(ctx.command.cog).lower() != 'admin':
                             await ctx.reinvoke()
         elif isinstance(error, commands.CommandNotFound):
-            h = ctx.message.content.replace(ctx.prefix, '').split()[0]
-            ah = ctx.invoked_with
+            h = ctx.invoked_with
             embed = discord.Embed(
                 title=f'Unknown Command "{h}"',
                 description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
@@ -230,13 +229,18 @@ class Listener(commands.Cog):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'missing argument(s) `{error.param}`')
-        elif isinstance(error, commands.CommandInvokeError):
-            error = getattr(error, 'original', error)
-            if isinstance(error, ValueError):
-                print(error.args)
+        elif isinstance(error, ValueError):
+            print(error.args)
         else:
             # await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
-            await ctx.reply(f'Error!\n{error}')
+            await ctx.reply(f'Error, This has been reported to the developers!\n{error}')
+            cmdlog = self.client.get_channel(896394252962123806)
+            embed = discord.Embed(
+                title="Error!",
+                description=error,
+                colour=discord.Colour.red()
+            )
+            embed.add_field(name="Content", value=ctx.message.content)
             e = error
             logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
             h = "".join(format_exception(e, e, e.__traceback__))

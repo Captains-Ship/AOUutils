@@ -9,7 +9,6 @@ from utility.utils import getconfig
 import aiohttp
 
 
-
 # TODO: Un-hardcode all the "all of us" scattered throughout the code.
 #  -this includes commands
 
@@ -18,6 +17,12 @@ class AOUbot(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         logger.info('Logging in...')
+
+    def get_general_staff(self):
+        return self.get_aou().get_role(795007215786393631)
+
+    def get_general_dev(self):
+        return self.get_aou().get_role(849677048238833694)
 
     def get_aou(self):
         return self.get_guild(794950428756410429)
