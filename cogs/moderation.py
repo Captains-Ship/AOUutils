@@ -211,9 +211,13 @@ class Moderation(commands.Cog):
             for member in warns:
                 if warn_id in warns[member].keys():
                     # Man, MemberCacheFlags weren't enabled?
-                    member = await ctx.guild.fetch_member(member)
+                    try:
+                        member = await ctx.guild.fetch_member(int(member))
+                    except discord.NotFound:
+                        await ctx.send("This person is no longer in this server!")
+                        return
                     if ctx.author.top_role > member.top_role:
-                        warns[member].pop(warn_id)
+                        warns[str(member.id)].pop(warn_id)
                         await ctx.send(
                             f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
                         f.seek(0)
