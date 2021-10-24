@@ -130,7 +130,7 @@ class Moderation(commands.Cog):
                     warns[str(member.id)] = {}
 
                 # Log warning to file.
-                warns[str(member.id)][(str(uuid.uuid1())] = {
+                warns[str(member.id)][str(uuid.uuid1())] = {
                     "reason": reason,
                     "moderator": str(ctx.author),
                     "time": int(datetime.datetime.utcnow().timestamp())
