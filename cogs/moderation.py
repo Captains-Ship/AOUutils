@@ -4,6 +4,7 @@ from logger import logger
 import discord
 from discord.ext import commands
 from discord.ext.buttons import Paginator
+import uuid
 
 
 class Moderation(commands.Cog):
@@ -129,7 +130,7 @@ class Moderation(commands.Cog):
                     warns[str(member.id)] = {}
 
                 # Log warning to file.
-                warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
+                warns[str(member.id)][(str(uuid.uuid1())] = {
                     "reason": reason,
                     "moderator": str(ctx.author),
                     "time": int(datetime.datetime.utcnow().timestamp())
