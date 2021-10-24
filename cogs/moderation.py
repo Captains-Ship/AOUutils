@@ -1,7 +1,9 @@
-import discord
-from discord.ext import commands
+import datetime
 import json
 from logger import logger
+import discord
+from discord.ext import commands
+from discord.ext.buttons import Paginator
 
 
 class Moderation(commands.Cog):
@@ -35,7 +37,7 @@ class Moderation(commands.Cog):
             if member != None:
                 if ctx.author.top_role > member.top_role:
                     embed = discord.Embed(
-                        title='You were banned from All Of Us',
+                        title=f'You were banned from {ctx.guild.name}',
                         description=f'Reason:\n{reason}',
                         colour=discord.Colour.red()
                     )
@@ -60,7 +62,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member = None, *, reason=None):
         embed = discord.Embed(
-            title='You were kicked from All Of Us',
+            title=f'You were kicked from {ctx.guild.name}',
             description=f'Reason:\n{reason}',
             colour=discord.Colour.red()
         )
@@ -107,14 +109,153 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member: discord.Member, *, reason):
-        with open('warns.json', 'r') as f:
-            warns = json.load(f)
+    async def warn(self, ctx, member: discord.Member = None, *, reason=None):
+        # If no member is specified.
+        if member is None:
+            await ctx.send("Next time, actually get me a member to warn.")
+            return
+        # If no reason is specified.
+        if reason is None:
+            await ctx.send("What did you want to warn that guy for?")
+            return
+        if ctx.author.top_role > member.top_role:
+            with open('warns.json', 'r+') as f:
+                warns = json.loads(f.read())
+
+                # Test if the user has been warned before, if not, create their entry.
+                try:
+                    warns[str(member.id)]
+                except KeyError:
+                    warns[str(member.id)] = {}
+
+                # Log warning to file.
+                warns[str(member.id)][(str(int(datetime.datetime.utcnow().timestamp()) + member.id))] = {
+                    "reason": reason,
+                    "moderator": str(ctx.author),
+                    "time": int(datetime.datetime.utcnow().timestamp())
+                }
+
+                # Better save this now.
+                f.seek(0)
+                f.write(json.dumps(warns))
+                f.truncate()
+
+            # Build Embed to send to member's DM
+            embed = discord.Embed(
+                title=f"You have been warned at {ctx.guild.name}",
+                description=f"Reason: {reason}",
+                colour=discord.Colour.red(),
+            )
+
+            # Send it.
             try:
-                print(warns[str(member.id)])
-            except:
+                await member.send(embed=embed)
+            except discord.Forbidden:  # Man, they got their DMs off.
+                pass
+            suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
+            if 11 <= (warncount % 100) <= 13:
+                suffix = 'th'
+            await ctx.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
+        else:
+            await ctx.send("**role hierarchy moment**")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def warnings(self, ctx, member: discord.Member = None):
+        # We DO want a member.
+        if member is None:
+            await ctx.send("Whose warnings did you want to see again?")
+            return
+
+        with open('warns.json', 'r') as f:
+            warns = json.loads(f.read())
+
+        # Test if member had been warned before.
+        try:
+            warns[str(member.id)]
+        except KeyError:
+            await ctx.send("This member has not been warned before!")
+            return
+
+        # Get warnings and build embed
+        embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
+
+        # Setup paginator
+        paginator = Pag(
+            title=f"Warnings against {member}",
+            colour=discord.Colour.dark_blue(),
+            entries=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
+                    [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+                     f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                     f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
+                     enumerate(warns[str(member.id)])],
+            timeout=120
+        )
+
+        # Start paginator
+        await paginator.start(ctx)
+
+    @commands.command(aliases=["delwarn"])
+    @commands.has_permissions(kick_members=True)
+    async def removewarn(self, ctx, warn_id: str = None):
+        # We need a warn ID.
+        if warn_id is None:
+            await ctx.send("Man, I need a warning ID.")
+            return
+
+        with open('warns.json', 'r+') as f:
+            warns = json.loads(f.read())
+
+            # Definitely not the most elegant method.
+            for member in warns:
+                if warn_id in warns[member].keys():
+                    # Man, MemberCacheFlags weren't enabled?
+                    member = await ctx.guild.fetch_member(member)
+                    if ctx.author.top_role > member.top_role:
+                        warns[member].pop(warn_id)
+                        await ctx.send(
+                            f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
+                        f.seek(0)
+                        f.write(json.dumps(warns))
+                        f.truncate()
+                    else:
+                        await ctx.send("**role hierarchy moment**")
+                    break
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def clearwarns(self, ctx, member: discord.Member = None):
+        # We DO want a member.
+        if member is None:
+            await ctx.send("Whose warnings did you want to clear?")
+            return
+
+        if ctx.author.top_role > member.top_role:
+            with open('warns.json', 'r+') as f:
+                warns = json.loads(f.read())
+
+                # Test if member had been warned before.
+                try:
+                    warns[str(member.id)]
+                except KeyError:
+                    await ctx.send("This member has not been warned before!")
+                    return
+
                 warns[str(member.id)] = {}
-                warns[str(member.id)]['']
+                f.seek(0)
+                f.write(json.dumps(warns))
+                f.truncate()
+                await ctx.send(f"All warnings against **{member}** have been revoked.")
+        else:
+            await ctx.send("**role hierarchy moment**")
+
+
+class Pag(Paginator):  # from discord.ext.buttons import Paginator
+    async def teardown(self):
+        try:
+            await self.page.clear_reactions()
+        except discord.HTTPException:
+            pass
 
 
 def setup(client):
