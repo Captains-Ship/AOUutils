@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import os
 from jishaku.cog import Jishaku
@@ -7,7 +8,7 @@ from apilol import start
 from logger import logger
 from utility.utils import getconfig
 import aiohttp
-
+#os.chdir(__file__)
 
 # TODO: Un-hardcode all the "all of us" scattered throughout the code.
 #  -this includes commands

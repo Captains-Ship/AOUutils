@@ -160,5 +160,10 @@
         "bank": 500,
         "wallet": 500,
         "inventory": {}
+    },
+    "649331943523221514": {
+        "bank": 500,
+        "wallet": 6220,
+        "inventory": {}
     }
 }
