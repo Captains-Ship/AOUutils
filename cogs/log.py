@@ -19,7 +19,7 @@ class Log(commands.Cog):
             description=ctx.message.content,
             colour=discord.Colour.green()
         )
-        embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar.url)
+        embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
         await cmdlog.send(embed=embed)
 
 

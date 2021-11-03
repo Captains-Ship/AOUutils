@@ -29,7 +29,7 @@ class Suggest(commands.Cog, name="Suggest"):
                         description = suggestion,
                         colour = discord.Colour.red()
                         )
-                    e.set_footer(icon_url=ctx.author.avatar.url, text=f'Suggested by {ctx.message.author.name}')
+                    e.set_footer(icon_url=ctx.author.display_avatar.url, text=f'Suggested by {ctx.message.author.name}')
                     msg = await chandler.send(embed=e)
                     await msg.add_reaction('<a:Yes:850974892366757930>')
                     await msg.add_reaction('<a:X_:850974940282748978>')

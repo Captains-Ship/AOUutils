@@ -207,7 +207,7 @@ class Listener(commands.Cog):
                 description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
                 colour=discord.Colour.red()
             )
-            embed.set_thumbnail(url=self.client.user.avatar.url)
+            embed.set_thumbnail(url=self.client.user.display_avatar.url)
             await ctx.send(
                 'Error!',
                 embed=embed

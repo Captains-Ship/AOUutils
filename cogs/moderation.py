@@ -24,7 +24,7 @@ class Moderation(commands.Cog):
                     description=f'Purged {limit} message(s)',
                     colour=discord.Colour.red()
                 )
-                embed.set_footer(icon_url=ctx.author.avatar.url, text=f'Requested by: {ctx.message.author.name}')
+                embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f'Requested by: {ctx.message.author.name}')
                 await ctx.send(embed=embed)
             else:
                 await ctx.reply('ah yes purge nothing')

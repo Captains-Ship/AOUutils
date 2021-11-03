@@ -42,7 +42,7 @@ class HelpUwU(commands.MinimalHelpCommand):
                 colour=discord.Colour.red(),
                 timestamp=datetime.datetime.utcnow()
             )
-            help_embed.set_footer(icon_url=self.context.author.avatar.url, text=self.context.author)
+            help_embed.set_footer(icon_url=self.context.author.display_avatar.url, text=self.context.author)
 
             await destination.send(embed=help_embed)
 
