@@ -8,6 +8,7 @@ if exist config.json (
 ) else (
     echo { > config.json
     echo     "beta": "true", >> config.json
+    echo     "github": "github name", >> config.json
     echo     "tokens": { >> config.json
     echo         "discord": "discord token", >> config.json
     echo         "github": "github token (for anti-token)", >> config.json
