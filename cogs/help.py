@@ -42,13 +42,13 @@ class HelpUwU(commands.MinimalHelpCommand):
                 colour=discord.Colour.red(),
                 timestamp=datetime.datetime.utcnow()
             )
-            help_embed.set_footer(icon_url=self.context.author.avatar.url, text=self.context.author)
+            help_embed.set_footer(icon_url=self.context.author.display_avatar.url, text=self.context.author)
 
             await destination.send(embed=help_embed)
 
     def get_ending_note(self):
         return """Bot Provided by the AOUutils Team.  
-                  EnderB0YHD, Toasty, GingerGigiCat, Captain."""
+                  EnderB0YHD, Toasty, GingerGigiCat, Robin, Captain."""
 
     async def filter_commands(self, commands, *, sort=False, key=None):
         if sort and key is None:

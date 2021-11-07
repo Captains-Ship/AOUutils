@@ -83,7 +83,7 @@ class Rule(commands.Cog):
 
     ]
 
-    @commands.command()
+    @commands.command(description="Get the rules for the server.", usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
     async def rule(self, ctx, rule: int = -1):
         try:
             if rule == -1:
@@ -106,7 +106,7 @@ class Rule(commands.Cog):
         except:
             await ctx.send('Unknown rule.')
 
-    @commands.command()
+    @commands.command(description='Enforces a rule', usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
     @commands.has_permissions(kick_members=True)
     async def enforce(self, ctx, user: discord.Member = None, rule: int = 9999):
         if rule == 9999:

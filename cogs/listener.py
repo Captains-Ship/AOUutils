@@ -207,7 +207,7 @@ class Listener(commands.Cog):
                 description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
                 colour=discord.Colour.red()
             )
-            embed.set_thumbnail(url=self.client.user.avatar.url)
+            embed.set_thumbnail(url=self.client.user.display_avatar.url)
             await ctx.send(
                 'Error!',
                 embed=embed
@@ -219,16 +219,18 @@ class Listener(commands.Cog):
                 if ctx.guild is None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
                     await ctx.reinvoke()
                 else:
-                    await ctx.send(f'Missing permissions: {error.missing_permissions}')
+                    await ctx.send(f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):
-            await ctx.reply('unknown member')
+            await ctx.reply('The member that you\'ve mentioned isn\'t in this server or does not exist.')
         elif ctx.command.name.lower() == 'purge':
             if not isinstance(error, MissingPermissions):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'missing argument(s) `{error.param}`')
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send('You are probably not allowed to use this command.')
         elif isinstance(error, ValueError):
             print(error.args)
         else:

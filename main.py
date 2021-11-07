@@ -108,7 +108,7 @@ async def on_message(msg):
         if ctx.valid:
             embed = discord.Embed(
                 title="Uh Oh...",
-                description=f"Looks like youve been blacklisted, so you cant run {ctx.invoked_with}",
+                description=f"Looks like you've been blacklisted, so you can't run {ctx.invoked_with}",
                 colour=discord.Colour.red()
             )
             await ctx.send(embed=embed)
