@@ -1,6 +1,6 @@
 import discord
 import datetime
-from discord.ext import *
+from discord.ext import commands
 import json
 from logger import logger
 
@@ -9,7 +9,7 @@ class Afk(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(description='Sets your afk status.', usage='<reason>\n`reason`: The reason why you are going AFK. This is an optional argument.')
     async def afk(self, ctx, *, reason='AFK'):
         dt = datetime.datetime
         time = dt.now()

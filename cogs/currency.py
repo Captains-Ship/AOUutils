@@ -23,8 +23,8 @@ class Currency(commands.Cog):
 
         return commands.check(predicate)
 
-    @commands.command()
-    async def bal(self, ctx, member: discord.Member = None):
+    @commands.command(description='Shows the current balance in your account or that of the mentioned user.', usage='[user]\n`user`: The user who\'s balance that you want to view, it can be a mention or a user ID.', aliases=['bal'])
+    async def balance(self, ctx, member: discord.Member = None):
         member = member or ctx.author
         try:
             with open('cur.json', 'r') as f:
@@ -45,7 +45,7 @@ class Currency(commands.Cog):
             else:
                 await ctx.send(f'{member.name} does not have an account yet.')
 
-    @commands.command()
+    @commands.command(description='Creates an account in the bot.')
     async def start(self, ctx):
         with open('cur.json', 'r') as f:
             money = json.load(f)
@@ -64,8 +64,8 @@ class Currency(commands.Cog):
             json.dump(money, f, indent=4)
             await ctx.send('You have made an account, and got some sweet starter money!')
 
-    @commands.command()
-    async def inv(self, ctx):
+    @commands.command(description='Shows your inventory or that of the mentioned user', aliases=['inv'], usage='[user]\n`user`: The user who\'s inventory that you want to view, it can be a mention or a user ID. This is an optional argument.')
+    async def inventory(self, ctx):
         with open('cur.json', 'r') as f:
             money = json.load(f)
             user = money[str(ctx.author.id)]
@@ -83,7 +83,7 @@ class Currency(commands.Cog):
         embed.set_footer(text=f'{ctx.author}\'s Inventory')
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description='Opens the shop where you buy goodies!')
     async def shop(self, ctx, *, item=None):
         if item == None:
             afford = ""
@@ -158,7 +158,7 @@ class Currency(commands.Cog):
                 await ctx.send('Not a valid shop item.')
             await ctx.send('Not a valid shop item.')
 
-    @commands.command()
+    @commands.command(description='Use this command to work and earn money!')
     @commands.cooldown(1, 3600, type=discord.ext.commands.BucketType.user)
     async def work(self, ctx):
         try:
@@ -221,7 +221,7 @@ class Currency(commands.Cog):
         except KeyError:
             await ctx.reply(f'You do not yet have an account, create one with `{ctx.clean_prefix}start`')
 
-    @commands.command(aliases=['dep'])
+    @commands.command(aliases=['dep'], description='Deposits the specified amount in your bank.', usage='<amount>\n`amount`: The amount of money that you want to deposit. This is a required argument and must be an integer.')
     async def deposit(self, ctx, *, amount: int = 0):
         if amount > 0:
             with open('cur.json', 'r') as f:
@@ -239,7 +239,7 @@ class Currency(commands.Cog):
         else:
             await ctx.send('Don\'t try to break me!')
 
-    @commands.command(aliases=['with'])
+    @commands.command(aliases=['with'], description='Withdraws the specified amount from your bank.', usage='<amount>\n`amount`: The amount of money that you want to withdraw. This is a required argument and must be an integer.')
     async def withdraw(self, ctx, *, amount: int = 0):
         if amount > 0:
             with open('cur.json', 'r') as f:
@@ -257,7 +257,7 @@ class Currency(commands.Cog):
         else:
             await ctx.send('Don\'t try to break me!')
 
-    @commands.command()
+    @commands.command(description='Sharing is caring! Use this command to give money to others!', usage='<user> <amount>\n`user`: The user that you want to give money to. This is a required argument and must be either a mention or a user ID.\n`amount`: The amount of money that you want to give. This is a required argument and must be an integer.')
     async def give(self, ctx, user: discord.Member = None, amount: int = 0):
         if user != None and user != ctx.author:
             if amount > 0:
@@ -280,7 +280,7 @@ class Currency(commands.Cog):
         else:
             await ctx.send('Please enter a user, if you did enter a user make sure it isn\'t you.')
 
-    @commands.command()
+    @commands.command(description='Use this command to beg for money.\n**NOTE: This is still WIP.**')
     @dev()
     async def beg(self, ctx):
         await ctx.reply("It's a work in progress mate.")

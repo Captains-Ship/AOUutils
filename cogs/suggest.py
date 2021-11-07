@@ -8,7 +8,7 @@ class Suggest(commands.Cog, name="Suggest"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'])
+    @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'], usage="<suggestion>\n`suggestion`: The suggestion that you want to give. This is a required argument.")
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def h(self, ctx, *, suggestion=None):
         if suggestion:

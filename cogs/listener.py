@@ -219,7 +219,7 @@ class Listener(commands.Cog):
                 if ctx.guild is None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
                     await ctx.reinvoke()
                 else:
-                    await ctx.send(f'Missing permissions: {error.missing_permissions}')
+                    await ctx.send(f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):

@@ -10,7 +10,7 @@ class Misc(commands.Cog):
         self.client = client
 
 
-    @commands.command(help='makes the bot say something.')
+    @commands.command(description='Makes the bot say something.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def echo(self, ctx, *, text=" "):
@@ -23,7 +23,7 @@ class Misc(commands.Cog):
         else:
             await ctx.reply('I cannot send nothing')
     
-    @commands.command()
+    @commands.command(description='Converts a hexadecimal string into an ASCII string.', usage='<hexadecimal string>\n`hexadecimal string`: The string that is to be converted into ASCII. This is a required argument.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def hex(self, ctx, *, hexed):
         hex_string = hexed
@@ -39,7 +39,7 @@ class Misc(commands.Cog):
 
 
 
-    @commands.command(aliases=['bin'])
+    @commands.command(aliases=['bin'], description='Converts a binary string into an ASCII string.', usage='<binary string>\n`binary string`: The string that is to be converted into ASCII. This is a required argument.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def binary(self, ctx, *, bin):
         is_binary = True
@@ -63,7 +63,7 @@ class Misc(commands.Cog):
             embed.set_footer(icon_url=ctx.message.author.display_avatar.url, text=f'Requested by {ctx.message.author.name}')
             await ctx.reply(embed=embed)
 
-    @commands.command()
+    @commands.command(description='Creates an embed.', usage='<colour> <description>\n`colour`: The colour of the embed. This is a required argument.\n`colour`: The colour of the embed. This is a required argument.\n`description`: The description of the embed. This is a required argument.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def embed(self, ctx, color='** **', *, emb="** **"):
@@ -105,7 +105,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Members Online', value=countOnlineMember(ctx.guild))
         await ctx.reply(embed=embed)
     
-    @commands.command()
+    @commands.command(description='Returns the latency between the bot and Discord.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ping(self, ctx):
         embed = discord.Embed(
@@ -114,7 +114,8 @@ class Misc(commands.Cog):
             colour=discord.Colour.red() 
         )
         await ctx.reply(embed=embed)
-    @commands.command()
+
+    @commands.command(description='Info about this bot.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def botinfo(self, ctx):
         embed = discord.Embed(
@@ -130,7 +131,7 @@ class Misc(commands.Cog):
 
 
 
-    @commands.command()
+    @commands.command(description='Returns a list of the staff members of AOU.')
     @commands.cooldown(1, 15, type=discord.ext.commands.BucketType.user)
     async def staff(self, ctx):
         embed = discord.Embed(
@@ -204,7 +205,7 @@ class Misc(commands.Cog):
         embed.set_author(name='Values may or may not be incorrect due to the wacky way i implemented this.')
         await ctx.reply(embed=embed)
     
-    @commands.command()
+    @commands.command(description='Returns information about you or that of the mentioned user.', usage='<user>\n`user`: The user whose information you want to see. This is an optional argument and can be either a mention or a user ID')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def userinfo(self, ctx, member: discord.Member = None):
         member = member or ctx.author
