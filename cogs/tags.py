@@ -195,7 +195,7 @@ class Tags(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def tou(self, ctx):
-        await ctx.send('we are NOT town of us. this is all of us.')
+        await ctx.send('we are NOT Town of Us, this is All Of Us.')
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)

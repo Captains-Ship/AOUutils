@@ -223,12 +223,14 @@ class Listener(commands.Cog):
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):
-            await ctx.reply('unknown member')
+            await ctx.reply('The member that you\'ve mentioned isn\'t in this server or does not exist.')
         elif ctx.command.name.lower() == 'purge':
             if not isinstance(error, MissingPermissions):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'missing argument(s) `{error.param}`')
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send('You are probably not allowed to use this command.')
         elif isinstance(error, ValueError):
             print(error.args)
         else:

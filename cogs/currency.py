@@ -1,7 +1,9 @@
+import json
+import random as r
+
 import discord
 from discord.ext import commands
-import random as r
-import json
+
 from logger import logger
 
 global ci
@@ -16,7 +18,7 @@ class Currency(commands.Cog):
 
     def dev():
         async def predicate(ctx):
-            devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627]
+            devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922]
             return ctx.author.id in devs
 
         return commands.check(predicate)
@@ -39,7 +41,7 @@ class Currency(commands.Cog):
                 await ctx.send(embed=embed)
         except KeyError:
             if member == ctx.author:
-                await ctx.send('You do not have an account yet. Create one with `aou start`.')
+                await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
             else:
                 await ctx.send(f'{member.name} does not have an account yet.')
 
@@ -109,9 +111,9 @@ class Currency(commands.Cog):
             else:
                 embed.add_field(name='Shit you can afford', value=afford, inline=False)
             if affordnt == ", ":
-                embed.add_field(name='Shit you cant afford', value='None lmao rich ass', inline=False)
+                embed.add_field(name='Shit you can\'t afford', value='None lmao rich ass', inline=False)
             else:
-                embed.add_field(name='Shit you cant afford', value=affordnt, inline=False)
+                embed.add_field(name='Shit you can\'t afford', value=affordnt, inline=False)
             await ctx.send(embed=embed)
         else:
             try:
@@ -185,16 +187,16 @@ class Currency(commands.Cog):
                 with open('cur.json', 'w') as f:
                     json.dump(money, f, indent=4)
                     replieswin = [
-                        f'You made a mod for minecraft and was paid {gained}{ci} by Captain',
+                        f'You made a mod for Minecraft and was paid {gained}{ci} by Captain',
                         f'You revived AOU for a few seconds and got paid {gained}{ci} by Heapons',
                         f'Toasty paid you {gained}{ci} for coding in JavaScript',
-                        f'Captain paid you {gained}{ci} for coding in python',
+                        f'Captain paid you {gained}{ci} for coding in Python',
                         f'You worked at the bank and stole {gained}{ci} while you were there',
                         f'Robin ran past you at work and gave you {gained}{ci}',
-                        f'Arawn paid you {gained}{ci} for an among us mod',
+                        f'Arawn paid you {gained}{ci} for an Among Us mod',
                         f'You walked home with Arawn Pierer, they paid you {gained}{ci} for keeping them safe on their way home',
-                        f'You playtested Arawn Pierers game and found {r.randrange(2, 50, 2)} bugs and Arawn Pierer paid you {gained}{ci}',
-                        f'You helped making AOU work on mobile and was paid {gained}{ci} by Angxl',
+                        f'You playtested Arawn Pierer\'s game and found {r.randrange(2, 50, 2)} bugs and Arawn Pierer paid you {gained}{ci}',
+                        f'You helped AOU work on mobile and was paid {gained}{ci} by Angxl',
                         f'You invested in Bitro and got {gained}{ci} extra',
                         f'You played dimensionsSMP and someone gave you {r.randrange(1, 5, 2)} diamonds and you made that into {gained}{ci}',
                         f'You hacked AOUutils and gave yourself {gained}{ci}',
@@ -202,22 +204,22 @@ class Currency(commands.Cog):
                         f'You recorded a train and Norway gave you {gained}{ci}'
                     ]
                     repliesloss = [
-                        f'You tried to steal money while working at the bank but never got an opportunity to. you were paid {gained}{ci} for an hour of work',
+                        f'You tried to steal money while working at the bank but never got an opportunity to. You were paid {gained}{ci} for an hour of work',
                         f'You were going to work but was beat up on the way there, you got {gained}{ci} for working an hour.',
                         f':) {gained}{ci}',
                         f'You burnt the toast at work and was sent home early. You gained {gained}{ci}',
-                        f'You tried to training a pikachu in the Hidden Leaf Village but it didn\'t learn a thing. Paid {gained}{ci} for poor work',
-                        f'You got lost while sailing a cruise ship, and was paid {gained}{ci} for a bad 6 days of work',
+                        f'You tried to train a {r.choice(["Pikachu", "Squirtle", "Bulbasaur", "Charmander"])} in the Hidden Leaf Village but it didn\'t learn a thing. Paid {gained}{ci} for poor work',
+                        f'You got lost while sailing a cruise ship, and was paid {gained}{ci} for a bad {r.randrange(2, 10, 1)} days of work',
                         f'You dropped a spoon and was sent home. You got {gained}{ci}',
                         f'I Agree disagreed with you. You got {gained}{ci} for a bad day of work',
                         f'XtraCube banned you with XtraCute and you were paid {gained}{ci} for a bad day of work.'
                     ]
-                    if fail == True:
+                    if fail:
                         await ctx.reply(r.choice(repliesloss))
                     else:
                         await ctx.reply(r.choice(replieswin))
         except KeyError:
-            await ctx.reply('You do not yet have an account, create one with `aou start`')
+            await ctx.reply(f'You do not yet have an account, create one with `{ctx.clean_prefix}start`')
 
     @commands.command(aliases=['dep'])
     async def deposit(self, ctx, *, amount: int = 0):
@@ -231,11 +233,11 @@ class Currency(commands.Cog):
                     money[str(ctx.author.id)]['bank'] = int(bank) + amount
                     await ctx.send('Transaction Complete!')
                 else:
-                    await ctx.send('not enough money to do this transaction')
+                    await ctx.send('Not enough money to do this transaction.')
             with open('cur.json', 'w') as f:
                 json.dump(money, f, indent=4)
         else:
-            await ctx.send('Dont try to break me!')
+            await ctx.send('Don\'t try to break me!')
 
     @commands.command(aliases=['with'])
     async def withdraw(self, ctx, *, amount: int = 0):
@@ -249,11 +251,11 @@ class Currency(commands.Cog):
                     money[str(ctx.author.id)]['wallet'] = int(wallet) + amount
                     await ctx.send('Transaction Complete!')
                 else:
-                    await ctx.send('not enough money to do this transaction')
+                    await ctx.send('Not enough money to do this transaction.')
             with open('cur.json', 'w') as f:
                 json.dump(money, f, indent=4)
         else:
-            await ctx.send('Dont try to break me!')
+            await ctx.send('Don\'t try to break me!')
 
     @commands.command()
     async def give(self, ctx, user: discord.Member = None, amount: int = 0):
@@ -270,21 +272,18 @@ class Currency(commands.Cog):
                         umon = umon + amount
                         await ctx.send('Transaction Complete!')
                     else:
-                        await ctx.send('Yeah dont try to break me please')
+                        await ctx.send('Yeah don\'t try to break me please')
                 with open('cur.json', 'w') as f:
                     json.dump(money, f, indent=4)
             else:
-                await ctx.send('dont try to break me')
+                await ctx.send('Don\'t try to break me!')
         else:
-            await ctx.send('Please enter a user, if you did enter a user make sure it isnt you.')
+            await ctx.send('Please enter a user, if you did enter a user make sure it isn\'t you.')
 
-
-
-    from utility.utils import getconfig
     @commands.command()
     @dev()
     async def beg(self, ctx):
-        cur = getconfig('cur')
+        await ctx.reply("It's a work in progress mate.")
 
 
 """

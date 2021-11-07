@@ -48,7 +48,7 @@ class HelpUwU(commands.MinimalHelpCommand):
 
     def get_ending_note(self):
         return """Bot Provided by the AOUutils Team.  
-                  EnderB0YHD, Toasty, GingerGigiCat, Captain."""
+                  EnderB0YHD, Toasty, GingerGigiCat, Robin, Captain."""
 
     async def filter_commands(self, commands, *, sort=False, key=None):
         if sort and key is None:
