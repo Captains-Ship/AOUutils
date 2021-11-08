@@ -1,6 +1,6 @@
 import json
 import random as r
-
+import typing
 import discord
 from discord.ext import commands
 
@@ -221,37 +221,41 @@ class Currency(commands.Cog):
         except KeyError:
             await ctx.reply(f'You do not yet have an account, create one with `{ctx.clean_prefix}start`')
 
-    @commands.command(aliases=['dep'], description='Deposits the specified amount in your bank.', usage='<amount>\n`amount`: The amount of money that you want to deposit. This is a required argument and must be an integer.')
-    async def deposit(self, ctx, *, amount: int = 0):
+    @commands.command(aliases=['dep'], description='Deposits the specified amount in your bank.', usage='<amount>\n`amount`: The amount of money that you want to deposit. This is a required argument and must be an integer. You may also use "max" or "all".')
+    async def deposit(self, ctx, *, amount: typing.Union[int, str] = 0):
+        with open('cur.json', 'r') as f:
+            money = json.load(f)
+        wallet = money[str(ctx.author.id)]['wallet']
+        bank = money[str(ctx.author.id)]['bank']
+        if isinstance(amount, str):
+            amount = wallet if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
-            with open('cur.json', 'r') as f:
-                money = json.load(f)
-                wallet = money[str(ctx.author.id)]['wallet']
-                bank = money[str(ctx.author.id)]['bank']
-                if amount - 1 < int(wallet):
-                    money[str(ctx.author.id)]['wallet'] = wallet - amount
-                    money[str(ctx.author.id)]['bank'] = int(bank) + amount
-                    await ctx.send('Transaction Complete!')
-                else:
-                    await ctx.send('Not enough money to do this transaction.')
+            if amount - 1 < int(wallet):
+                money[str(ctx.author.id)]['wallet'] = wallet - amount
+                money[str(ctx.author.id)]['bank'] = int(bank) + amount
+                await ctx.send('Transaction Complete!')
+            else:
+                await ctx.send('Not enough money to do this transaction.')
             with open('cur.json', 'w') as f:
                 json.dump(money, f, indent=4)
         else:
             await ctx.send('Don\'t try to break me!')
 
-    @commands.command(aliases=['with'], description='Withdraws the specified amount from your bank.', usage='<amount>\n`amount`: The amount of money that you want to withdraw. This is a required argument and must be an integer.')
-    async def withdraw(self, ctx, *, amount: int = 0):
+    @commands.command(aliases=['with'], description='Withdraws the specified amount from your bank.', usage='<amount>\n`amount`: The amount of money that you want to withdraw. This is a required argument and must be an integer. You may also use "max" or "all".')
+    async def withdraw(self, ctx, *, amount: typing.Union[int, str] = 0):
+        with open('cur.json', 'r') as f:
+            money = json.load(f)
+        wallet = money[str(ctx.author.id)]['wallet']
+        bank = money[str(ctx.author.id)]['bank']
+        if isinstance(amount, str):
+            amount = bank if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
-            with open('cur.json', 'r') as f:
-                money = json.load(f)
-                wallet = money[str(ctx.author.id)]['wallet']
-                bank = money[str(ctx.author.id)]['bank']
-                if amount - 1 < int(bank):
-                    money[str(ctx.author.id)]['bank'] = bank - amount
-                    money[str(ctx.author.id)]['wallet'] = int(wallet) + amount
-                    await ctx.send('Transaction Complete!')
-                else:
-                    await ctx.send('Not enough money to do this transaction.')
+            if amount - 1 < int(bank):
+                money[str(ctx.author.id)]['bank'] = bank - amount
+                money[str(ctx.author.id)]['wallet'] = int(wallet) + amount
+                await ctx.send('Transaction Complete!')
+            else:
+                await ctx.send('Not enough money to do this transaction.')
             with open('cur.json', 'w') as f:
                 json.dump(money, f, indent=4)
         else:
