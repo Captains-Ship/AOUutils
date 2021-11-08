@@ -227,8 +227,8 @@ class Currency(commands.Cog):
             money = json.load(f)
         wallet = money[str(ctx.author.id)]['wallet']
         bank = money[str(ctx.author.id)]['bank']
-        if isinstance(amount, str) and amount.lower() in ['all', 'max']:
-            amount = wallet
+        if isinstance(amount, str):
+            amount = wallet if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
             if amount - 1 < int(wallet):
                 money[str(ctx.author.id)]['wallet'] = wallet - amount
@@ -247,8 +247,8 @@ class Currency(commands.Cog):
             money = json.load(f)
         wallet = money[str(ctx.author.id)]['wallet']
         bank = money[str(ctx.author.id)]['bank']
-        if isinstance(amount, str) and amount.lower() in ['all', 'max']:
-            amount = bank
+        if isinstance(amount, str):
+            amount = bank if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
             if amount - 1 < int(bank):
                 money[str(ctx.author.id)]['bank'] = bank - amount
