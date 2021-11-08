@@ -26,7 +26,7 @@ class Git(commands.Cog):
                 except Exception as e:
                     logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}") # couldnt be bothered checking if it was new, cry about it
     @git.command()
-    async def push(self, ctx, message="Push through AOUutils"):
+    async def push(self, ctx, *, message="Push through AOUutils"):
         with open('config.json', 'r') as f:
             config = load(f)
         system("git add .")
