@@ -1,9 +1,11 @@
+import asyncio
 import datetime
 import json
 from logger import logger
 import discord
 from discord.ext import commands
 from discord.ext.buttons import Paginator
+from utility.utils import Duration
 import uuid
 
 
@@ -31,15 +33,15 @@ class Moderation(commands.Cog):
         else:
             await ctx.reply('Max to purge is `300`')
 
-    @commands.command(description="Bans a specified user.", usage="<user> [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
+    @commands.command(description="Bans a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member = None, *, reason=None):
+    async def ban(self, ctx, member: discord.Member = None, duration: Duration = -1, *, reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
                 if ctx.author.top_role > member.top_role:
                     embed = discord.Embed(
                         title=f'You were banned from {ctx.guild.name}',
-                        description=f'Reason:\n{reason}',
+                        description=f'Reason:\n{reason}' if reason is not None else "",
                         colour=discord.Colour.red()
                     )
                     embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
@@ -50,6 +52,13 @@ class Moderation(commands.Cog):
                     try:
                         await ctx.guild.ban(member, reason=reason)
                         await ctx.send(f'**{ctx.author}** Banned **{member}**')
+                        if duration > 0:
+                            await asyncio.sleep(duration)
+                            await ctx.guild.unban(member, reason="Tempban has expired!")
+                            try:
+                                await member.send(f'You have been unbanned from {ctx.guild.name}')
+                            except discord.Forbidden:
+                                pass
                     except discord.Forbidden:
                         await ctx.send('above my top role, cant ban')
                 else:
@@ -78,9 +87,9 @@ class Moderation(commands.Cog):
             else:
                 await ctx.reply('**role hierarchy moment**')
 
-    @commands.command(description="Mutes a specified user.", usage="<user> [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting muted. This is an optional argument.")
-    @commands.has_permissions(manage_roles=True)
-    async def mute(self, ctx, member: discord.Member, *, reason=None):
+    @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
+    @commands.has_permissions(manage_messages=True)
+    async def mute(self, ctx, member: discord.Member, duration: Duration = -1, *, reason=None):
         if ctx.author.top_role > member.top_role:
             guild = ctx.guild
             mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")
@@ -91,16 +100,21 @@ class Moderation(commands.Cog):
                 for channel in guild.channels:
                     await channel.set_permissions(mutedRole, speak=False, send_messages=False,
                                                   read_message_history=True, read_messages=False)
-            eh = discord.Embed(title="muted", description=f"{member.mention} was muted ", colour=discord.Colour.red())
-            eh.add_field(name="reason:", value=reason, inline=False)
+            eh = discord.Embed(title="muted", description=f"{member.mention} was muted", colour=discord.Colour.red())
+            if reason is not None:
+                eh.add_field(name="reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
             await member.add_roles(mutedRole, reason=reason)
-            await member.send(f" you have been muted from: {guild.name} reason: {reason}")
+            await member.send(f"You have been muted in {guild.name}" + f" for reason: {reason}" if reason is not None else "")
+            if duration > 0:  # If someone decides to input negative integers for some reason.
+                await asyncio.sleep(duration)
+                await member.remove_roles(mutedRole, reason="Tempmute has expired!")
+                await member.send(f"You have been unmuted in {guild.name}")
         else:
             await ctx.send('**role hierarchy moment**')
 
     @commands.command(description="Unmutes a specified user.", usage="<user>\n`user`: The user to be unmuted. This is a required argument and can either be a mention or a user ID.")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(manage_messages=True)
     async def unmute(self, ctx, member: discord.Member):
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
 

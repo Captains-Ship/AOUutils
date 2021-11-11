@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 import json
 
 
@@ -47,3 +48,28 @@ def botcount(guild):
         if m.bot:
             botlist.append(m)
     return len(botlist)
+
+
+class Duration(commands.Converter):
+    async def convert(self, ctx, argument) -> int:
+        try:
+            if argument.isdigit():  # Argument is in seconds
+                return int(argument)
+            else:
+                values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
+                nums = []
+                tempnums = []
+                for char in argument:
+                    if char.isdigit():
+                        tempnums.append(char)
+                    else:
+                        multiple = values.get(char, 1)
+                        num = int("".join(tempnums))
+                        tempnums.clear()
+                        nums.append(num * multiple)
+                if len(nums) > 0:
+                    return sum(nums)
+                else:
+                    return -1
+        except commands.BadArgument:  # idk if this will ever happen, I just put it due to GitHub copilot
+            raise commands.BadArgument(f'{argument} is not a valid duration.')
