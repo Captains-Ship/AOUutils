@@ -1,6 +1,8 @@
 import asyncio
 import datetime
 import json
+import typing
+
 from logger import logger
 import discord
 from discord.ext import commands
@@ -35,7 +37,7 @@ class Moderation(commands.Cog):
 
     @commands.command(description="Bans a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member = None, duration: Duration = -1, *, reason=None):
+    async def ban(self, ctx, member: discord.Member = None, duration: typing.Optional[Duration] = -1, *, reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
                 if ctx.author.top_role > member.top_role:
@@ -89,7 +91,7 @@ class Moderation(commands.Cog):
 
     @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
-    async def mute(self, ctx, member: discord.Member, duration: Duration = -1, *, reason=None):
+    async def mute(self, ctx, member: discord.Member, duration: typing.Optional[Duration] = -1, *, reason=None):
         if ctx.author.top_role > member.top_role:
             guild = ctx.guild
             mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")

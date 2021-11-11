@@ -71,5 +71,5 @@ class Duration(commands.Converter):
                     return sum(nums)
                 else:
                     return -1
-        except commands.BadArgument:  # idk if this will ever happen, I just put it due to GitHub copilot
-            raise commands.BadArgument(f'{argument} is not a valid duration.')
+        except:
+            raise commands.BadArgument(f"{argument} is not a valid duration.")
