@@ -22,7 +22,7 @@ class Git(commands.Cog):
         for filename in listdir(r'./cogs'):
             if filename.endswith('.py'):
                 try:
-                    client.reload_extension(f'cogs.{filename[:-3]}')
+                    self.client.reload_extension(f'cogs.{filename[:-3]}')
                 except Exception as e:
                     logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}") # couldnt be bothered checking if it was new, cry about it
     @git.command()
