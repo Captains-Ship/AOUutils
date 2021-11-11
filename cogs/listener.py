@@ -235,6 +235,14 @@ class Listener(commands.Cog):
             print(error.args)
         else:
             # await ctx.reply(f'Error executing command! \n{error}\nYou should never receive this message. Contact Captain#3175 about this and he will hopefully add an error handler for that.')
+            errorlog = self.client.get_channel(908402845383004171)
+            e = discord.Embed(
+                title="Error!",
+                description=ctx.message.content,
+                colour=discord.Colour.red()
+            )
+            e.add_field(name="error", value=error)
+            await errorlog.send(embed=embed)
             await ctx.reply(f'Error, This has been reported to the developers!\n{error}')
             cmdlog = self.client.get_channel(896394252962123806)
             embed = discord.Embed(
