@@ -208,7 +208,7 @@ class Currency(commands.Cog):
                         f'You were going to work but was beat up on the way there, you got {gained}{ci} for working an hour.',
                         f':) {gained}{ci}',
                         f'You burnt the toast at work and was sent home early. You gained {gained}{ci}',
-                        f'You tried to train a {r.choice(["Pikachu", "Squirtle", "Bulbasaur", "Charmander"])} in the Hidden Leaf Village but it didn\'t learn a thing. Paid {gained}{ci} for poor work',
+                        f'You tried to training a {r.choice(["Pikachu", "Squirtle", "Bulbasaur", "Charmander"])} in the Hidden Leaf Village but it didn\'t learn a thing. Paid {gained}{ci} for poor work',
                         f'You got lost while sailing a cruise ship, and was paid {gained}{ci} for a bad {r.randrange(2, 10, 1)} days of work',
                         f'You dropped a spoon and was sent home. You got {gained}{ci}',
                         f'I Agree disagreed with you. You got {gained}{ci} for a bad day of work',
