@@ -79,7 +79,7 @@ class Moderation(commands.Cog):
                 await ctx.reply('**role hierarchy moment**')
 
     @commands.command(description="Mutes a specified user.", usage="<user> [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting muted. This is an optional argument.")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.top_role > member.top_role:
             guild = ctx.guild
