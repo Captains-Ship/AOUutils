@@ -100,7 +100,7 @@ class Moderation(commands.Cog):
             await ctx.send('**role hierarchy moment**')
 
     @commands.command(description="Unmutes a specified user.", usage="<user>\n`user`: The user to be unmuted. This is a required argument and can either be a mention or a user ID.")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(manage_messages=True)
     async def unmute(self, ctx, member: discord.Member):
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
 
