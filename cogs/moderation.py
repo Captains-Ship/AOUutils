@@ -43,7 +43,7 @@ class Moderation(commands.Cog):
                 if ctx.author.top_role > member.top_role:
                     embed = discord.Embed(
                         title=f'You were banned from {ctx.guild.name}',
-                        description=f'Reason:\n{reason}' if reason is not None else " ",
+                        description=f'Reason:\n{reason}' if reason is not None else "** **",
                         colour=discord.Colour.red()
                     )
                     embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
