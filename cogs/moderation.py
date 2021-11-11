@@ -43,7 +43,7 @@ class Moderation(commands.Cog):
                 if ctx.author.top_role > member.top_role:
                     embed = discord.Embed(
                         title=f'You were banned from {ctx.guild.name}',
-                        description=f'Reason:\n{reason}' if reason is not None else "",
+                        description=f'Reason:\n{reason}' if reason is not None else " ",
                         colour=discord.Colour.red()
                     )
                     embed.add_field(name='Appeal At:', value='http://bit.ly/launchpadbanappeal')
@@ -107,7 +107,7 @@ class Moderation(commands.Cog):
                 eh.add_field(name="reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
             await member.add_roles(mutedRole, reason=reason)
-            await member.send(f"You have been muted in {guild.name}" + f" for reason: {reason}" if reason is not None else "")
+            await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
             if duration > 0:  # If someone decides to input negative integers for some reason.
                 await asyncio.sleep(duration)
                 await member.remove_roles(mutedRole, reason="Tempmute has expired!")
