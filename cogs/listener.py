@@ -242,7 +242,7 @@ class Listener(commands.Cog):
                 colour=discord.Colour.red()
             )
             e.add_field(name="error", value=error)
-            await errorlog.send(embed=embed)
+            await errorlog.send(embed=e)
             await ctx.reply(f'Error, This has been reported to the developers!\n{error}')
             cmdlog = self.client.get_channel(896394252962123806)
             embed = discord.Embed(
