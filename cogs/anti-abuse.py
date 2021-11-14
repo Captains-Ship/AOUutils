@@ -52,7 +52,7 @@ class AntiAbuse(commands.Cog):
         ):
             ch = self.client.get_channel(846389772166758432)
             embed = discord.Embed(
-                title="test",
+                title="A channel was deleted!",
                 description=f"`{entry.user}` Deleted the channel `#{c}`",
                 colour=discord.Colour.red()
             )
@@ -68,7 +68,7 @@ class AntiAbuse(commands.Cog):
         ):
             ch = self.client.get_channel(846389772166758432)
             embed = discord.Embed(
-                title="test",
+                title="A channel was created!",
                 description=f"`{entry.user}` Created the channel `#{c}` (link: {c.mention})",
                 colour=discord.Colour.red()
             )
