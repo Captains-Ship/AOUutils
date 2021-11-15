@@ -9,6 +9,47 @@ class Tags(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def downgrade(self, ctx):
+        embed = discord.Embed(
+            title="Uh Oh...",
+            description="""
+            so you know how launchpad is outdated... ***again***
+
+            well Captain decided to make a simple tool to downgrade among us on steam, the version you want is `2021.6.30s`
+
+            the github repo is [here](https://github.com/Captain8771/easy-among-us-depot-downloader), you will need [python 3.9](https://www.python.org/downloads/release/python-390/)
+
+            if there is any issue open a ticket in <#809192430935080960>
+            """, color=discord.Color.red())
+        m = ctx.message.reference or ctx.message
+        if m != ctx.message:
+            m = m.resolved
+        await m.reply(embed=embed)
+ 
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
+    async def download(self, ctx):
+        embed = discord.Embed(
+            title="Downloading Launchpad",
+            description="""
+		Note: You need to be the desktop client and Among Us should **NOT be updated to v2021.11.9 or higher**
+
+		1) Go to <#896112272399794207> and click "Add to Library"
+
+		2) Go to the library tab (below the friends tab in the homepage) and click "Install" on Launchpad
+
+		The mod should install. (If it fails, don't hesitate to create a ticket and ask about it!)
+
+		3) Now click play!
+
+		Make sure to change the server region to "All Of Us: Launchpad"!
+            """, color=discord.Color.red())
+        m = ctx.message.reference or ctx.message
+        if m != ctx.message:
+            m = m.resolved
+        await m.reply(embed=embed)
+    @commands.command()
+    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def beta(self, ctx):
         await ctx.send('http://bit.ly/AOUutilsBETA')
 
