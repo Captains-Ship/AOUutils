@@ -1,6 +1,7 @@
+import json
+import datetime
 import discord
 from discord.ext import commands
-import json
 
 
 def getconfig(config: str = 'config'):
@@ -50,11 +51,11 @@ def botcount(guild):
     return len(botlist)
 
 
-class Duration(commands.Converter):
-    async def convert(self, ctx, argument) -> int:
+class DurationConverter(commands.Converter):
+    async def convert(self, ctx, argument):
         try:
             if argument.isdigit():  # Argument is in seconds
-                return int(argument)
+                return Duration(int(argument))
             else:
                 values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
                 nums = []
@@ -68,8 +69,37 @@ class Duration(commands.Converter):
                         tempnums.clear()
                         nums.append(num * multiple)
                 if len(nums) > 0:
-                    return sum(nums)
+                    return Duration(sum(nums))
                 else:
-                    return -1
+                    return -1  # Idk what to put here so I might as well put -1
         except:
             raise commands.BadArgument(f"{argument} is not a valid duration.")
+
+
+class Duration:
+    def __init__(self, seconds):
+        self.total_seconds = seconds
+        self.weeks, seconds = divmod(seconds, 604800)
+        self.days, seconds = divmod(seconds, 86400)
+        self.hours, seconds = divmod(seconds, 3600)
+        self.minutes, self.seconds = divmod(seconds, 60)
+        self.epoch = self.total_seconds + int(datetime.datetime.now().timestamp())  # In case you need to make timestamps, here ya go.
+
+    def __str__(self):
+        temp = [
+            f"{self.weeks} week" + ("s" if self.weeks != 1 else "") if self.weeks > 0 else "",
+            f"{self.days} day" + ("s" if self.days != 1 else "") if self.days > 0 else "",
+            f"{self.hours} hour" + ("s" if self.hours != 1 else "") if self.hours > 0 else "",
+            f"{self.minutes} minute" + ("s" if self.minutes != 1 else "") if self.minutes > 0 else "",
+            f"{self.seconds} second" + ("s" if self.seconds != 1 else "") if self.seconds > 0 else ""
+        ]
+        temp = list(filter(lambda x: x != "", temp))
+        if len(temp) > 1:
+            temp[len(temp) - 1] = "and " + temp[len(temp) - 1]
+        return ", ".join(temp)
+
+    def __int__(self):
+        return self.total_seconds
+
+    def time_left(self) -> int:  # Returns the time left in seconds.
+        return self.epoch - int(datetime.datetime.now().timestamp())

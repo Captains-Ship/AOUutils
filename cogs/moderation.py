@@ -2,13 +2,14 @@ import asyncio
 import datetime
 import json
 import typing
+import uuid
 
-from logger import logger
 import discord
 from discord.ext import commands
 from discord.ext.buttons import Paginator
-from utility.utils import Duration
-import uuid
+
+from logger import logger
+from utility.utils import DurationConverter
 
 
 class Moderation(commands.Cog):
@@ -37,7 +38,7 @@ class Moderation(commands.Cog):
 
     @commands.command(description="Bans a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member = None, duration: typing.Optional[Duration] = -1, *, reason=None):
+    async def ban(self, ctx, member: discord.Member = None, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
                 if ctx.author.top_role > member.top_role:
@@ -53,8 +54,8 @@ class Moderation(commands.Cog):
                         pass
                     try:
                         await ctx.guild.ban(member, reason=reason)
-                        await ctx.send(f'**{ctx.author}** Banned **{member}**')
-                        if duration > 0:
+                        await ctx.send(f'**{ctx.author}** Banned **{member}' + (f" for {str(duration)}.**" if int(duration) > 0 else "**"))
+                        if (duration := int(duration)) > 0:
                             await asyncio.sleep(duration)
                             await ctx.guild.unban(member, reason="Tempban has expired!")
                             try:
@@ -91,7 +92,7 @@ class Moderation(commands.Cog):
 
     @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
-    async def mute(self, ctx, member: discord.Member, duration: typing.Optional[Duration] = -1, *, reason=None):
+    async def mute(self, ctx, member: discord.Member, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
         if ctx.author.top_role > member.top_role:
             guild = ctx.guild
             mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")
@@ -102,13 +103,13 @@ class Moderation(commands.Cog):
                 for channel in guild.channels:
                     await channel.set_permissions(mutedRole, speak=False, send_messages=False,
                                                   read_message_history=True, read_messages=False)
-            eh = discord.Embed(title="muted", description=f"{member.mention} was muted", colour=discord.Colour.red())
+            eh = discord.Embed(title="Muted", description=f"{member.mention} was muted" + (f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
             if reason is not None:
-                eh.add_field(name="reason:", value=reason, inline=False)
+                eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
             await member.add_roles(mutedRole, reason=reason)
             await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
-            if duration > 0:  # If someone decides to input negative integers for some reason.
+            if (duration := int(duration)) > 0:
                 await asyncio.sleep(duration)
                 await member.remove_roles(mutedRole, reason="Tempmute has expired!")
                 await member.send(f"You have been unmuted in {guild.name}")

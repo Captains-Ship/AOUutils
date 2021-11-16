@@ -32,7 +32,7 @@ class Tags(commands.Cog):
         embed = discord.Embed(
             title="Downloading Launchpad",
             description="""
-		Note: You need to be the desktop client and Among Us should **NOT be updated to v2021.11.9 or higher**
+		Note: You need to be the desktop client of Discord and Among Us should **NOT be updated to v2021.11.9 or higher**
 
 		1) Go to <#896112272399794207> and click "Add to Library"
 
