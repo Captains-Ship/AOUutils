@@ -32,7 +32,7 @@ class Git(commands.Cog):
         with open('config.json', 'r') as f:
             config = load(f)
         system("git add .")
-        system(f"git commit -a -m {message}")
+        system(f"git commit -a -m \"{message}\"")
         system(f"git push https://{config['github']}:{config['tokens']['github']}@github.com/captains-ship/aouutils")
         await ctx.send("Pushed!")
 
