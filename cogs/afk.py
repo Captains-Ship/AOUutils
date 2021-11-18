@@ -24,6 +24,31 @@ class Afk(commands.Cog):
             json.dump(afk, f, indent=4)
             await ctx.send(f'{ctx.author.mention} i set your afk: {reason}')
 
+    @commands.command(description='toggles if your afk should be disabled when you talk')
+    async def toggleautoafk(self, ctx):
+        with open("toggleafk.json", "r") as f:
+            tglafk = json.load(f)
+            try:
+                tglafk[str(ctx.author.id)] = not tglafk[str(ctx.author.id)]
+            except KeyError:
+                tglafk[str(ctx.author.id)] = False
+        with open("toggleafk.json", "w") as f:
+            json.dump(tglafk, f, indent=4)
+        await ctx.send(f"Successfully toggled to `{tglafk[str(ctx.author.id)]}`!")
+
+    @commands.command()
+    async def removeafk(self, ctx):
+        try:
+            with open("afk.json", "r") as f:
+                afk = json.load(f)
+                print(afk[str(ctx.author.id)]['reason'])
+                del afk[str(ctx.author.id)]
+            with open("afk.json", "w") as f:
+                json.dump(afk, f, indent=4)
+                await ctx.channel.send(f'{ctx.author.mention} I have removed your afk.')
+        except KeyError:
+            await ctx.send("You arent afk!")
+
     @commands.Cog.listener()
     async def on_message(self, message):
         dtdt = datetime.datetime
@@ -34,19 +59,31 @@ class Afk(commands.Cog):
         with open('afk.json', 'r') as f:
             afk = json.load(f)
             try:
-                print(afk[str(message.author.id)]['reason'])
-                del afk[str(message.author.id)]
-                await message.channel.send(f'{message.author.mention} I have removed your afk.', delete_after=5)
-            except:
+                e = True
+                with open("toggleafk.json", "r") as f:
+                    tglafk = json.load(f)
+                    if tglafk[str(msg.author.id)] == False:
+                        e = False
+            except KeyError:
                 pass
-                for mention in message.mentions:
-                    if str(mention.id) in afk:
-                        reason = afk[str(mention.id)]['reason']
-                        time = afk[str(mention.id)]['time']
-                        await message.channel.send(f'{mention.name}, <t:{time}:R>, is afk: {reason}')
+            print(e)
+            if e:
+                print("a")
+                try:
+                    print(afk[str(message.author.id)]['reason'])
+                    del afk[str(message.author.id)]
+                    await message.channel.send(f'{message.author.mention} I have removed your afk.', delete_after=5)
+                except:
+                    pass
+            for mention in message.mentions:
+                if str(mention.id) in afk:
+                    reason = afk[str(mention.id)]['reason']
+                    time = afk[str(mention.id)]['time']
+                    await message.channel.send(f'{mention.name}, <t:{time}:R>, is afk: {reason}')
         with open('afk.json', 'w') as f:
             json.dump(afk, f, indent=4)
 
 
 def setup(client):
     client.add_cog(Afk(client))
+
