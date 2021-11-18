@@ -18,7 +18,8 @@ class Suggest(commands.Cog, name="Suggest"):
                 675474604533219360,
                 721745855207571627,
                 476549192362229791,
-                468134163493421076
+                468134163493421076,
+                849939032410030080
             ]
             if ctx.author.id not in blacklist:
                 guild = self.bot.get_guild(850668209148395520)
