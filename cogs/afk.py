@@ -62,13 +62,11 @@ class Afk(commands.Cog):
                 e = True
                 with open("toggleafk.json", "r") as f:
                     tglafk = json.load(f)
-                    if tglafk[str(msg.author.id)] == False:
+                    if tglafk[str(message.author.id)] == False:
                         e = False
             except KeyError:
                 pass
-            print(e)
             if e:
-                print("a")
                 try:
                     print(afk[str(message.author.id)]['reason'])
                     del afk[str(message.author.id)]
