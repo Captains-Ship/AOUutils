@@ -268,7 +268,7 @@ class Currency(commands.Cog):
                 with open('cur.json', 'r') as f:
                     money = json.load(f)
                     author = money[str(ctx.author.id)]
-                    userlol = money[str(user.author.id)]
+                    userlol = money[str(user.id)]
                     amon = author['wallet']
                     umon = userlol['wallet']
                     if int(amon) > amount - 1:
