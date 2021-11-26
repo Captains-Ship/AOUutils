@@ -83,10 +83,10 @@ class Moderation(commands.Cog):
             if ctx.author.top_role > member.top_role:
                 try:
                     await member.send(embed=embed)
-                    await ctx.guild.kick(member, reason=reason)
-                    await ctx.send(f'**{ctx.author} Kicked {member}**')
                 except discord.Forbidden:
-                    await ctx.reply('their role is above mine')
+                    pass
+                await ctx.guild.kick(member, reason=reason)
+                await ctx.send(f'**{ctx.author} Kicked {member}**')
             else:
                 await ctx.reply('**role hierarchy moment**')
 
