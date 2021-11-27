@@ -21,7 +21,17 @@ class Misc(commands.Cog):
             async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
                 r = await resp.json()
                 if not r["error"]:
-                    await ctx.send(f"{ctx.author.mention}, {r['reply']}")
+                    reply = r['reply']
+                    embed = discord.Embed(
+                        title="ChatBot Response:",,
+                        description=reply,
+                        color=discord.Color.red()
+                    )
+                    embed.set_footer(
+                        icon_url="https://cdn.discordapp.com/icons/780334622164254720/989ef4de769355ae0d0088e72403c076.webp?size=1024",
+                        text="Powered by nuggetdev.com"
+                        )
+                    await ctx.reply(embed=embed)
 
 
     @commands.command(description='Makes the bot say something.')
