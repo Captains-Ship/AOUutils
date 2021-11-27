@@ -17,7 +17,7 @@ class Misc(commands.Cog):
         text = quote(text, safe="")
         key = getconfig()["tokens"]["nuggies"]
         async with self.client.cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
-            if resp.status = 200:
+            if resp.status == 200:
                 await ctx.send(resp.json())
 
 
