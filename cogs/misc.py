@@ -19,8 +19,9 @@ class Misc(commands.Cog):
             text = quote(text, safe="")
             key = getconfig()["tokens"]["nuggies"]
             async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
-                if resp.status == 200:
-                    await ctx.send(await resp.json())
+                r = await resp.json()
+                if not r["error"]:
+                    await ctx.send(f"{ctx.author.mention}, {r['reply']}")
 
 
     @commands.command(description='Makes the bot say something.')
