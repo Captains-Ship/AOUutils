@@ -53,27 +53,26 @@ def botcount(guild):
 
 class DurationConverter(commands.Converter):
     async def convert(self, ctx, argument):
-        try:
-            if argument.isdigit():  # Argument is in seconds
-                return Duration(int(argument))
-            else:
-                values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
-                nums = []
-                tempnums = []
-                for char in argument:
-                    if char.isdigit():
-                        tempnums.append(char)
-                    else:
-                        multiple = values.get(char, 1)
-                        num = int("".join(tempnums))
-                        tempnums.clear()
-                        nums.append(num * multiple)
-                if len(nums) > 0:
-                    return Duration(sum(nums))
+        if argument.isdigit():  # Argument is in seconds
+            return Duration(int(argument))
+        else:
+            values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
+            nums = []
+            tempnums = []
+            for char in argument:
+                if char.isdigit():
+                    tempnums.append(char)
                 else:
-                    return -1  # Idk what to put here so I might as well put -1
-        except:
-            raise commands.BadArgument(f"{argument} is not a valid duration.")
+                    multiple = values.get(char)
+                    if multiple is None:
+                        raise commands.BadArgument(f"{argument} is not a valid duration.")
+                    num = int("".join(tempnums))
+                    tempnums.clear()
+                    nums.append(num * multiple)
+            if len(nums) > 0:
+                return Duration(sum(nums))
+            else:
+                return -1  # Idk what to put here so I might as well put -1
 
 
 class Duration:
@@ -84,6 +83,33 @@ class Duration:
         self.hours, seconds = divmod(seconds, 3600)
         self.minutes, self.seconds = divmod(seconds, 60)
         self.epoch = self.total_seconds + int(datetime.datetime.now().timestamp())  # In case you need to make timestamps, here ya go.
+
+    def __repr__(self):
+        return f"<Duration: {self.total_seconds} seconds; {self.__str__()}>"
+
+    def __add__(self, other):
+        return Duration(self.total_seconds + other.total_seconds)
+
+    def __sub__(self, other):
+        return Duration(self.total_seconds - other.total_seconds)
+
+    def __gt__(self, other):
+        return self.total_seconds > other.total_seconds
+
+    def __lt__(self, other):
+        return self.total_seconds < other.total_seconds
+
+    def __le__(self, other):
+        return self.total_seconds <= other.total_seconds
+
+    def __ge__(self, other):
+        return self.total_seconds >= other.total_seconds
+
+    def __eq__(self, other):
+        return self.total_seconds == other.total_seconds
+
+    def __ne__(self, other):
+        return self.total_seconds != other.total_seconds
 
     def __str__(self):
         temp = [
