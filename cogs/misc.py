@@ -18,7 +18,7 @@ class Misc(commands.Cog):
         async with aiohttp.ClientSession() as cs:
             text = quote(text, safe="")
             key = getconfig()["tokens"]["nuggies"]
-            async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
+            async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}&userid={ctx.author.id}") as resp:
                 r = await resp.json()
                 if not r["error"]:
                     reply = r['reply']
