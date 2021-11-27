@@ -23,7 +23,7 @@ class Misc(commands.Cog):
                 if not r["error"]:
                     reply = r['reply']
                     embed = discord.Embed(
-                        title="ChatBot Response:",,
+                        title="ChatBot Response:",
                         description=reply,
                         color=discord.Color.red()
                     )
