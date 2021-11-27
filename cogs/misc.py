@@ -3,11 +3,22 @@ from discord.ext import commands
 import datetime
 from utility.utils import *
 from logger import logger
+from urllib.parse import quote
 
 class Misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+    
+    @commands.command(description="Chatbot")
+    @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
+    async def chat(self, ctx, *, text):
+        text = quote(text, safe="")
+        key = getconfig()["tokens"]["nuggies"]
+        async with self.client.cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
+            if resp.status = 200:
+                await ctx.send(resp.json())
 
 
     @commands.command(description='Makes the bot say something.')
