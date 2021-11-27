@@ -15,7 +15,7 @@ class Misc(commands.Cog):
     @commands.command(description="Chatbot")
     @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
     async def chat(self, ctx, *, text):
-        async with asyncio.ClientSession() as cs:
+        async with aiohttp.ClientSession() as cs:
             text = quote(text, safe="")
             key = getconfig()["tokens"]["nuggies"]
             async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
