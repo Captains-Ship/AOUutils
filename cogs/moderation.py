@@ -9,7 +9,7 @@ from discord.ext import commands
 from discord.ext.buttons import Paginator
 
 from logger import logger
-from utility.utils import Duration as DurationConverter
+from utility.utils import DurationConverter
 
 
 class Moderation(commands.Cog):
