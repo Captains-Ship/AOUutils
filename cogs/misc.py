@@ -17,6 +17,7 @@ class Misc(commands.Cog):
         cs = await self.client.refreshHttp()
         text = quote(text, safe="")
         key = getconfig()["tokens"]["nuggies"]
+        await ctx.send(cs.closed)
         async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
             if resp.status == 200:
                 await ctx.send(resp.json())
