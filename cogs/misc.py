@@ -14,10 +14,10 @@ class Misc(commands.Cog):
     @commands.command(description="Chatbot")
     @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
     async def chat(self, ctx, *, text):
-        await self.client.refreshHttp()
+        cs = await self.client.refreshHttp()
         text = quote(text, safe="")
         key = getconfig()["tokens"]["nuggies"]
-        async with self.client.cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
+        async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}") as resp:
             if resp.status == 200:
                 await ctx.send(resp.json())
 
