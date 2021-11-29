@@ -116,7 +116,7 @@ class Moderation(commands.Cog):
     `reason`: The reason why the user is getting unbanned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id=None, *, reason=None):
-        if member != None:
+        if id != None:
             u = discord.Object(id=id)
             try:
                 await ctx.guild.unban(u)
