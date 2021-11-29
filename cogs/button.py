@@ -43,6 +43,7 @@ class Poll(discord.ui.View):
         self.yes = []
         self.no = []
         self.question = question
+        self.timeout = None
 
     @discord.ui.button(emoji='\U0001f44d', style=discord.ButtonStyle.green)
     async def agree(self, button: discord.ui.Button, interaction: discord.Interaction):
