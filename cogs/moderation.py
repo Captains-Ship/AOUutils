@@ -54,7 +54,7 @@ class Moderation(commands.Cog):
                         pass
                     try:
                         await ctx.guild.ban(member, reason=reason)
-                        await ctx.send(f'**{ctx.author}** Banned **{member}' + (f" for {str(duration)}.**" if int(duration) > 0 else "**"))
+                        await ctx.send(f'**{ctx.author}** Yeeted **{member}' + (f" for {str(duration)}.**" if int(duration) > 0 else "**"))
                         if (duration := int(duration)) > 0:
                             await asyncio.sleep(duration)
                             await ctx.guild.unban(member, reason="Tempban has expired!")
@@ -86,10 +86,47 @@ class Moderation(commands.Cog):
                 except discord.Forbidden:
                     pass
                 await ctx.guild.kick(member, reason=reason)
-                await ctx.send(f'**{ctx.author} Kicked {member}**')
+                await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server')
             else:
                 await ctx.reply('**role hierarchy moment**')
 
+    @commands.command(description="Kicks a specified user and deletes their message", 
+    usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
+    @commands.has_permissions(ban_members=True)
+    async def softban(self, ctx, member: discord.Member=None, *, reason=None)
+        embed = discord.Embed(
+            title=f'You were kicked from {ctx.guild.name}',
+            description=f'Reason:\n{reason}',
+            colour=discord.Colour.red()
+        )
+        if member != None:
+            if ctx.author.top_role > member.top_role:
+                try:
+                    await member.send(embed=embed)
+                except discord.Forbidden:
+                    pass
+                await ctx.guild.ban(member, reason=reason)
+                await ctx.guild.unban(discord.Object(id=member.id))
+                await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server\n(dont forget the censoring too)')
+            else:
+                await ctx.reply('**role hierarchy moment**')
+
+    @commands.command(description="unbans a specified user", 
+    usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
+    `reason`: The reason why the user is getting unbanned. This is an optional argument.")
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, ctx, id=None, *, reason=None)
+        if member != None:
+            u = discord.Object(id=id)
+            try:
+                await ctx.guild.unban(u)
+            except discord.NotFound:
+                return await ctx.reply("Member isnt banned!")
+            await ctx.send(f'**{ctx.author}** unbanned **{member}**')
+        else:
+            await ctx.send("nice member :)")
+
+    
     @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
@@ -103,7 +140,7 @@ class Moderation(commands.Cog):
                 for channel in guild.channels:
                     await channel.set_permissions(mutedRole, speak=False, send_messages=False,
                                                   read_message_history=True, read_messages=False)
-            eh = discord.Embed(title="Muted", description=f"{member.mention} was muted" + (f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
+            eh = discord.Embed(title="Muted", description=f"{member.mention} was silenced" + (f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
             if reason is not None:
                 eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
@@ -122,7 +159,7 @@ class Moderation(commands.Cog):
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
 
         await member.remove_roles(mutedRole)
-        he = discord.Embed(title="unmute", description=f" unmuted {member.mention}", colour=discord.Colour.blurple())
+        he = discord.Embed(title="unmute", description=f"{ctx.author} unsilenced {member.mention}", colour=discord.Colour.blurple())
         await ctx.send(embed=he)
 
     @commands.command(description="Warns the specified user.", usage="<user> <reason>\n`user`: The user to be warned. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting warned. This is a required argument.")
