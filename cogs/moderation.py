@@ -122,7 +122,7 @@ class Moderation(commands.Cog):
                 await ctx.guild.unban(u)
             except discord.NotFound:
                 return await ctx.reply("Member isnt banned!")
-            await ctx.send(f'**{ctx.author}** unbanned **{member}**')
+            await ctx.send(f'**{ctx.author}** unbanned **{self.client.fetch_user(id)}**')
         else:
             await ctx.send("nice member :)")
 
