@@ -71,7 +71,7 @@ class Poll(discord.ui.View):
         embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
         embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
         await interaction.message.edit(embed=embed)
-        interaction.response.send_message('Vote has been registered', ephemeral=True)
+        await interaction.response.send_message('Vote has been registered', ephemeral=True)
 
     @discord.ui.button(emoji='\U0001f44e', style=discord.ButtonStyle.red)
     async def disagree(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -99,7 +99,7 @@ class Poll(discord.ui.View):
         embed.add_field(name="People agreeing:", value=f"{len(self.yes)}", inline=True)
         embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
         await interaction.message.edit(embed=embed)
-        interaction.response.send_message('Vote has been registered', ephemeral=True)
+        await interaction.response.send_message('Vote has been registered', ephemeral=True)
 
     @discord.ui.button(label="END", style=discord.ButtonStyle.red)
     async def end(self, button: discord.ui.Button, interaction: discord.Interaction):
