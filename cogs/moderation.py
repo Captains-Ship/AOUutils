@@ -93,7 +93,7 @@ class Moderation(commands.Cog):
     @commands.command(description="Kicks a specified user and deletes their message", 
     usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def softban(self, ctx, member: discord.Member=None, *, reason=None)
+    async def softban(self, ctx, member: discord.Member=None, *, reason=None):
         embed = discord.Embed(
             title=f'You were kicked from {ctx.guild.name}',
             description=f'Reason:\n{reason}',
@@ -115,7 +115,7 @@ class Moderation(commands.Cog):
     usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
     `reason`: The reason why the user is getting unbanned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, id=None, *, reason=None)
+    async def unban(self, ctx, id=None, *, reason=None):
         if member != None:
             u = discord.Object(id=id)
             try:
