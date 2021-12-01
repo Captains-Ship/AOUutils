@@ -57,7 +57,7 @@ class Moderation(commands.Cog):
                         await ctx.send(f'**{ctx.author}** Yeeted **{member}' + (f" for {str(duration)}.**" if int(duration) > 0 else "**"))
                         if (duration := int(duration)) > 0:
                             await asyncio.sleep(duration)
-                            await ctx.guild.unban(member, reason="Tempban has expired!")
+                            await ctx.guild.unban(discord.Object(id=member.id), reason="Tempban has expired!")
                             try:
                                 await member.send(f'You have been unbanned from {ctx.guild.name}')
                             except discord.Forbidden:
@@ -90,7 +90,7 @@ class Moderation(commands.Cog):
             else:
                 await ctx.reply('**role hierarchy moment**')
 
-    @commands.command(description="Kicks a specified user and deletes their message", 
+    @commands.command(description="Kicks a specified user and deletes their message",
     usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
     async def softban(self, ctx, member: discord.Member=None, *, reason=None):
@@ -111,7 +111,7 @@ class Moderation(commands.Cog):
             else:
                 await ctx.reply('**role hierarchy moment**')
 
-    @commands.command(description="unbans a specified user", 
+    @commands.command(description="unbans a specified user",
     usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
     `reason`: The reason why the user is getting unbanned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
@@ -126,7 +126,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("nice member :)")
 
-    
+
     @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
@@ -148,8 +148,11 @@ class Moderation(commands.Cog):
             await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
             if (duration := int(duration)) > 0:
                 await asyncio.sleep(duration)
-                await member.remove_roles(mutedRole, reason="Tempmute has expired!")
-                await member.send(f"You have been unmuted in {guild.name}")
+                try:
+                    await member.remove_roles(mutedRole, reason="Tempmute has expired!")
+                    await member.send(f"You have been unmuted in {guild.name}")
+                except discord.NotFound:  # Poor guy left the scene.
+                    pass
         else:
             await ctx.send('**role hierarchy moment**')
 
