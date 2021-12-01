@@ -89,8 +89,10 @@ class Moderation(commands.Cog):
                 await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server')
             else:
                 await ctx.reply('**role hierarchy moment**')
+        else:
+            await ctx.reply("You need to specify a user to kick.")
 
-    @commands.command(description="Kicks a specified user and deletes their message",
+    @commands.command(description="Kicks a specified user and deletes their messages.",
     usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
     async def softban(self, ctx, member: discord.Member=None, *, reason=None):
@@ -110,8 +112,10 @@ class Moderation(commands.Cog):
                 await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server\n(dont forget the censoring too)')
             else:
                 await ctx.reply('**role hierarchy moment**')
+        else:
+            await ctx.reply("You need to specify a user to softban.")
 
-    @commands.command(description="unbans a specified user",
+    @commands.command(description="Unbans a specified user",
     usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
     `reason`: The reason why the user is getting unbanned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
@@ -121,7 +125,7 @@ class Moderation(commands.Cog):
             try:
                 await ctx.guild.unban(u)
             except discord.NotFound:
-                return await ctx.reply("Member isnt banned!")
+                return await ctx.reply("Member isn't banned!")
             await ctx.send(f'**{ctx.author}** unbanned **{await self.client.fetch_user(id)}**')
         else:
             await ctx.send("nice member :)")
@@ -130,6 +134,8 @@ class Moderation(commands.Cog):
     @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
+        if member is None:
+            return await ctx.send("Please specify a member to mute.")
         if ctx.author.top_role > member.top_role:
             guild = ctx.guild
             mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")
@@ -159,6 +165,8 @@ class Moderation(commands.Cog):
     @commands.command(description="Unmutes a specified user.", usage="<user>\n`user`: The user to be unmuted. This is a required argument and can either be a mention or a user ID.")
     @commands.has_permissions(manage_messages=True)
     async def unmute(self, ctx, member: discord.Member):
+        if member is None:
+            return await ctx.send("Please specify a member to unmute.")
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
 
         await member.remove_roles(mutedRole)
