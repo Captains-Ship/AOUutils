@@ -261,7 +261,7 @@ class Moderation(commands.Cog):
         # Start paginator
         await paginator.start(ctx)
 
-    @commands.command(aliases=["delwarn"], description="Deletes a warning against a user.", usage="<user> <warning id>\n`user`: The user to delete the warning from. This is a required argument and can either be a mention or a user ID.\n`warning id`: The ID of the warning to delete. This is a required argument and can either be a mention or a warning ID.")
+    @commands.command(aliases=["delwarn"], description="Deletes a warning against a user.", usage="<warning id>\n`warning id`: The ID of the warning to delete. This is a required argument and must be a warning ID.")
     @commands.has_permissions(kick_members=True)
     async def removewarn(self, ctx, warn_id: str = None):
         # We need a warn ID.
@@ -288,9 +288,11 @@ class Moderation(commands.Cog):
                         f.seek(0)
                         f.write(json.dumps(warns))
                         f.truncate()
+                        return
                     else:
                         await ctx.send("**role hierarchy moment**")
-                    break
+                        return
+            await ctx.send("That warning ID doesn't exist!")
 
     @commands.command(description="Removes all warnings against a user.", usage="<user>\n`user`: The user to remove all warnings from. This is a required argument and can either be a mention or a user ID.")
     @commands.has_permissions(kick_members=True)
