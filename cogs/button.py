@@ -119,6 +119,7 @@ class Nitro(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.value = None
+        self.timeout = None
 
     @discord.ui.button(label="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ACCEPT⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", style=discord.ButtonStyle.green)
     async def accept(self, button: discord.ui.Button, interaction: discord.Interaction):
