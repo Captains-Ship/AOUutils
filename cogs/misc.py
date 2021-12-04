@@ -5,6 +5,7 @@ from utility.utils import *
 from logger import logger
 from urllib.parse import quote
 import aiohttp
+from typing import Union as union
 
 class Misc(commands.Cog):
 
@@ -18,40 +19,27 @@ class Misc(commands.Cog):
 
     
     @calculate.command()
-    async def add(self, ctx, num1: int, num2: int):
-        if not isinstance(num1, int) or not isinstance(num2, int):
+    async def add(self, ctx, num1: union[int, float], num2: union[int, float]):
+        if not isinstance(num1, union[int, float]) or not isinstance(num2, union[int, float]):
             await ctx.send("both have to be numbers")
             return
         await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}```")
     
     @calculate.command()
-    async def subtract(self, ctx, num1: int, num2: int):
-        if not isinstance(num1, int) or not isinstance(num2, int):
-            await ctx.send("both have to be numbers")
-            return
+    async def subtract(self, ctx, num1: union[int, float], num2: union[int, float]):
         await ctx.reply(f"```py\n>>> {num1} - {num2}\n{num1 - num2}```")
 
     @calculate.command()
-    async def multiply(self, ctx, num1: int, num2: int):
-        if not isinstance(num1, int) or not isinstance(num2, int):
-            await ctx.send("both have to be numbers")
-            return
+    async def multiply(self, ctx, num1: union[int, float], num2: union[int, float]):
         await ctx.reply(f"```py\n>>> {num1} * {num2}\n{num1 * num2}```")
 
     @calculate.command()
-    async def percentage(self, ctx, num1: int, num2: int):
-        if not isinstance(num1, int) or not isinstance(num2, int):
-            await ctx.send("both have to be numbers")
-            return
-        onepercent = (1/num2) * 100
+    async def percentage(self, ctx, num1: union[int, float], num2: union[int, float]):
         answer = (num1/num2) * 100
         await ctx.reply(f"The answer is {answer}\n\n*||The equation used is (num1 / num2) * 100||*")
     
     @calculate.command()
-    async def divide(self, ctx, num1: int, num2: int):
-        if not isinstance(num1, int) or not isinstance(num2, int):
-            await ctx.send("both have to be numbers")
-            return
+    async def divide(self, ctx, num1: union[int, float], num2: union[int, float]):
         await ctx.reply(f"```py\n>>> {num1} / {num2}\n{num1 / num2}```")
 
     @commands.command(description="Chatbot")
