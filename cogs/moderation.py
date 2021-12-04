@@ -83,7 +83,7 @@ class Moderation(commands.Cog):
             if ctx.author.top_role > member.top_role:
                 try:
                     await member.send(embed=embed)
-                except discord.Forbidden:
+                except:
                     pass
                 await ctx.guild.kick(member, reason=reason)
                 await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server')
