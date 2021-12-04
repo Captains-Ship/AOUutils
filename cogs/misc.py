@@ -6,6 +6,7 @@ from logger import logger
 from urllib.parse import quote
 import aiohttp
 from typing import Union as union
+from discord.ext.commands import Greedy
 
 class Misc(commands.Cog):
 
@@ -19,16 +20,34 @@ class Misc(commands.Cog):
 
     
     @calculate.command()
-    async def add(self, ctx, num1: union[int, float], num2: union[int, float]):
-        await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}```")
+    async def add(self, ctx, num: Greedy[union[int, float]]):
+        final = 0
+        for index, i in enumerate(num):
+            try:
+                final += (i + num[index + 1])
+            except:
+                pass
+        await ctx.reply(f"```py\n{final}```")
     
     @calculate.command()
-    async def subtract(self, ctx, num1: union[int, float], num2: union[int, float]):
-        await ctx.reply(f"```py\n>>> {num1} - {num2}\n{num1 - num2}```")
+    async def subtract(self, ctx, num: Greedy[union[int, float]]):
+        final = 0
+        for index, i in enumerate(num):
+            try:
+                final += (i - num[index + 1])
+            except:
+                pass
+        await ctx.reply(f"```py\n{final}```")
 
     @calculate.command()
-    async def multiply(self, ctx, num1: union[int, float], num2: union[int, float]):
-        await ctx.reply(f"```py\n>>> {num1} * {num2}\n{num1 * num2}```")
+    async def multiply(self, ctx, num: Greedy[union[int, float]]):
+        final = 0
+        for index, i in enumerate(num):
+            try:
+                final += (i * num[index + 1])
+            except:
+                pass
+        await ctx.reply(f"```py\n{final}```")
 
     @calculate.command()
     async def percentage(self, ctx, num1: union[int, float], num2: union[int, float]):
@@ -36,8 +55,14 @@ class Misc(commands.Cog):
         await ctx.reply(f"The answer is {answer}\n\n||*The equation used is (num1 / num2) \* 100*||")
     
     @calculate.command()
-    async def divide(self, ctx, num1: union[int, float], num2: union[int, float]):
-        await ctx.reply(f"```py\n>>> {num1} / {num2}\n{num1 / num2}```")
+    async def divide(self, ctx, num: Greedy[union[int, float]]):
+        final = 0
+        for index, i in enumerate(num):
+            try:
+                final += (i / num[index + 1])
+            except:
+                pass
+        await ctx.reply(f"```py\n{final}```")
 
     @commands.command(description="Chatbot")
     @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
