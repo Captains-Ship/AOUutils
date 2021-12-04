@@ -20,9 +20,6 @@ class Misc(commands.Cog):
     
     @calculate.command()
     async def add(self, ctx, num1: union[int, float], num2: union[int, float]):
-        if not isinstance(num1, union[int, float]) or not isinstance(num2, union[int, float]):
-            await ctx.send("both have to be numbers")
-            return
         await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}```")
     
     @calculate.command()
