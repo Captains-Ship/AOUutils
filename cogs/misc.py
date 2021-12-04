@@ -33,7 +33,7 @@ class Misc(commands.Cog):
     @calculate.command()
     async def percentage(self, ctx, num1: union[int, float], num2: union[int, float]):
         answer = (num1/num2) * 100
-        await ctx.reply(f"The answer is {answer}\n\n*||The equation used is (num1 / num2) * 100||*")
+        await ctx.reply(f"The answer is {answer}\n\n||*The equation used is (num1 / num2) * 100*||")
     
     @calculate.command()
     async def divide(self, ctx, num1: union[int, float], num2: union[int, float]):
