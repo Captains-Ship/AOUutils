@@ -11,7 +11,49 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+
+    @commands.group()
+    async def calculate(self, ctx: commands.Context):
+        pass
+
     
+    @calculate.command()
+    async def add(self, ctx, num1: int, num2: int):
+        if not isinstance(num1, int) or not isinstance(num2, int):
+            await ctx.send("both have to be numbers")
+            return
+        await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}")
+    
+    @calculate.command()
+    async def subtract(self, ctx, num1: int, num2: int):
+        if not isinstance(num1, int) or not isinstance(num2, int):
+            await ctx.send("both have to be numbers")
+            return
+        await ctx.reply(f"```py\n>>> {num1} - {num2}\n{num1 - num2}")
+
+    @calculate.command()
+    async def multiply(self, ctx, num1: int, num2: int):
+        if not isinstance(num1, int) or not isinstance(num2, int):
+            await ctx.send("both have to be numbers")
+            return
+        await ctx.reply(f"```py\n>>> {num1} * {num2}\n{num1 * num2}")
+
+    @calculate.command()
+    async def percentage(self, ctx, num1: int, num2: int):
+        if not isinstance(num1, int) or not isinstance(num2, int):
+            await ctx.send("both have to be numbers")
+            return
+        onepercent = (1/num2) * 100
+        answer = (num1/num2) * 100
+        await ctx.reply(f"The answer is {answer}\n\n*||The equation used is (num1 / num2) * 100||*")
+    
+    @calculate.command()
+    async def divide(self, ctx, num1: int, num2: int):
+        if not isinstance(num1, int) or not isinstance(num2, int):
+            await ctx.send("both have to be numbers")
+            return
+        await ctx.reply(f"```py\n>>> {num1} / {num2}\n{num1 / num2}")
+
     @commands.command(description="Chatbot")
     @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
     async def chat(self, ctx, *, text):
