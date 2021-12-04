@@ -22,21 +22,21 @@ class Misc(commands.Cog):
         if not isinstance(num1, int) or not isinstance(num2, int):
             await ctx.send("both have to be numbers")
             return
-        await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}")
+        await ctx.reply(f"```py\n>>> {num1} + {num2}\n{num1 + num2}```")
     
     @calculate.command()
     async def subtract(self, ctx, num1: int, num2: int):
         if not isinstance(num1, int) or not isinstance(num2, int):
             await ctx.send("both have to be numbers")
             return
-        await ctx.reply(f"```py\n>>> {num1} - {num2}\n{num1 - num2}")
+        await ctx.reply(f"```py\n>>> {num1} - {num2}\n{num1 - num2}```")
 
     @calculate.command()
     async def multiply(self, ctx, num1: int, num2: int):
         if not isinstance(num1, int) or not isinstance(num2, int):
             await ctx.send("both have to be numbers")
             return
-        await ctx.reply(f"```py\n>>> {num1} * {num2}\n{num1 * num2}")
+        await ctx.reply(f"```py\n>>> {num1} * {num2}\n{num1 * num2}```")
 
     @calculate.command()
     async def percentage(self, ctx, num1: int, num2: int):
@@ -52,7 +52,7 @@ class Misc(commands.Cog):
         if not isinstance(num1, int) or not isinstance(num2, int):
             await ctx.send("both have to be numbers")
             return
-        await ctx.reply(f"```py\n>>> {num1} / {num2}\n{num1 / num2}")
+        await ctx.reply(f"```py\n>>> {num1} / {num2}\n{num1 / num2}```")
 
     @commands.command(description="Chatbot")
     @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
