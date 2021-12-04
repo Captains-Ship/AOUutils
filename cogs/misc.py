@@ -21,30 +21,30 @@ class Misc(commands.Cog):
     
     @calculate.command()
     async def add(self, ctx, num: Greedy[union[int, float]]):
-        final = 0
+        final = num.pop(0)
         for index, i in enumerate(num):
             try:
-                final += (i + num[index + 1])
+                final += i
             except:
                 pass
         await ctx.reply(f"```py\n{final}```")
     
     @calculate.command()
     async def subtract(self, ctx, num: Greedy[union[int, float]]):
-        final = 0
+        final = num.pop(0)
         for index, i in enumerate(num):
             try:
-                final += (i - num[index + 1])
+                final -= i
             except:
                 pass
         await ctx.reply(f"```py\n{final}```")
 
     @calculate.command()
     async def multiply(self, ctx, num: Greedy[union[int, float]]):
-        final = 0
+        final = num.pop(0)
         for index, i in enumerate(num):
             try:
-                final += (i * num[index + 1])
+                final *= i
             except:
                 pass
         await ctx.reply(f"```py\n{final}```")
@@ -56,10 +56,10 @@ class Misc(commands.Cog):
     
     @calculate.command()
     async def divide(self, ctx, num: Greedy[union[int, float]]):
-        final = 0
+        final = num.pop(0)
         for index, i in enumerate(num):
             try:
-                final += (i / num[index + 1])
+                final /= i
             except:
                 pass
         await ctx.reply(f"```py\n{final}```")
