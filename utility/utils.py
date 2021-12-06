@@ -2,6 +2,28 @@ import json
 import datetime
 import discord
 from discord.ext import commands
+import asyncio
+
+
+def dev():
+        async def predicate(ctx):
+            devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922]
+            return ctx.author.id in devs
+
+        return commands.check(predicate)
+
+
+async def run(cmd):
+    proc = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE)
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        print(f'[stdout]\n{stdout.decode()}')
+    if stderr:
+        print(f'[stderr]\n{stderr.decode()}')
+    return (proc, stdout, stderr)
 
 
 def getconfig(config: str = 'config'):

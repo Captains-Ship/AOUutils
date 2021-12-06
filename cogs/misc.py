@@ -7,11 +7,31 @@ from urllib.parse import quote
 import aiohttp
 from typing import Union as union
 from discord.ext.commands import Greedy
+from utility.utils import run, dev
+from regex import regex
 
 class Misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+    @dev()
+    @commands.group()
+    async def youtube(self, ctx):
+        pass
+    
+    @dev() 
+    @youtube.command()
+    async def mp3(self, ctx, *, url):
+        match = regex.match(r"(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?", url)
+        if a is None:
+            await ctx.send("URL doesnt match youtube regex!")
+            return
+        if not url.startswith("https://"):
+            url = "https://" + url
+        proc, stdout, stderr = await run(f"youtube-dl -x -audio-format mp3 {url}")
+        await ctx.reply(f"```bash\n{stdout}```")
+
 
 
     @commands.group()
