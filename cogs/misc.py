@@ -29,7 +29,7 @@ class Misc(commands.Cog):
             return
         if not url.startswith("https://"):
             url = "https://" + url
-        proc, stdout, stderr = await run(f"youtube-dl -x -audio-format mp3 {url}")
+        proc, stdout, stderr = await run(f"youtube-dl -x --audio-format mp3 {url}")
         await ctx.reply(f"```bash\n{stdout}```")
 
 
