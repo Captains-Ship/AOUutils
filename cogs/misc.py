@@ -41,7 +41,7 @@ class Misc(commands.Cog):
         stdout = lines[2]
         filename = stdout.lstrip("[ffmpeg] Destination: ")
         file = discord.File(filename)
-        await ctx.send(ctx.author.mention + "\n" + stdout, file=file)
+        await ctx.send(ctx.author.mention, file=file)
         await x.delete()
 
 
