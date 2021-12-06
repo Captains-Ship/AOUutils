@@ -38,8 +38,8 @@ class Misc(commands.Cog):
         # await pager.start(ctx)
         lines = stdout.split("\n")
         lines = lines[::-1]
-        stdout = lines[1]
-        await ctx.send(stdout)
+        stdout = lines[2]
+        await ctx.send(ctx.author.mention + "\n" + stdout)
         await x.delete()
 
 
