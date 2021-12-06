@@ -9,6 +9,7 @@ from typing import Union as union
 from discord.ext.commands import Greedy
 from utility.utils import run, dev
 from regex import regex
+from discord.ext.buttons import Paginator
 
 class Misc(commands.Cog):
 
@@ -29,8 +30,12 @@ class Misc(commands.Cog):
             return
         if not url.startswith("https://"):
             url = "https://" + url
+        x = await ctx.send("<a:loading:917448795506241617> Downloading")
         proc, stdout, stderr = await run(f"youtube-dl -x --audio-format mp3 {url}")
-        await ctx.reply(f"```bash\n{stdout}```")
+        pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
+                        prefix="```sh\n", suffix="```")
+        await pager.start(ctx)
+        await x.delete()
 
 
 
