@@ -33,9 +33,13 @@ class Misc(commands.Cog):
         x = await ctx.send("<a:loading:917448795506241617> Downloading")
         proc, stdout, stderr = await run(f"youtube-dl -x --audio-format mp3 {url}")
         stdout = stdout.decode('utf-8')
-        pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
-                        prefix="```sh\n", suffix="```")
-        await pager.start(ctx)
+        # pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
+        #                 prefix="```sh\n", suffix="```")
+        # await pager.start(ctx)
+        lines = stdout.split("\n")
+        lines = reverse(lines)
+        stdout = lines[1]
+        await ctx.send(stdout)
         await x.delete()
 
 
