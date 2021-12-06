@@ -45,6 +45,30 @@ class Misc(commands.Cog):
         await ctx.send(ctx.author.mention, file=file)
         await x.delete()
 
+    @dev() 
+    @youtube.command()
+    async def mp4(self, ctx, *, url):
+        url = url.rstrip(">").lstrip("<")
+        match = regex.match(r"(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?", url)
+        if match is None:
+            await ctx.send("URL doesnt match youtube regex!")
+            return
+        if not url.startswith("https://"):
+            url = "https://" + url
+        x = await ctx.send("<a:loading:917448795506241617> Downloading")
+        proc, stdout, stderr = await run(f"youtube-dl {url}")
+        stdout = stdout.decode('utf-8')
+        # pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
+        #                 prefix="```sh\n", suffix="```")
+        # await pager.start(ctx)
+        print(stdout)
+        lines = stdout.split("\n")
+        lines = lines[::-1]
+        stdout = lines[2]
+        file = discord.File(filename)
+        await ctx.send(ctx.author.mention, file=file)
+        await x.delete()
+
 
 
     @commands.group()
