@@ -24,7 +24,7 @@ class Misc(commands.Cog):
     @youtube.command()
     async def mp3(self, ctx, *, url):
         match = regex.match(r"(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?", url)
-        if a is None:
+        if match is None:
             await ctx.send("URL doesnt match youtube regex!")
             return
         if not url.startswith("https://"):
