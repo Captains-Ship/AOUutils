@@ -37,7 +37,7 @@ class Misc(commands.Cog):
         #                 prefix="```sh\n", suffix="```")
         # await pager.start(ctx)
         lines = stdout.split("\n")
-        lines = reverse(lines)
+        lines = lines[::-1]
         stdout = lines[1]
         await ctx.send(stdout)
         await x.delete()
