@@ -342,11 +342,7 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def userinfo(self, ctx, member: discord.Member = None):
         member = member or ctx.author
-        mention = []
-        for role in member.roles:
-            if role.name != "@everyone":
-                mention.append(role.mention)
-        mention.reverse()
+        mention = [r.mention for r in reversed(member.roles)]
         memberRole = ", ".join(mention)
         joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
         creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
@@ -360,7 +356,7 @@ class Misc(commands.Cog):
         embed.add_field(name="Join Date", value=joinDate)
         embed.add_field(name="Creation Date", value=creationDate, inline=True)
         embed.add_field(name=chr(173), value=chr(173))
-        embed.add_field(name="Roles", value=memberRole if memberRole != "" else chr(173))
+        embed.add_field(name="Roles", value=memberRole)
         embed.set_thumbnail(url=memberIcon)
         embed.set_footer(icon_url=authorIcon, text=f'Requested by {ctx.message.author.name}')
         await ctx.send(embed=embed)
