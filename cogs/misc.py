@@ -342,7 +342,7 @@ class Misc(commands.Cog):
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def userinfo(self, ctx, member: discord.Member = None):
         member = member or ctx.author
-        mention = [r.mention for r in reversed(member.roles)]
+        mention = [r.mention.replace(f"<@&{ctx.guild.id}>", "@everyone") for r in reversed(member.roles)]
         memberRole = ", ".join(mention)
         joinDate = member.joined_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
         creationDate = member.created_at.strftime("%a, %b %d %Y \n%H:%M:%S %p")
