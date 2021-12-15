@@ -41,7 +41,7 @@ class Tags(commands.Cog):
             l += f"\n{[e for e in i][1]}".replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replace("<", "<\\")
         l = l.lstrip("\n")
         l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
-        pag = Paginator(entries=l, timeout=100, length=1, title="Tags", color=discord.Color.red(), footer=f"Requested by {ctx.author}")
+        pag = Paginator(entries=l, timeout=100, length=1, title="Tags", color=discord.Color.red())
         await pag.start(ctx)
 
     @dev()
