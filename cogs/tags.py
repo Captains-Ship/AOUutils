@@ -11,7 +11,8 @@ class Tags(commands.Cog):
         self.db = self.client.tag_db
 
     @commands.group(invoke_without_command=True)
-    async def tag(self, ctx, *, tagname=None):
+    async def tag(self, ctx, *, tagname):
+        """Tags"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", (tagname.lower()))
         try:
@@ -32,6 +33,7 @@ class Tags(commands.Cog):
     @dev()
     @tag.command()
     async def create(self, ctx, tag_name, *, content):
+        """Creates a tag"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name)
         embed = "--embed" in content
@@ -48,6 +50,7 @@ class Tags(commands.Cog):
     @dev()
     @tag.command()
     async def delete(self, ctx, tag_name):
+        """deletes a tag"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name)
         try:
@@ -58,7 +61,8 @@ class Tags(commands.Cog):
         await ctx.send("Tag deleted")
 
     @tag.command()
-    async def info(self, ctx, *, tagname=None):
+    async def info(self, ctx, *, tagname):
+        """gets info about a tag"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", (tagname.lower()))
         x = await x.fetchone()
@@ -78,7 +82,7 @@ class Tags(commands.Cog):
             )
             embed.add_field(name="Embedded tag?", value=str(int(x[3]) == 1))
             embed.set_thumbnail(
-                url="https://cdn.discordapp.com/icons/794950428756410429/45a38e7033c37b8ff2dd2ea477e1c1db.webp?"
+                url=self.client.get_aou().icon.url
             )
             await ctx.send(embed=embed)
         except TypeError:
