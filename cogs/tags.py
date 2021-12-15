@@ -45,6 +45,7 @@ class Tags(commands.Cog):
             color=discord.Color.red()
         )
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url)
+        await ctx.send(embed=embed)
 
     @dev()
     @tag.command()
