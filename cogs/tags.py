@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from utility.utils import database, dev
 from asyncio import run
+from discord.ext.buttons import Paginator
 
 
 class Tags(commands.Cog):
@@ -39,13 +40,9 @@ class Tags(commands.Cog):
         for i in x:
             l += f"\n{[e for e in i][1]}".replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replace("<", "<\\")
         l = l.lstrip("\n")
-        embed = discord.Embed(
-            title="Tag list",
-            description=l,
-            color=discord.Color.red()
-        )
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url)
-        await ctx.send(embed=embed)
+        l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
+        pag = Paginator(entries=l, timeout=100, length=1, title="Tags", color=discord.Color.red())
+        await pag.start(ctx)
 
     @dev()
     @tag.command()
