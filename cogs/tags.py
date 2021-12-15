@@ -34,7 +34,7 @@ class Tags(commands.Cog):
         """Lists tags"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags")
-        x = x.fetchall()
+        x = await x.fetchall()
         l = ""
         for i in x:
             l += f"\n{i[1]}"
