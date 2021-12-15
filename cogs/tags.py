@@ -37,7 +37,7 @@ class Tags(commands.Cog):
         x = await x.fetchall()
         l = ""
         for i in x:
-            l += f"\n{[e for e ini][1]}"
+            l += f"\n{[e for e in i][1]}"
         l = l.lstrip("\n")
         embed = discord.Embed(
             title="Tag list",
