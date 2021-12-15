@@ -8,6 +8,7 @@ from traceback import *
 import crayons
 from logger import logger
 from discord.ext.buttons import Paginator as pag
+from utility.utils import database
 
 
 class Listener(commands.Cog):
@@ -18,6 +19,8 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.client.tag_db = await database.init("tags")
+        await self.client.tag_db.execute("CREATE TABLE IF NOT EXISTS tags (name, content, creator)")
         logger.info(f'Logged in as {self.client.user}. Good Morning.')
         chandler = self.client.get_channel(854333051852685333)
         await chandler.send('Bot is now up!')
