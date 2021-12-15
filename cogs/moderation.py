@@ -7,7 +7,7 @@ import uuid
 import discord
 from discord.ext import commands
 from discord.ext.buttons import Paginator
-
+from asyncio import sleep
 from logger import logger
 from utility.utils import DurationConverter
 
@@ -16,6 +16,12 @@ class Moderation(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def clean(self, ctx, bots=True):
+        await sleep(0.5)
+        await ctx.channel.purge(limit=15, check=lambda m: m.author.bot)
 
     @commands.command(description='Purges messages from the current channel.', usage='<amount>\n`amount`: The number of messages to be purged. This is a required argument and must be an integer.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
