@@ -37,11 +37,11 @@ class Tags(commands.Cog):
         x = await x.fetchall()
         l = ""
         for i in x:
-            l += f"\n{[e for e in i][1]}"
+            l += f"\n{[e for e in i][1]}".replace("_", "\_").replace("*", "\*").replace("`", "\`").replace("<", "<\")
         l = l.lstrip("\n")
         embed = discord.Embed(
             title="Tag list",
-            description=x,
+            description=l,
             color=discord.Color.red()
         )
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url)
