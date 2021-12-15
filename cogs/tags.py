@@ -33,7 +33,8 @@ class Tags(commands.Cog):
     @tag.command()
     async def create(self, ctx, tag_name, *, content):
         """Creates a tag"""
-        if tag_name.lower() in ["delete", "create", "info"]
+        if tag_name.lower() in ["delete", "create", "info"]:
+            return await ctx.send("tag_name may not be a reserved keyword.")
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name.lower())
         embed = "--embed" in content
