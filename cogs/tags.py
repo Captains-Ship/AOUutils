@@ -29,11 +29,28 @@ class Tags(commands.Cog):
         except TypeError:
             await ctx.send("Unknown tag")
 
+    @tag.command()
+    async def list(self, ctx):
+        """Lists tags"""
+        db = await database.init("tags")
+        x = await db.exec("SELECT * FROM tags")
+        x = x.fetchall()
+        l = ""
+        for i in x:
+            l += f"\n{i[1]}"
+        l = l.lstrip("\n")
+        embed = discord.Embed(
+            title="Tag list",
+            description=x,
+            color=discord.Color.red()
+        )
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url)
+
     @dev()
     @tag.command()
     async def create(self, ctx, tag_name, *, content):
         """Creates a tag"""
-        if tag_name.lower() in ["delete", "create", "info"]:
+        if tag_name.lower() in ["delete", "create", "info", "list"]:
             return await ctx.send("tag_name may not be a reserved keyword.")
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name.lower())
