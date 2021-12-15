@@ -8,7 +8,6 @@ class Tags(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.db = self.client.tag_db
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, *, tagname):
@@ -34,8 +33,9 @@ class Tags(commands.Cog):
     @tag.command()
     async def create(self, ctx, tag_name, *, content):
         """Creates a tag"""
+        if tag_name.lower() in ["delete", "create", "info"]
         db = await database.init("tags")
-        x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name)
+        x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name.lower())
         embed = "--embed" in content
         if embed:
             content = content.replace("--embed", "")
@@ -43,7 +43,7 @@ class Tags(commands.Cog):
             e = [x for x in await x.fetchone()]
             await ctx.send(f"Tag {tag_name!r} already exists")
         except TypeError:
-            await db.exec("INSERT INTO tags VALUES (?, ?, ?, ?)", (content, tag_name, ctx.author.id, embed))
+            await db.exec("INSERT INTO tags VALUES (?, ?, ?, ?)", (content, tag_name.lower(), ctx.author.id, embed))
             # the above schema is weird but it is what it is
             await ctx.send("Created!")
 
