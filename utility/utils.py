@@ -3,6 +3,27 @@ import datetime
 import discord
 from discord.ext import commands
 import asyncio
+import asqlite
+
+class database:
+    def __init__(self, conn=None, cursor=None):
+        if not conn or not cursor:
+            raise Exception("Please instantiate this class by doing 'database.init()' instead")
+        self.conn = conn
+        self.cur = cursor
+
+    async def execute(self, *args, **kwargs):
+        x = await self.cur.execute(*args, **kwargs)
+        await self.conn.commit()
+        return x
+
+    async def exec(self, *args, **kwargs):
+        return await self.execute(*args, **kwargs)
+
+    @classmethod
+    async def init(cls, db_name):
+        db = await asqlite.connect(db_name + ".sqlite")
+        return cls(conn=db, cursor=await db.cursor())
 
 
 def dev():
