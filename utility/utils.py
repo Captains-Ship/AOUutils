@@ -69,8 +69,8 @@ def countOnlineMember(guild):
 
 
 # lines in main file
-def lineCount():
-    with open('AOUUtils.py', 'r') as file:
+def lineCount(filename: str):
+    with open(filename, 'r') as file:
         for i, l in enumerate(file):
             pass
 
