@@ -248,22 +248,6 @@ class Misc(commands.Cog):
         )
         await ctx.reply(embed=embed)
 
-    @commands.command(description='Info about this bot.')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def botinfo(self, ctx):
-        embed = discord.Embed(
-            title='Bot Info',
-            description='Info about the bot.',
-            colour=discord.Colour.red(),
-            timestamp=datetime.datetime.utcnow()
-        )
-        embed.set_footer(icon_url=ctx.guild.icon.url, text='Devs: Captain, GingerGigiCat, EnderB0YHD, Toasty, Robin.')
-        embed.add_field(name='Main Linecount', value=lineCount())
-        await ctx.reply(embed=embed)
-    
-
-
-
     @commands.command(description='Returns a list of the staff members of AOU.')
     @commands.cooldown(1, 15, type=discord.ext.commands.BucketType.user)
     async def staff(self, ctx):
