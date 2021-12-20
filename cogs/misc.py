@@ -257,7 +257,7 @@ class Misc(commands.Cog):
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()
         )
-        embed.set_footer(icon_url=ctx.guild.icon_url, text='Devs: Captain, GingerGigiCat, EnderB0YHD, Toasty')
+        embed.set_footer(icon_url=ctx.guild.icon.url, text='Devs: Captain, GingerGigiCat, EnderB0YHD, Toasty, Robin.')
         embed.add_field(name='Main Linecount', value=lineCount())
         await ctx.reply(embed=embed)
     

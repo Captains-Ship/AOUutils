@@ -7,6 +7,7 @@ class Git(commands.Cog):
         self.client = client
 
     @commands.group()
+    @commands.is_owner()
     async def git(self, ctx):
         """
         a variety of git commands
