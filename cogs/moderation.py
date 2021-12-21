@@ -9,6 +9,7 @@ from discord.ext import commands
 from discord.ext.buttons import Paginator
 from asyncio import sleep
 from logger import logger
+import datetime
 from utility.utils import DurationConverter
 
 
@@ -156,15 +157,21 @@ class Moderation(commands.Cog):
             if reason is not None:
                 eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
-            await member.add_roles(mutedRole, reason=reason)
-            await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
-            if (duration := int(duration)) > 0:
-                await asyncio.sleep(duration)
-                try:
-                    await member.remove_roles(mutedRole, reason="Tempmute has expired!")
-                    await member.send(f"You have been unmuted in {guild.name}")
-                except discord.NotFound:  # Poor guy left the scene.
-                    pass
+            if int(duration) < 2419200:
+                x = datetime.datetime.utcnow() + datetime.timedelta(seconds=int(duration))
+                c = x.isoformat()
+                # 2419200
+                await client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=c)
+                await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
+            else:
+                await member.add_roles(mutedRole, reason=reason)
+                if (duration := int(duration)) > 0:
+                    await asyncio.sleep(duration)
+                    try:
+                        await member.remove_roles(mutedRole, reason="Tempmute has expired!")
+                        await member.send(f"You have been unmuted in {guild.name}")
+                    except discord.NotFound:  # Poor guy left the scene.
+                        pass
         else:
             await ctx.send('**role hierarchy moment**')
 
