@@ -157,7 +157,7 @@ class Moderation(commands.Cog):
             if reason is not None:
                 eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
-            if int(duration) < 2419200 and int(duration) > -0:
+            if int(duration) < 2419300 and int(duration) > -0:
                 x = datetime.datetime.utcnow() + datetime.timedelta(seconds=int(duration))
                 c = x.isoformat()
                 # 2419200
@@ -181,8 +181,11 @@ class Moderation(commands.Cog):
         if member is None:
             return await ctx.send("Please specify a member to unmute.")
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
-
-        await member.remove_roles(mutedRole)
+        await self.client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=datetime.datetime.utcnow().isoformat())
+        try:
+            await member.remove_roles(mutedRole)
+        except:
+            pass
         he = discord.Embed(title="unmute", description=f"{ctx.author} unsilenced {member.mention}", colour=discord.Colour.blurple())
         await ctx.send(embed=he)
 
