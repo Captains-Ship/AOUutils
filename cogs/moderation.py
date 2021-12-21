@@ -157,11 +157,11 @@ class Moderation(commands.Cog):
             if reason is not None:
                 eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
-            if int(duration) < 2419200:
+            if int(duration) < 2419200 and int(duration) > -0:
                 x = datetime.datetime.utcnow() + datetime.timedelta(seconds=int(duration))
                 c = x.isoformat()
                 # 2419200
-                await client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=c)
+                await self.client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=c)
                 await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
             else:
                 await member.add_roles(mutedRole, reason=reason)
