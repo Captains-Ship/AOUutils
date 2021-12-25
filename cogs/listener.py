@@ -54,9 +54,9 @@ class Listener(commands.Cog):
     async def flag(self, message: discord.Message, reason='Unspecified'):
         x = self.client.recentlyflagged.get(str(message.author), None)
         if not x:
-            self.client.recentlyflagged[str(ctx.author.id)] = True
+            self.client.recentlyflagged[str(message.author.id)] = True
             await asyncio.sleep(5)
-            self.client.recentlyflagged[str(ctx.author.id)] = None
+            self.client.recentlyflagged[str(message.author.id)] = None
             return
         logger.info('A message was flagged!')
         member = message.author
