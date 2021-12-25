@@ -55,7 +55,7 @@ class Listener(commands.Cog):
     async def flag(self, message: discord.Message, reason='Unspecified'):
         x = self.client.recentlyflagged.get(str(message.author.id), None)
         if not x:
-            self.client.recentlyflagged[str(message.author.id)] = True
+            self.client.recentlyflagged[str(message.author.id)] = message
             await message.reply(self.client.recentlyflagged)
             await asyncio.sleep(5)
             await message.reply("sleep ended")
@@ -64,6 +64,7 @@ class Listener(commands.Cog):
         logger.info('A message was flagged!')
         member = message.author
         if True: # message.guild.id == 794950428756410429:
+            await x.delete()
             channel = self.client.get_channel(868522732759949382)#853191467941494784)
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
