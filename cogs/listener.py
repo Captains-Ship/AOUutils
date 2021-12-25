@@ -56,7 +56,7 @@ class Listener(commands.Cog):
         x = self.client.recentlyflagged.get(str(message.author), None)
         if not x:
             self.client.recentlyflagged[str(message.author.id)] = True
-            await message.reply("dbg")
+            await message.reply(self.client.recentlyflagged)
             await asyncio.sleep(5)
             self.client.recentlyflagged[str(message.author.id)] = None
             return
