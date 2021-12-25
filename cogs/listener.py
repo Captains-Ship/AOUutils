@@ -53,7 +53,7 @@ class Listener(commands.Cog):
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message, reason='Unspecified'):
-        x = self.client.recentlyflagged.get(str(message.author), None)
+        x = self.client.recentlyflagged.get(str(message.author.id), None)
         if not x:
             self.client.recentlyflagged[str(message.author.id)] = True
             await message.reply(self.client.recentlyflagged)
