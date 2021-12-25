@@ -58,6 +58,7 @@ class Listener(commands.Cog):
             self.client.recentlyflagged[str(message.author.id)] = True
             await message.reply(self.client.recentlyflagged)
             await asyncio.sleep(5)
+            await message.reply("sleep ended")
             self.client.recentlyflagged[str(message.author.id)] = None
             return
         logger.info('A message was flagged!')
