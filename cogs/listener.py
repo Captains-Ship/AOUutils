@@ -9,6 +9,7 @@ import crayons
 from logger import logger
 from discord.ext.buttons import Paginator as pag
 from utility.utils import database
+import asyncio
 
 
 class Listener(commands.Cog):
