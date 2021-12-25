@@ -19,6 +19,7 @@ class AOUbot(commands.AutoShardedBot):
         super().__init__(*args, **kwargs)
         logger.info('Logging in...')
         self.tag_db = None
+        self.recentlyflagged = {}
 
     def get_general_staff(self):
         return self.get_aou().get_role(795007215786393631)
