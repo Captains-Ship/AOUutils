@@ -56,9 +56,9 @@ class Listener(commands.Cog):
         x = self.client.recentlyflagged.get(str(message.author.id), None)
         if not x:
             self.client.recentlyflagged[str(message.author.id)] = message
-            await message.reply(self.client.recentlyflagged)
+            # await message.reply(self.client.recentlyflagged)
             await asyncio.sleep(5)
-            await message.reply("sleep ended")
+            # await message.reply("sleep ended")
             self.client.recentlyflagged[str(message.author.id)] = None
             return
         logger.info('A message was flagged!')
@@ -72,7 +72,7 @@ class Listener(commands.Cog):
                 colour=discord.Colour.red()
             )
             await message.delete()
-            await channel.send("aou ban {message.author.id} {reason}", embed=embed)
+            await channel.send(f"aou ban {message.author.id} {reason}", embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
     async def checker(self, message: discord.Message, words: list):
@@ -115,7 +115,7 @@ class Listener(commands.Cog):
             if await self.checker(message, SPAM_HINTS):
                 if "http://" in message.content.lower() or "https://" in message.content.lower():
                     await self.flag(message, "Scam")
-                    await message.channel.send("Debug")
+                    # await message.channel.send("Debug")
                     return
 
         """
