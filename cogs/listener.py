@@ -63,7 +63,7 @@ class Listener(commands.Cog):
         logger.info('A message was flagged!')
         member = message.author
         if True: # message.guild.id == 794950428756410429:
-            channel = self.client.get_channel(851134978917531648)#853191467941494784)
+            channel = self.client.get_channel(868522732759949382)#853191467941494784)
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
                 description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```aou ban {message.author.id} {reason}```',
