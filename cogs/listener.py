@@ -109,7 +109,7 @@ class Listener(commands.Cog):
 
         SPAM_HINTS = [ 'discord', 'nitro', 'steam', 'cs:go', 'csgo' ]
         if "@everyone" in message.content.lower():
-            if self.checker(message, SPAM_HINTS):
+            if await self.checker(message, SPAM_HINTS):
                 if "http://" in message.content.lower() or "https://" in message.content.lower():
                     await self.flag(message, "Scam")
                     return
