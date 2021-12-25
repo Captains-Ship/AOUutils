@@ -112,7 +112,7 @@ class Listener(commands.Cog):
             if await self.checker(message, SPAM_HINTS):
                 if "http://" in message.content.lower() or "https://" in message.content.lower():
                     await self.flag(message, "Scam")
-                    await ctx.send("Debug")
+                    await message.channel.send("Debug")
                     return
 
         """
