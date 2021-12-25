@@ -52,6 +52,12 @@ class Listener(commands.Cog):
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message, reason='Unspecified'):
+        x = self.client.recentlyflagged.get(str(message.author), None)
+        if not x:
+            self.client.recentlyflagged[str(ctx.author.id)] = True
+            await asyncio.sleep(5)
+            self.client.recentlyflagged[str(ctx.author.id)] = None
+            return
         logger.info('A message was flagged!')
         member = message.author
         if message.guild.id == 794950428756410429:
@@ -62,23 +68,24 @@ class Listener(commands.Cog):
                 colour=discord.Colour.red()
             )
             await message.delete()
-            await channel.send(embed=embed)
+            await channel.send("aou ban {message.author.id} {reason}", embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
-    async def checker(self, message: discord.Message, word: str):
+    async def checker(self, message: discord.Message, words: list):
         try:
             if isinstance(message.author, discord.User):
                 return False
-            if self.client.get_moderator() in message.author.roles:
-                return False
-            if self.client.get_admin() in message.author.roles:
-                return False
-            if self.client.get_general_staff() in message.author.roles:
-                return False
-            if self.client.get_general_dev() in message.author.roles:
-                return False
-            if word in message.content.lower():
-                return True
+            # if self.client.get_moderator() in message.author.roles:
+            #     return False
+            # if self.client.get_admin() in message.author.roles:
+            #     return False
+            # if self.client.get_general_staff() in message.author.roles:
+            #     return False
+            # if self.client.get_general_dev() in message.author.roles:
+            #     return False
+            for word in words:
+                if word in message.content.lower():
+                    return True
             return False
         except AttributeError:
             return False
@@ -99,28 +106,10 @@ class Listener(commands.Cog):
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
-        steam_scams = [
-            'steancomunnity',
-            'y.ru',
-            'cs:go',
-            'csgo',
-            't.ru'
-        ]
-        discord_scams = [
-            'discord-gifts.us',
-            'discords.gifts',
-            'diskord.ru',
-            'nitroosfree.ru',
-            'discord-nitro.link',
-            'discorb.ru'
-        ]
-        for word in steam_scams:
-            if await self.checker(message, word) is True:
-                await self.flag(message, reason='Steam Scam')
-                return
-        for word in discord_scams:
-            if await self.checker(message, word) is True:
-                await self.flag(message, reason='Nitro Scam')
+        SPAM_HINTS = [ 'discord', 'nitro', 'steam', 'cs:go', 'csgo' ]
+        if "@everyone" in message.content.lower():
+            if self.checker(message, SPAM_HINTS) and ["https://", "http://"] in message.content.lower():
+                await self.flag(message, "Scam")
                 return
 
         """
