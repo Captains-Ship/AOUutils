@@ -7,6 +7,7 @@ from discord.ext import commands
 from apilol import start
 from logger import logger
 from utility.utils import getconfig
+from io import BytesIO
 import aiohttp
 #os.chdir(__file__)
 
@@ -38,6 +39,12 @@ class AOUbot(commands.AutoShardedBot):
 
     def get_dev_server(self):
         return self.get_guild(850668209148395520)
+
+    async def get_cdn(self, filename):
+        x = "http://10.17.22.148/cdn/" + filename
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(x) as resp:
+                return BytesIO(await resp.read())
 
     async def refreshHttp(self):
         async with aiohttp.ClientSession() as cs:
