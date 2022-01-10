@@ -65,7 +65,7 @@ class Tags(commands.Cog):
 
     @dev()
     @tag.command()
-    async def delete(self, ctx, tag_name):
+    async def delete(self, ctx, *, tag_name):
         """deletes a tag"""
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tag_name)
