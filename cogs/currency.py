@@ -285,7 +285,7 @@ class Currency(commands.Cog):
                     except KeyError:
                         if member == ctx.author:
                             return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
-                        return await ctx.send(f'{user.name} does not have an account yet.)
+                        return await ctx.send(f'{user.name} does not have an account yet.')
                     amon = author['wallet']
                     umon = userlol['wallet']
                     if int(amon) > amount - 1:
