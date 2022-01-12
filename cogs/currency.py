@@ -68,7 +68,10 @@ class Currency(commands.Cog):
     async def inventory(self, ctx):
         with open('cur.json', 'r') as f:
             money = json.load(f)
-            user = money[str(ctx.author.id)]
+            try:
+                user = money[str(ctx.author.id)]
+            except KeyError:
+                return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
             inv = user['inventory']
             inventory = ""
             for key in inv:
@@ -92,7 +95,10 @@ class Currency(commands.Cog):
                 shop = json.load(f)
                 with open('cur.json', 'r') as f:
                     users = json.load(f)
-                    user = users[str(ctx.author.id)]
+                    try:
+                        user = users[str(ctx.author.id)]
+                    except KeyError:
+                        return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
                     for key in shop:
                         if shop[key]['price'] != -1:
                             price = shop[key]['price']
@@ -225,8 +231,11 @@ class Currency(commands.Cog):
     async def deposit(self, ctx, *, amount: typing.Union[int, str] = 0):
         with open('cur.json', 'r') as f:
             money = json.load(f)
-        wallet = money[str(ctx.author.id)]['wallet']
-        bank = money[str(ctx.author.id)]['bank']
+        try:
+            wallet = money[str(ctx.author.id)]['wallet']
+            bank = money[str(ctx.author.id)]['bank']
+        except KeyError:
+            return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
         if isinstance(amount, str):
             amount = wallet if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
@@ -245,8 +254,11 @@ class Currency(commands.Cog):
     async def withdraw(self, ctx, *, amount: typing.Union[int, str] = 0):
         with open('cur.json', 'r') as f:
             money = json.load(f)
-        wallet = money[str(ctx.author.id)]['wallet']
-        bank = money[str(ctx.author.id)]['bank']
+        try:
+            wallet = money[str(ctx.author.id)]['wallet']
+            bank = money[str(ctx.author.id)]['bank']
+         except KeyError:
+            return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
         if isinstance(amount, str):
             amount = bank if amount.lower() in ['max', 'all'] else 0
         if amount > 0:
@@ -267,8 +279,13 @@ class Currency(commands.Cog):
             if amount > 0:
                 with open('cur.json', 'r') as f:
                     money = json.load(f)
-                    author = money[str(ctx.author.id)]
-                    userlol = money[str(user.id)]
+                    try:
+                        author = money[str(ctx.author.id)]
+                        userlol = money[str(user.id)]
+                    except KeyError:
+                        if member == ctx.author:
+                            return await ctx.send(f'You do not have an account yet. Create one with `{ctx.clean_prefix}start`.')
+                        return await ctx.send(f'{user.name} does not have an account yet.)
                     amon = author['wallet']
                     umon = userlol['wallet']
                     if int(amon) > amount - 1:
