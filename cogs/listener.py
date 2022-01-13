@@ -26,11 +26,16 @@ class Listener(commands.Cog):
         chandler = self.client.get_channel(854333051852685333)
         await chandler.send('Bot is now up!')
         guild = self.client.get_guild(794950428756410429)
-        await self.client.change_presence(
-            status=discord.Status.dnd,
-            activity=discord.Activity(type=discord.ActivityType.watching,
-                                      name=f'AOU | {guild.member_count} members')
-        )
+        try:
+            await self.client.change_presence(
+                status=discord.Status.dnd,
+                activity=discord.Activity(type=discord.ActivityType.watching,
+                                          name=f'AOU | {guild.member_count} members')
+            )
+        except:  # noqa
+            pass
+            # The bot isn't in the AOU server, so we can't access the member count.
+            # This is fine, we can just ignore it.
         await self.client.refreshHttp()
 
     @commands.Cog.listener()
