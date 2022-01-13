@@ -20,7 +20,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def clean(self, ctx): # rip bots=True
+    async def clean(self, ctx):  # rip bots=True
         await sleep(0.5)
         await ctx.channel.purge(limit=15, check=lambda m: m.author.bot)
 
