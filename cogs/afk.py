@@ -4,6 +4,8 @@ import json
 import discord
 from discord.ext import commands
 
+import main
+
 
 class Afk(commands.Cog):
 
@@ -41,8 +43,8 @@ class Afk(commands.Cog):
     @commands.command()
     async def removeafk(self, ctx: commands.Context, member: discord.Member = None):
         if member is not None:
-            if not ctx.author.guild_permissions.manage_nicknames:
-                raise commands.errors.MissingPermissions(['manage_nicknames'])
+            if not self.client.get_moderator() in ctx.author.roles:
+                return await ctx.reply("You do not have the permission to remove other's afk.")
         else:
             member = ctx.author
         try:
