@@ -1,15 +1,17 @@
-import discord
 import datetime
-from discord.ext import commands
 import json
-from logger import logger
+
+import discord
+from discord.ext import commands
+
 
 class Afk(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-    @commands.command(description='Sets your afk status.', usage='<reason>\n`reason`: The reason why you are going AFK. This is an optional argument.')
+    @commands.command(description='Sets your afk status.',
+                      usage='<reason>\n`reason`: The reason why you are going AFK. This is an optional argument.')
     async def afk(self, ctx, *, reason='AFK'):
         dt = datetime.datetime
         time = dt.now()
@@ -37,17 +39,23 @@ class Afk(commands.Cog):
         await ctx.send(f"Successfully toggled to `{tglafk[str(ctx.author.id)]}`!")
 
     @commands.command()
-    async def removeafk(self, ctx):
+    async def removeafk(self, ctx: commands.Context, member: discord.Member = None):
+        if member is not None:
+            if not ctx.author.guild_permissions.manage_nicknames:
+                raise commands.errors.MissingPermissions(['manage_nicknames'])
+        else:
+            member = ctx.author
         try:
             with open("afk.json", "r") as f:
                 afk = json.load(f)
-                print(afk[str(ctx.author.id)]['reason'])
-                del afk[str(ctx.author.id)]
+                print(afk[str(member.id)]['reason'])
+                del afk[str(member.id)]
             with open("afk.json", "w") as f:
                 json.dump(afk, f, indent=4)
-                await ctx.channel.send(f'{ctx.author.mention} I have removed your afk.')
+                await ctx.channel.send(
+                    f'{member.mention} I have removed your afk.' if member == ctx.author else f'I have removed {member}\'s afk.')
         except KeyError:
-            await ctx.send("You arent afk!")
+            await ctx.send("You aren't afk!" if member == ctx.author else f"{member} isn't afk!")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -84,4 +92,3 @@ class Afk(commands.Cog):
 
 def setup(client):
     client.add_cog(Afk(client))
-
