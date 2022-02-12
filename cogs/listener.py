@@ -74,7 +74,9 @@ class Listener(commands.Cog):
         _scam = False
         for scam in self.client.scams:
             if scam.lower() in message.content.lower():
+                await message.reply(scam)
                 _scam = True
+                break
         
         if _scam:
             reason = "scam"
