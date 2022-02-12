@@ -73,7 +73,7 @@ class Listener(commands.Cog):
         _scam = False
         for scam in self.scams:
             if scam.lower() in message.content.lower():
-                scam = True
+                _scam = True
         
         if _scam:
             reason = "scam"
