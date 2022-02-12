@@ -10,6 +10,8 @@ from logger import logger
 from discord.ext.buttons import Paginator as pag
 from utility.utils import database
 import asyncio
+from aiohttp import ClientSession as cs
+
 
 
 class Listener(commands.Cog):
@@ -38,6 +40,16 @@ class Listener(commands.Cog):
             # This is fine, we can just ignore it.
         await self.client.refreshHttp()
 
+        async with cs() as c:
+            x = await c.get("https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
+            e = await x.text()
+            b = []
+            for index, line in enumerate(e.split("\n")):
+                if index < 13:
+                    continue
+                b.append(line.lstrip("||").split("^")[0])
+        self.scams = b
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         guild = self.client.get_guild(794950428756410429)
@@ -57,20 +69,14 @@ class Listener(commands.Cog):
         )
 
     # flags a message for steam scam
-    async def flag(self, message: discord.Message, reason='Unspecified'):
-        x = self.client.recentlyflagged.get(str(message.author.id), None)
-        if not x:
-            self.client.recentlyflagged[str(message.author.id)] = message
-            # await message.reply(self.client.recentlyflagged)
-            await asyncio.sleep(5)
-            # await message.reply("sleep ended")
-            self.client.recentlyflagged[str(message.author.id)] = None
-            return
-        logger.info('A message was flagged!')
-        member = message.author
-        if True: # message.guild.id == 794950428756410429:
-            await x.delete()
-            x.scammer = True
+    async def flag(self, message: discord.Message):
+        _scam = False
+        for scam in self.scams:
+            if scam.lower() in message.content.lower():
+                scam = True
+        
+        if _scam:
+            reason = "scam"
             channel = self.client.get_channel(868522732759949382)#853191467941494784)
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
