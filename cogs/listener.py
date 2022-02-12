@@ -49,6 +49,7 @@ class Listener(commands.Cog):
                     continue
                 b.append(line.lstrip("||").split("^")[0])
         self.client.scams = b
+        print(self.client.scams)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
