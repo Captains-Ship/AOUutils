@@ -48,7 +48,7 @@ class Listener(commands.Cog):
                 if index < 13:
                     continue
                 b.append(line.lstrip("||").split("^")[0])
-        self.scams = b
+        self.client.scams = b
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -71,7 +71,7 @@ class Listener(commands.Cog):
     # flags a message for steam scam
     async def flag(self, message: discord.Message):
         _scam = False
-        for scam in self.scams:
+        for scam in self.client.scams:
             if scam.lower() in message.content.lower():
                 _scam = True
         
