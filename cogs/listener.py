@@ -78,6 +78,7 @@ class Listener(commands.Cog):
         if _scam:
             reason = "scam"
             channel = self.client.get_channel(868522732759949382)#853191467941494784)
+            member = message.author
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
                 description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```aou ban {message.author.id} {reason}```',
