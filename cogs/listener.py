@@ -81,7 +81,7 @@ class Listener(commands.Cog):
         
         if _scam:
             reason = "scam"
-            channel = self.client.get_channel(868522732759949382)#853191467941494784)
+            channel = self.client.get_channel(853191467941494784)
             member = message.author
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
