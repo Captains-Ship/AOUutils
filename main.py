@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import slash_utils
 import os
 from jishaku.cog import Jishaku
 import discord
@@ -15,7 +16,7 @@ import aiohttp
 #  -this includes commands
 
 
-class AOUbot(commands.AutoShardedBot):
+class AOUbot(slash_utils.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         logger.info('Logging in...')
