@@ -104,7 +104,7 @@ class Listener(commands.Cog):
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
-        await self.flag(message, "Scam; Hacked account")
+        await self.flag(message)
 
         """
         elif isinstance(error, commands.CommandNotFound):
