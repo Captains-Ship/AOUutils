@@ -87,24 +87,6 @@ class Listener(commands.Cog):
             await channel.send(f"aou ban {message.author.id} {reason}", embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
 
-    async def checker(self, message: discord.Message, words: list):
-        try:
-            if isinstance(message.author, discord.User):
-                return False
-            # if self.client.get_moderator() in message.author.roles:
-            #     return False
-            # if self.client.get_admin() in message.author.roles:
-            #     return False
-            # if self.client.get_general_staff() in message.author.roles:
-            #     return False
-            # if self.client.get_general_dev() in message.author.roles:
-            #     return False
-            for word in words:
-                if word in message.content.lower():
-                    return True
-            return False
-        except AttributeError:
-            return False
 
     @commands.Cog.listener('on_message')
     async def on_message_two(self, message):
@@ -122,13 +104,7 @@ class Listener(commands.Cog):
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
-        SPAM_HINTS = [ 'discord', 'nitro', 'steam', 'cs:go', 'csgo' ]
-        if "@everyone" in message.content.lower():
-            if await self.checker(message, SPAM_HINTS):
-                if "http://" in message.content.lower() or "https://" in message.content.lower():
-                    await self.flag(message, "Scam; Hacked account")
-                    # await message.channel.send("Debug")
-                    return
+        await self.flag(message, "Scam; Hacked account")
 
         """
         elif isinstance(error, commands.CommandNotFound):
