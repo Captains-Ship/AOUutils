@@ -80,12 +80,12 @@ class Listener(commands.Cog):
                 break
         
         if _scam:
-            reason = "scam"
+            reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/S8waxK7QXd> after securing your account."
             channel = self.client.get_channel(853191467941494784)
             member = message.author
             embed = discord.Embed(
                 title=f'Message Flagged for {reason}!',
-                description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```aou ban {message.author.id} {reason}```',
+                description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```{message.guild.me.mention} softban {message.author.id} {reason}```',
                 colour=discord.Colour.red()
             )
             await message.delete()
