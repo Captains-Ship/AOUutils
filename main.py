@@ -86,6 +86,7 @@ client = AOUbot(
         roles=False,
         replied_user=True
     ),
+    owner_ids=[347366054806159360, 813770420758511636],
     strip_after_prefix=True
 )
 client.debug = False

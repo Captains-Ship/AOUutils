@@ -19,6 +19,7 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.client.debug = False
+        self.w = 794950846168432650
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -59,6 +60,15 @@ class Listener(commands.Cog):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name=f'AOU | {guild.member_count} members')
         )
+        welcome = self.client.get_channel(self.w)
+        embed = discord.Embed(
+            title=f"Welcome, {member}!",
+            description=f"{member.mention} has joined the server!\nWe are now at {member.guild.member_count} members.",
+            color=0xFF0000
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(name="All Of Us", icon_url=member.guild.icon.url)
+        await welcome.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -68,6 +78,15 @@ class Listener(commands.Cog):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name=f'AOU | {guild.member_count} members')
         )
+        welcome = self.client.get_channel(self.w)
+        embed = discord.Embed(
+            title=f"Goodbye, {member} :(",
+            description=f"{member.mention} has left the server.\nWe are now at {member.guild.member_count} members.",
+            color=0xFF0000
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(name="All Of Us", icon_url=member.guild.icon.url)
+        await welcome.send(embed=embed)
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message):
@@ -124,7 +143,7 @@ class Listener(commands.Cog):
 
     # anti hoist
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join_2(self, member):
         guild = member.guild
         for member in guild.members:
             if member.display_name.startswith('.'):
@@ -259,7 +278,7 @@ class Listener(commands.Cog):
         await ctx.send(f"toggled debug to {self.client.debug}")
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join_three(self, member):
         logger.info("a member has joined AOU")
         if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
             chandler = member.guild.get_channel(852186132111556690)
@@ -275,7 +294,7 @@ class Listener(commands.Cog):
                 json.dump(memcount, f, indent=4)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove_two(self, member):
         logger.info("A member has left AOU")
         with open('memcount.json', 'r') as f:
             memcount = json.load(f)
