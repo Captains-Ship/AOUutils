@@ -99,7 +99,7 @@ class Listener(commands.Cog):
                 break
         
         if _scam:
-            reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/S8waxK7QXd> after securing your account."
+            reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/MCfSX48Wtd> after securing your account."
             channel = self.client.get_channel(853191467941494784)
             member = message.author
             embed = discord.Embed(
