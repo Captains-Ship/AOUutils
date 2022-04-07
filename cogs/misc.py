@@ -9,7 +9,7 @@ from typing import Union as union
 from discord.ext.commands import Greedy
 from utility.utils import run, dev
 from regex import regex
-from discord.ext.buttons import Paginator
+from utility.paginators import ButtonPaginator as Paginator
 
 class Misc(commands.Cog):
 
@@ -346,5 +346,5 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
             
-def setup(client):
-    client.add_cog(Misc(client))
+async def setup(client):
+    await client.add_cog(Misc(client))

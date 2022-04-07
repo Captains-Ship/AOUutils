@@ -45,5 +45,5 @@ class Suggest(commands.Cog, name="Suggest"):
         await ctx.send(error)
 
 
-def setup(bot):
-    bot.add_cog(Suggest(bot))
+async def setup(bot):
+    await bot.add_cog(Suggest(bot))

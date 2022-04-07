@@ -92,5 +92,5 @@ class Afk(commands.Cog):
             json.dump(afk, f, indent=4)
 
 
-def setup(client):
-    client.add_cog(Afk(client))
+async def setup(client):
+    await client.add_cog(Afk(client))

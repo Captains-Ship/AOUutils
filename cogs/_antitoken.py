@@ -31,5 +31,5 @@ class Antitoken(commands.Cog):
                 return
 
 
-def setup(client):
-    client.add_cog(Antitoken(client))
+async def setup(client):
+    await client.add_cog(Antitoken(client))

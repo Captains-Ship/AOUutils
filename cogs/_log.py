@@ -23,5 +23,5 @@ class Log(commands.Cog):
         await cmdlog.send(embed=embed)
 
 
-def setup(client):
-    client.add_cog(Log(client))
+async def setup(client):
+    await client.add_cog(Log(client))

@@ -6,7 +6,7 @@ import uuid
 
 import discord
 from discord.ext import commands
-from discord.ext.buttons import Paginator
+from utility.paginators import ButtonPaginator as Paginator
 from asyncio import sleep
 from logger import logger
 import datetime
@@ -20,11 +20,12 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def clean(self, ctx): # rip bots=True
+    async def clean(self, ctx):  # rip bots=True
         await sleep(0.5)
         await ctx.channel.purge(limit=15, check=lambda m: m.author.bot)
 
-    @commands.command(description='Purges messages from the current channel.', usage='<amount>\n`amount`: The number of messages to be purged. This is a required argument and must be an integer.')
+    @commands.command(description='Purges messages from the current channel.',
+                      usage='<amount>\n`amount`: The number of messages to be purged. This is a required argument and must be an integer.')
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int = 0):
@@ -36,16 +37,19 @@ class Moderation(commands.Cog):
                     description=f'Purged {limit} message(s)',
                     colour=discord.Colour.red()
                 )
-                embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f'Requested by: {ctx.message.author.name}')
+                embed.set_footer(icon_url=ctx.author.display_avatar.url,
+                                 text=f'Requested by: {ctx.message.author.name}')
                 await ctx.send(embed=embed)
             else:
                 await ctx.reply('ah yes purge nothing')
         else:
             await ctx.reply('Max to purge is `300`')
 
-    @commands.command(description="Bans a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
+    @commands.command(description="Bans a specified user.",
+                      usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member = None, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
+    async def ban(self, ctx, member: discord.Member = None, duration: typing.Optional[DurationConverter] = -1, *,
+                  reason=None):
         if ctx.author.id != 742976057761726514:
             if member != None:
                 if ctx.author.top_role > member.top_role:
@@ -61,7 +65,8 @@ class Moderation(commands.Cog):
                         pass
                     try:
                         await ctx.guild.ban(member, reason=reason)
-                        await ctx.send(f'**{ctx.author}** Yeeted **{member}' + (f" for {str(duration)}.**" if int(duration) > 0 else "**"))
+                        await ctx.send(f'**{ctx.author}** Yeeted **{member}' + (
+                            f" for {str(duration)}.**" if int(duration) > 0 else "**"))
                         if (duration := int(duration)) > 0:
                             await asyncio.sleep(duration)
                             await ctx.guild.unban(discord.Object(id=member.id), reason="Tempban has expired!")
@@ -78,7 +83,8 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Nah mate you have banned too many people by accident')
 
-    @commands.command(description="Kicks a specified user.", usage="<user> [reason]\n`user`: The user to be kicked. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting kicked. This is an optional argument.")
+    @commands.command(description="Kicks a specified user.",
+                      usage="<user> [reason]\n`user`: The user to be kicked. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting kicked. This is an optional argument.")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member = None, *, reason=None):
         embed = discord.Embed(
@@ -100,9 +106,9 @@ class Moderation(commands.Cog):
             await ctx.reply("You need to specify a user to kick.")
 
     @commands.command(description="Kicks a specified user and deletes their messages.",
-    usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
+                      usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
-    async def softban(self, ctx, member: discord.Member=None, *, reason=None):
+    async def softban(self, ctx, member: discord.Member = None, *, reason=None):
         embed = discord.Embed(
             title=f'You were kicked from {ctx.guild.name}',
             description=f'Reason:\n{reason}',
@@ -116,14 +122,15 @@ class Moderation(commands.Cog):
                     pass
                 await ctx.guild.ban(member, reason=reason)
                 await ctx.guild.unban(discord.Object(id=member.id))
-                await ctx.send(f'**{ctx.author}** Slapped **{member}** out of the server\n(dont forget the censoring too)')
+                await ctx.send(
+                    f'**{ctx.author}** Slapped **{member}** out of the server\n(dont forget the censoring too)')
             else:
                 await ctx.reply('**role hierarchy moment**')
         else:
             await ctx.reply("You need to specify a user to softban.")
 
     @commands.command(description="Unbans a specified user",
-    usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
+                      usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
     `reason`: The reason why the user is getting unbanned. This is an optional argument.")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, id=None, *, reason=None):
@@ -137,10 +144,11 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("nice member :)")
 
-
-    @commands.command(description="Mutes a specified user.", usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
+    @commands.command(description="Mutes a specified user.",
+                      usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
     @commands.has_permissions(manage_messages=True)
-    async def mute(self, ctx, member: discord.Member = None, duration: typing.Optional[DurationConverter] = -1, *, reason=None):
+    async def mute(self, ctx, member: discord.Member = None, duration: typing.Optional[DurationConverter] = -1, *,
+                   reason=None):
         if member is None:
             return await ctx.send("Please specify a member to mute.")
         if ctx.author.top_role > member.top_role:
@@ -153,7 +161,8 @@ class Moderation(commands.Cog):
                 for channel in guild.channels:
                     await channel.set_permissions(mutedRole, speak=False, send_messages=False,
                                                   read_message_history=True, read_messages=False)
-            eh = discord.Embed(title="Muted", description=f"{member.mention} was silenced" + (f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
+            eh = discord.Embed(title="Muted", description=f"{member.mention} was silenced" + (
+                f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
             if reason is not None:
                 eh.add_field(name="Reason:", value=reason, inline=False)
             await ctx.send(embed=eh)
@@ -162,7 +171,8 @@ class Moderation(commands.Cog):
                 c = x.isoformat()
                 # 2419200
                 await self.client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=c)
-                await member.send(f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
+                await member.send(
+                    f"You have been muted in {guild.name}" + (f" for reason: {reason}" if reason is not None else ""))
             else:
                 await member.add_roles(mutedRole, reason=reason)
                 if (duration := int(duration)) > 0:
@@ -175,21 +185,25 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('**role hierarchy moment**')
 
-    @commands.command(description="Unmutes a specified user.", usage="<user>\n`user`: The user to be unmuted. This is a required argument and can either be a mention or a user ID.")
+    @commands.command(description="Unmutes a specified user.",
+                      usage="<user>\n`user`: The user to be unmuted. This is a required argument and can either be a mention or a user ID.")
     @commands.has_permissions(manage_messages=True)
     async def unmute(self, ctx, member: discord.Member = None):
         if member is None:
             return await ctx.send("Please specify a member to unmute.")
         mutedRole = discord.utils.get(ctx.guild.roles, name="🔇 Muted")
-        await self.client.http.edit_member(ctx.guild.id, member.id, communication_disabled_until=datetime.datetime.utcnow().isoformat())
+        await self.client.http.edit_member(ctx.guild.id, member.id,
+                                           communication_disabled_until=datetime.datetime.utcnow().isoformat())
         try:
             await member.remove_roles(mutedRole)
         except:
             pass
-        he = discord.Embed(title="unmute", description=f"{ctx.author} unsilenced {member.mention}", colour=discord.Colour.blurple())
+        he = discord.Embed(title="unmute", description=f"{ctx.author} unsilenced {member.mention}",
+                           colour=discord.Colour.blurple())
         await ctx.send(embed=he)
 
-    @commands.command(description="Warns the specified user.", usage="<user> <reason>\n`user`: The user to be warned. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting warned. This is a required argument.")
+    @commands.command(description="Warns the specified user.",
+                      usage="<user> <reason>\n`user`: The user to be warned. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting warned. This is a required argument.")
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member = None, *, reason=None):
         # If no member is specified.
@@ -241,7 +255,8 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("**role hierarchy moment**")
 
-    @commands.command(description="Shows the warnings against a user.", usage="<user>\n`user`: The user to view the warnings of. This is a required argument and can either be a mention or a user ID.")
+    @commands.command(description="Shows the warnings against a user.",
+                      usage="<user>\n`user`: The user to view the warnings of. This is a required argument and can either be a mention or a user ID.")
     @commands.has_permissions(kick_members=True)
     async def warnings(self, ctx, member: discord.Member = None):
         # We DO want a member.
@@ -263,21 +278,21 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
 
         # Setup paginator
-        paginator = Pag(
+        paginator = Paginator(
             title=f"Warnings against {member}",
-            colour=discord.Colour.dark_blue(),
-            entries=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
-                    [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
-                     f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
-                     f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
-                     enumerate(warns[str(member.id)])],
+            pages=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
+                  [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+                   f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                   f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
+                   enumerate(warns[str(member.id)])],
             timeout=120
         )
 
         # Start paginator
         await paginator.start(ctx)
 
-    @commands.command(aliases=["delwarn"], description="Deletes a warning against a user.", usage="<warning id>\n`warning id`: The ID of the warning to delete. This is a required argument and must be a warning ID.")
+    @commands.command(aliases=["delwarn"], description="Deletes a warning against a user.",
+                      usage="<warning id>\n`warning id`: The ID of the warning to delete. This is a required argument and must be a warning ID.")
     @commands.has_permissions(kick_members=True)
     async def removewarn(self, ctx, warn_id: str = None):
         # We need a warn ID.
@@ -310,7 +325,8 @@ class Moderation(commands.Cog):
                         return
             await ctx.send("That warning ID doesn't exist!")
 
-    @commands.command(description="Removes all warnings against a user.", usage="<user>\n`user`: The user to remove all warnings from. This is a required argument and can either be a mention or a user ID.")
+    @commands.command(description="Removes all warnings against a user.",
+                      usage="<user>\n`user`: The user to remove all warnings from. This is a required argument and can either be a mention or a user ID.")
     @commands.has_permissions(kick_members=True)
     async def clearwarns(self, ctx, member: discord.Member = None):
         # We DO want a member.
@@ -338,13 +354,5 @@ class Moderation(commands.Cog):
             await ctx.send("**role hierarchy moment**")
 
 
-class Pag(Paginator):  # from discord.ext.buttons import Paginator
-    async def teardown(self):
-        try:
-            await self.page.clear_reactions()
-        except discord.HTTPException:
-            pass
-
-
-def setup(client):
-    client.add_cog(Moderation(client))
+async def setup(client):
+    await client.add_cog(Moderation(client))

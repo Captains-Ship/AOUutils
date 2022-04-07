@@ -196,5 +196,5 @@ class Button(commands.Cog):
             await msg.edit('Cancelled! Stopping.', embed=None, view=None)
 
 
-def setup(client):
-    client.add_cog(Button(client))
+async def setup(client):
+    await client.add_cog(Button(client))

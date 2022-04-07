@@ -7,10 +7,11 @@ import json
 from traceback import *
 import crayons
 from logger import logger
-from discord.ext.buttons import Paginator as pag
+from utility.paginators import ButtonPaginator as Paginator
 from utility.utils import database
 import asyncio
 from aiohttp import ClientSession as cs
+
 
 
 
@@ -39,7 +40,6 @@ class Listener(commands.Cog):
             pass
             # The bot isn't in the AOU server, so we can't access the member count.
             # This is fine, we can just ignore it.
-        await self.client.refreshHttp()
 
         async with cs() as c:
             x = await c.get("https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
@@ -50,7 +50,7 @@ class Listener(commands.Cog):
                     continue
                 b.append(line.lstrip("||").split("^")[0])
         self.client.scams = b
-        print(self.client.scams)
+        # print(self.client.scams)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -266,7 +266,7 @@ class Listener(commands.Cog):
             h = "".join(format_exception(e, e, e.__traceback__))
             if ctx.author.id not in self.client.get_bot_devs():
                 return
-            pager = discord.ext.buttons.Paginator(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
+            pager = Paginator(timeout=100, pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
                         prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
             await pager.start(ctx)
@@ -309,5 +309,5 @@ class Listener(commands.Cog):
                 f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
 
-def setup(client):
-    client.add_cog(Listener(client))
+async def setup(client):
+    await client.add_cog(Listener(client))

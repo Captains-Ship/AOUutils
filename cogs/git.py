@@ -19,14 +19,14 @@ class Git(commands.Cog):
     async def pull(self, ctx):
         with open('config.json', 'r') as f:
             config = load(f)
-        system(f"git pull https://{config['github']}:{config['tokens']['github']}@github.com/captains-ship/aouutils")
+        system(f"git pull")
         await ctx.send("Pulled, reloading cogs!")
         for filename in listdir(r'./cogs'):
             if filename.endswith('.py'):
                 try:
                     self.client.reload_extension(f'cogs.{filename[:-3]}')
                 except Exception as e:
-                    logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}") # couldnt be bothered checking if it was new, cry about it
+                    logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")  # couldnt be bothered checking if it was new, cry about it
     @git.command()
     @commands.is_owner()
     async def push(self, ctx, *, message="Push through AOUutils"):
@@ -34,8 +34,9 @@ class Git(commands.Cog):
             config = load(f)
         system("git add .")
         system(f"git commit -a -m \"{message}\"")
-        system(f"git push https://{config['github']}:{config['tokens']['github']}@github.com/captains-ship/aouutils")
+        # i fixed my problem with git not saving token so now i can just git push
+        system(f"git push")
         await ctx.send("Pushed!")
 
-def setup(client):
-    client.add_cog(Git(client))
+async def setup(client):
+    await client.add_cog(Git(client))

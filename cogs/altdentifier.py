@@ -56,5 +56,5 @@ class Altdentifier(commands.Cog):
             leaveduringverif.append(member.id)
 
 
-def setup(client):
-    client.add_cog(Altdentifier(client))
+async def setup(client):
+    await client.add_cog(Altdentifier(client))

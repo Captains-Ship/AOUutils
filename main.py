@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
+import asyncio
 import json
-import slash_utils
 import os
 from jishaku.cog import Jishaku
 import discord
@@ -9,76 +9,102 @@ from apilol import start
 from logger import logger
 from utility.utils import getconfig
 from io import BytesIO
+import config
 import aiohttp
-#os.chdir(__file__)
+from traceback import format_exception
+
+
+# os.chdir(__file__) # this was a skill issue
 
 # TODO: Un-hardcode all the "all of us" scattered throughout the code.
 #  -this includes commands
 
 
-class AOUbot(slash_utils.Bot):
+class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         logger.info('Logging in...')
         self.tag_db = None
         self.recentlyflagged = {}
+        self.session: aiohttp.ClientSession = None
+
+
+    async def setup_hook(self):
+        """
+        this is run when the bot is starting but not ready
+        its async so you can await stuff
+        """
+        # await self.load_extension('jishaku') # remind me when jsk works on latest discord.py
+        for filename in os.listdir(r'./cogs'):
+            if filename.endswith('.py'):
+                if filename.startswith("_"):
+                    continue
+                try:
+                    await self.load_extension(f'cogs.{filename[:-3]}')
+                    logger.info(f'Loaded extension {filename}')
+                except Exception as e:
+                    logger.error(f"Error loading cog `cogs.{filename[:-3]}`")
+                    # format the traceback and print it to the console
+                    logger.error("".join(format_exception(type(e), e, e.__traceback__)))
+
+
+
+    async def on_ready(self):
+        await self.tree.sync(guild=discord.Object(id=config.slash_guild))
 
     def get_general_staff(self):
-        return self.get_aou().get_role(795007215786393631)
+        return self.get_server().get_role(config.staff_role)
 
     def get_general_dev(self):
-        return self.get_aou().get_role(849677048238833694)
+        return self.get_server().get_role(config.dev_role)
 
-    def get_aou(self):
-        return self.get_guild(794950428756410429)
+    def get_server(self):
+        return self.get_guild(config.server)
 
     def get_moderator(self):
-        return self.get_aou().get_role(795034661805359134)
+        return self.get_server().get_role(config.moderator)
 
     def get_admin(self):
-        return self.get_aou().get_role(849669487783444490)
+        return self.get_server().get_role(config.admin)
 
     def get_dev_server(self):
-        return self.get_guild(850668209148395520)
+        return self.get_guild(config.dev_server)
+
+    async def start(self, *args, **kwargs):
+        async with aiohttp.ClientSession() as self.session:
+            await super().start(*args, **kwargs)
 
     async def get_cdn(self, filename):
-        x = "http://10.17.22.148/cdn/" + filename
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get(x) as resp:
-                return BytesIO(await resp.read())
-
-    async def refreshHttp(self):
-        async with aiohttp.ClientSession() as cs:
-            self.cs = cs
-            return cs
+        x = "https://" + config.cdn + "/" + filename
+        async with self.session.get(x) as resp:
+            return BytesIO(await resp.read())
 
     def get_bot_devs(self):
-        devrole = self.get_dev_server().get_role(866618255917580309)
-        devs = []
-        for member in self.get_dev_server().members:
-            if devrole in member.roles:
-                devs.append(member.id)
-        return devs
+        return config.devs
+
+    async def load_extension(self, *args, **kwargs) -> None:
+        await super().load_extension(*args, **kwargs)
 
 
 async def get_pre(client, message):
-    if not message.guild:
-        return ''
-    else:
-        with open('prefixes.json', 'r') as f:
-            prefixes = json.load(f)
-            try:
-                h = prefixes[str(message.author.id)]
-                return commands.when_mentioned_or(prefixes[str(message.author.id)])(client, message)
-            except KeyError:
-                return commands.when_mentioned_or('aou ', 'aou')(client, message)
+    return commands.when_mentioned_or(config.prefix)(client, message)
+    # if not message.guild:
+    #     return ''
+    # else:
+    #     with open('prefixes.json', 'r') as f:
+    #         prefixes = json.load(f)
+    #         try:
+    #             h = prefixes[str(message.author.id)]
+    #             return commands.when_mentioned_or(prefixes[str(message.author.id)])(client, message)
+    #         except KeyError:
+    #             return commands.when_mentioned_or(config.prefix)(client, message)
 
 
-client = AOUbot(
+bot = Bot(
     command_prefix=get_pre,
     case_insensitive=True,
     status=discord.Status.dnd,
-    activity=discord.Game(f'AOU'),
+    activity=discord.Game(f'Launching...'),
     intents=discord.Intents.all(),
     allowed_mentions=discord.AllowedMentions(
         users=True,
@@ -86,18 +112,19 @@ client = AOUbot(
         roles=False,
         replied_user=True
     ),
-    owner_ids=[347366054806159360, 813770420758511636],
+    owner_ids=config.owners,
     strip_after_prefix=True
 )
-client.debug = False
-start(client)
-# client.remove_command('help')
-bot = client
-AOUclient = client
+bot.debug = False
 
 
-@client.command()
-async def prefix(ctx, *, prefix='aou'):
+# start(client) # this used to start the API nobody uses
+# disabled for now because it's not needed
+# also performance poggers
+
+
+@bot.command()
+async def prefix(ctx, *, prefix=config.prefix):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
         if prefix == 'aou':
@@ -109,13 +136,12 @@ async def prefix(ctx, *, prefix='aou'):
         await ctx.send(f'Changed your prefix to `{prefix}`!')
 
 
-@client.event
+@bot.event
 async def on_message(msg):
-    config = getconfig()
-    if not msg.author.id in config['blacklist']:
-        await client.process_commands(msg)
+    if msg.author.id not in config.blacklist:
+        await bot.process_commands(msg)
     else:
-        ctx = await client.get_context(msg)
+        ctx = await bot.get_context(msg)
         if ctx.valid:
             embed = discord.Embed(
                 title="Uh Oh...",
@@ -125,47 +151,39 @@ async def on_message(msg):
             await ctx.send(embed=embed)
 
 
-@client.command(aliases=['load'], hidden=True)
+@bot.command(aliases=['load'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def loadextension(ctx, extension):
-    client.load_extension(f'cogs.{extension}')
+    await bot.load_extension(f'cogs.{extension}')
     await ctx.reply('loaded!')
 
 
-@client.command(aliases=['unload'], hidden=True)
+@bot.command(aliases=['unload'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def unloadextension(ctx, extension):
-    client.unload_extension(f'cogs.{extension}')
+    await bot.unload_extension(f'cogs.{extension}')
     await ctx.reply('unloaded!')
 
 
-@client.command(aliases=['reload'], hidden=True)
+@bot.command(aliases=['reload'], hidden=True)
 @commands.is_owner()
 @commands.has_permissions(administrator=True)
 async def reloadextension(ctx, extension):
-    client.reload_extension(f'cogs.{extension}')
+    await bot.reload_extension(f'cogs.{extension}')
     await ctx.reply('Reloaded!')
 
 
-bot.load_extension('jishaku')
-# client.load_extension('jishaku')
-for filename in os.listdir(r'./cogs'):
-    if filename.endswith('.py'):
-        try:
-            client.load_extension(f'cogs.{filename[:-3]}')
-        except Exception as e:
-            logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")
-
-
-def main():
-    config = getconfig()
-    if config['beta'] == "true":
-        client.run(config['tokens']['beta-bot'])
-    else:
-        client.run(config['tokens']['discord'])
+async def main():
+    token = config.token \
+        if not config.beta \
+        else config.beta_token
+    await bot.start(token, reconnect=True)
+    # im not sure but i remember something
+    # about needing to use async context manager with bot to run it
+    # but i cant find anything about it so i'm just gonna leave it here for now
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.get_event_loop().run_until_complete(main())

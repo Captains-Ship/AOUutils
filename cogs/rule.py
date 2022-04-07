@@ -129,5 +129,5 @@ class Rule(commands.Cog):
             await ctx.send(e)
 
 
-def setup(client):
-    client.add_cog(Rule(client))
+async def setup(client):
+    await client.add_cog(Rule(client))
