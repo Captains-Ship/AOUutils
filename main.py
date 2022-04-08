@@ -34,7 +34,7 @@ class Bot(commands.Bot):
         this is run when the bot is starting but not ready
         its async so you can await stuff
         """
-        # await self.load_extension('jishaku') # remind me when jsk works on latest discord.py
+        await self.load_extension('jishaku')
         for filename in os.listdir(r'./cogs'):
             if filename.endswith('.py'):
                 if filename.startswith("_"):
