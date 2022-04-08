@@ -19,14 +19,14 @@
 * items with a `**` next to them is experimental
 * items with a <i style="font-size: 75%;">TBD</i> next to them is to be determined, may or may not happen.
 
-Feature | Usage | Permissions*
---- | --- | ---
-Coloured Console | Items printed to console <br>can be coloured using the <br>crayons module|
-| Info logs | Loggers for info, ready up, <br> etc make debugging a lot <br>easier
-| jishaku | Jishaku is a debugging <br>cog made for discord bots<br> running `aou jsk py code` <br> will evaluate the given code | owner of bot
-| moderation | other moderation bots no <br>longer needed! with AOUutils<br>every other bot becomes <br>useless! | depends on<br>command
-| API | a full API for interacting with <br>AOU and AOUutils** | API Key <i style="font-size: 75%; position:relative; top: -5px; left: -4px;">TBD</i> 
-| Currency System** | Full on dank-memer like currency<br>system! | existance
+| Feature           | Usage                                                                                                                | Permissions*                                                                         |
+|-------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Coloured Console  | Items printed to console <br>can be coloured using the <br>crayons module                                            |                                                                                      |
+| Info logs         | Loggers for info, ready up, <br> etc make debugging a lot <br>easier                                                 |                                                                                      |
+| jishaku           | Jishaku is a debugging <br>cog made for discord bots<br> running `aou jsk py code` <br> will evaluate the given code | owner of bot                                                                         |
+| moderation        | other moderation bots no <br>longer needed! with AOUutils<br>every other bot becomes <br>useless!                    | depends on<br>command                                                                |
+| API               | a full API for interacting with <br>AOU and AOUutils**                                                               | API Key <i style="font-size: 75%; position:relative; top: -5px; left: -4px;">TBD</i> |
+| Currency System** | Full on dank-memer like currency<br>system!                                                                          | existance                                                                            |
 
 ## Known errors when running:
 ### `NoneType` Has no attribute `member_count`
