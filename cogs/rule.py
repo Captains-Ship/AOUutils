@@ -1,8 +1,10 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
+
+
 # from utility.rules import rules, ruleshort
-import urllib.request, json
-from logger import logger
+import config
 
 
 class Rule(commands.Cog):
@@ -83,7 +85,8 @@ class Rule(commands.Cog):
 
     ]
 
-    @commands.command(description="Get the rules for the server.", usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
+    @commands.command(description="Get the rules for the server.",
+                      usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
     async def rule(self, ctx, rule: int = -1):
         try:
             if rule == -1:
@@ -106,9 +109,32 @@ class Rule(commands.Cog):
         except:
             await ctx.send('Unknown rule.')
 
-    @commands.command(description='Enforces a rule', usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
+    @app_commands.command(name='rule', description='Get the rules for the server.')
+    @app_commands.describe(rule="The specific rule that you want to view.")
+    @app_commands.guilds(config.slash_guild)
+    async def rule_slash(self, interaction: discord.Interaction, rule: app_commands.Range[int, 1, len(ruleshort)] = None):
+        if rule is None:
+            embed = discord.Embed(
+                title='Rules',
+                colour=discord.Colour.red()
+            )
+            rulength = len(self.ruleshort)
+            for i in range(0, rulength):
+                embed.add_field(name=f'Rule #{i + 1}', value=self.rules[i], inline=False)
+            await interaction.response.send_message(embed=embed)
+        else:
+            rulelul = rule - 1
+            embed = discord.Embed(
+                title=f'Rule #{rule}',
+                description=self.rules[rulelul],
+                colour=discord.Colour.red()
+            )
+            await interaction.response.send_message(embed=embed)
+
+    @commands.command(description='Enforces a rule',
+                      usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
     @commands.has_permissions(kick_members=True)
-    async def enforce(self, ctx, user: discord.Member = None, rule: int = 9999):
+    async def enforce_slash(self, ctx, user: discord.Member = None, rule: int = 9999):
         if rule == 9999:
             await ctx.send('bru nice rule man')
             return
@@ -127,6 +153,27 @@ class Rule(commands.Cog):
                             embed=embed)
         except Exception as e:
             await ctx.send(e)
+
+    @app_commands.command(name='enforce', description='Enforces a rule')
+    @app_commands.describe(member="The member that you want to warn.",
+                           rule="The specific rule that you want to enforce.")
+    @app_commands.guilds(config.slash_guild)
+    @app_commands.checks.has_permissions(kick_members=True)
+    async def enforce(self, interaction: discord.Interaction, member: discord.Member,
+                      rule: app_commands.Range[int, 1, len(ruleshort)]):
+        try:
+            embed = discord.Embed(
+                title='Enforced!',
+                colour=discord.Colour.red()
+            )
+            embed.add_field(name=f'Rule #{rule}', value=self.rules[rule - 1], inline=False)
+            await interaction.response.send_message(
+                f'{member.mention} Please follow our rules. You have been warned for rule {rule}:',
+                embed=embed)
+            await member.send(f'{member.mention} Please follow our rules. You have been warned for rule {rule}:',
+                              embed=embed)
+        except Exception as e:
+            await interaction.response.send_message(e)
 
 
 async def setup(client):
