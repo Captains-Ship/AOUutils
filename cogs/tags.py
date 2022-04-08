@@ -85,7 +85,7 @@ class Tags(commands.Cog):
 
 
 
-    @tag_group.command(name="create")
+    @tag_group.command(name="create", description="Create a new tag.")
     async def tag_create(self, interaction: discord.Interaction):
         devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
                 813770420758511636]
@@ -93,8 +93,9 @@ class Tags(commands.Cog):
             return await interaction.response.send_message("You are not a developer", ephemeral=True)
         await interaction.response.send_modal(tag_modal())
 
-    @tag_group.command(name="read")
-    async def tag_read(self, interaction: discord.Interaction, tagname: str):
+    @tag_group.command(name="view", description="View a tag.")
+    @discord.app_commands.describe(tagname="The tag to view.")
+    async def tag_view(self, interaction: discord.Interaction, tagname: str):
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
         try:
@@ -113,7 +114,7 @@ class Tags(commands.Cog):
         except TypeError:
             await interaction.response.send_message("Unknown tag")
 
-    @tag_group.command(name="list")
+    @tag_group.command(name="list", description="List all the available tags.")
     async def tag_list(self, interaction: discord.Interaction):
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags")
@@ -132,7 +133,8 @@ class Tags(commands.Cog):
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @tag_group.command(name="delete")
+    @tag_group.command(name="delete", description="Delete a tag.")
+    @discord.app_commands.describe(tagname="The tag to delete.")
     async def tag_delete(self, interaction: discord.Interaction, tagname: str):
         devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
                 813770420758511636]
@@ -143,12 +145,14 @@ class Tags(commands.Cog):
         await interaction.response.send_message("Tag deleted")
 
     class TagEditModal(discord.ui.Modal, title="Edit tag"):
-        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, default=.tag_content)
+        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
+
         def __init__(self, tag_content, tagname):
             self.tag_content = tag_content
             self.tagname = tagname
+            self.content._underlying.value = tag_content
+            self.content._value = tag_content
             super().__init__()
-
 
         async def on_submit(self, interaction: discord.Interaction):
             db = await database.init("tags")
@@ -158,12 +162,16 @@ class Tags(commands.Cog):
 
 
 
-    @tag_group.command(name="edit")
+    @tag_group.command(name="edit", description="Edit a tag.")
+    @discord.app_commands.describe(tagname="The tag to edit.")
     async def tag_edit(self, interaction: discord.Interaction, tagname: str):
         db = await database.init("tags")
         tag_content = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
         tag_content = await tag_content.fetchone()
-        tag_content = [x for x in tag_content]
+        try:
+            tag_content = [x for x in tag_content]
+        except TypeError:
+            return await interaction.response.send_message("Unknown tag")
         tag_content = tag_content[0]
         modal = self.TagEditModal(tag_content, tagname)
         await interaction.response.send_modal(modal)
