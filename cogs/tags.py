@@ -1,9 +1,11 @@
+import difflib
+
 import discord
 from discord.ext import commands
-from utility.utils import database, dev
-from asyncio import run
-from utility.paginators import ButtonPaginator as Paginator
+
 import config
+from utility.paginators import ButtonPaginator as Paginator
+from utility.utils import database, dev
 
 
 class tag_modal(discord.ui.Modal, title="Create tag"):
@@ -33,6 +35,7 @@ class tag_modal(discord.ui.Modal, title="Create tag"):
                           (content, tag_name.lower(), interaction.user.id, embed))
             # the above schema is weird but it is what it is
             await interaction.response.send_message("Created!")
+
 
 class Tags(commands.Cog):
 
@@ -83,8 +86,6 @@ class Tags(commands.Cog):
         pag = Paginator(pages=l, timeout=100, title="Tags", color=discord.Color.red())
         await pag.start(ctx)
 
-
-
     @tag_group.command(name="create", description="Create a new tag.")
     async def tag_create(self, interaction: discord.Interaction):
         devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
@@ -93,8 +94,17 @@ class Tags(commands.Cog):
             return await interaction.response.send_message("You are not a developer", ephemeral=True)
         await interaction.response.send_modal(tag_modal())
 
+    async def tag_autocomplete(self, interaction: discord.Interaction, current: str):
+        db = await database.init("tags")
+        x = await db.exec("SELECT * FROM tags")
+        x = await x.fetchall()
+        matches = difflib.get_close_matches(current, (tags := [e[1] for e in [i for i in x]]), n=10, cutoff=0.6)
+        return list(set([discord.app_commands.Choice(name=e[:100], value=e) for e in matches] + [
+            discord.app_commands.Choice(name=e[:100], value=e) for e in tags if current in e]))[:10]
+
     @tag_group.command(name="view", description="View a tag.")
     @discord.app_commands.describe(tagname="The tag to view.")
+    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
     async def tag_view(self, interaction: discord.Interaction, tagname: str):
         db = await database.init("tags")
         x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
@@ -135,6 +145,7 @@ class Tags(commands.Cog):
 
     @tag_group.command(name="delete", description="Delete a tag.")
     @discord.app_commands.describe(tagname="The tag to delete.")
+    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
     async def tag_delete(self, interaction: discord.Interaction, tagname: str):
         devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
                 813770420758511636]
@@ -159,11 +170,9 @@ class Tags(commands.Cog):
             x = await db.exec("UPDATE tags SET content = ? WHERE tagname = ?", (self.content.value, self.tagname))
             await interaction.response.send_message("Tag edited")
 
-
-
-
     @tag_group.command(name="edit", description="Edit a tag.")
     @discord.app_commands.describe(tagname="The tag to edit.")
+    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
     async def tag_edit(self, interaction: discord.Interaction, tagname: str):
         db = await database.init("tags")
         tag_content = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
@@ -175,8 +184,6 @@ class Tags(commands.Cog):
         tag_content = tag_content[0]
         modal = self.TagEditModal(tag_content, tagname)
         await interaction.response.send_modal(modal)
-
-
 
     @dev()
     @tag.command()
