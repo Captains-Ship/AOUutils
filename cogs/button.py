@@ -52,10 +52,10 @@ class Poll(discord.ui.View):
     async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
         if str(interaction.user.id) == (str(self.ctx.user.id) if isinstance(self.ctx, discord.Interaction) else str(self.ctx.author.id)):
             return await interaction.response.send_message('You cant vote on your own polls!', ephemeral=True)
-        if interaction.user.id in self.no:
-            self.no.remove(interaction.user.id)
-        if interaction.user.id in self.yes:
-            self.yes.remove(interaction.user.id)
+        if interaction.user in self.no:
+            self.no.remove(interaction.user)
+        if interaction.user in self.yes:
+            self.yes.remove(interaction.user)
             del interaction.message.embeds[0]
             embed = discord.Embed(
                 title='Poll',
@@ -65,7 +65,7 @@ class Poll(discord.ui.View):
             embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
             await interaction.message.edit(embed=embed)
             return await interaction.response.send_message('Revoked!', ephemeral=True)
-        self.yes.append(interaction.user.id)
+        self.yes.append(interaction.user)
         del interaction.message.embeds[0]
         embed = discord.Embed(
             title='Poll',
@@ -80,10 +80,10 @@ class Poll(discord.ui.View):
     async def disagree(self, interaction: discord.Interaction, button: discord.ui.Button):
         if str(interaction.user.id) == (str(self.ctx.user.id) if isinstance(self.ctx, discord.Interaction) else str(self.ctx.author.id)):
             return await interaction.response.send_message('You cant vote on your own polls!', ephemeral=True)
-        if interaction.user.id in self.yes:
-            self.yes.remove(interaction.user.id)
-        if interaction.user.id in self.no:
-            self.no.remove(interaction.user.id)
+        if interaction.user in self.yes:
+            self.yes.remove(interaction.user)
+        if interaction.user in self.no:
+            self.no.remove(interaction.user)
             del interaction.message.embeds[0]
             embed = discord.Embed(
                 title='Poll',
@@ -93,7 +93,7 @@ class Poll(discord.ui.View):
             embed.add_field(name="People disagreeing:", value=f"{len(self.no)}", inline=True)
             await interaction.message.edit(embed=embed)
             return await interaction.response.send_message('Revoked!', ephemeral=True)
-        self.no.append(interaction.user.id)
+        self.no.append(interaction.user)
         del interaction.message.embeds[0]
         embed = discord.Embed(
             title='Poll',
@@ -111,8 +111,8 @@ class Poll(discord.ui.View):
         embed = discord.Embed(
             title='Results'
         )
-        embed.add_field(name='People agreeing:', value=f'{len(self.yes)} agreed', inline=True)
-        embed.add_field(name='People disagreeing:', value=f'{len(self.no)} disagreed', inline=True)
+        embed.add_field(name=f'People agreeing: {len(self.yes)}', value="\n".join([str(m) for m in self.yes]) or "None", inline=True)
+        embed.add_field(name=f'People disagreeing: {len(self.no)}', value="\n".join([str(m) for m in self.no]) or "None", inline=True)
         self.stop()
         await interaction.message.edit(view=None, content='Poll Ended!')
         await self.ctx.channel.send(embed=embed)
