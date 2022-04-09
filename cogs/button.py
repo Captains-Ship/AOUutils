@@ -111,8 +111,8 @@ class Poll(discord.ui.View):
         embed = discord.Embed(
             title='Results'
         )
-        embed.add_field(name='People agreeing:', value=f'{len(self.yes)} agreed', inline=True)
-        embed.add_field(name='People disagreeing:', value=f'{len(self.no)} disagreed', inline=True)
+        embed.add_field(name=f'People agreeing: {len(self.yes)}', value="\n".join([str(m) for m in self.yes]), inline=True)
+        embed.add_field(name=f'People disagreeing: {len(self.no)}', value="\n".join([str(m) for m in self.no]), inline=True)
         self.stop()
         await interaction.message.edit(view=None, content='Poll Ended!')
         await self.ctx.channel.send(embed=embed)
