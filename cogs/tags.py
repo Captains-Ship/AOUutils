@@ -41,7 +41,8 @@ class Tags(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.tag_content = None  # ratio
+        self.tag_content = None
+        self.cache = []
 
     tag_group = discord.app_commands.Group(
         name='tag',
@@ -95,12 +96,13 @@ class Tags(commands.Cog):
         await interaction.response.send_modal(tag_modal())
 
     async def tag_autocomplete(self, interaction: discord.Interaction, current: str):
-        db = await database.init("tags")
-        x = await db.exec("SELECT * FROM tags")
-        x = await x.fetchall()
-        matches = difflib.get_close_matches(current, (tags := [e[1] for e in [i for i in x]]), n=10, cutoff=0.6)
+        if not self.cache:
+            db = await database.init("tags")
+            x = await db.exec("SELECT * FROM tags")
+            self.cache = [e[1] for e in [i for i in await x.fetchall()]]
+        matches = difflib.get_close_matches(current, self.cache, n=10, cutoff=0.6)
         return list(set([discord.app_commands.Choice(name=e[:100], value=e) for e in matches] + [
-            discord.app_commands.Choice(name=e[:100], value=e) for e in tags if current in e]))[:10]
+            discord.app_commands.Choice(name=e[:100], value=e) for e in self.cache if current in e]))[:10]
 
     @tag_group.command(name="view", description="View a tag.")
     @discord.app_commands.describe(tagname="The tag to view.")
