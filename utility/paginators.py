@@ -15,9 +15,9 @@ class ButtonType:
 
 
 class BPV(discord.ui.View):
-    def __init__(self, ctx, buttons, paginator, *args, **kwargs):
+    def __init__(self, owner_id, buttons, paginator, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ctx: commands.Context = ctx
+        self.owner_id: int = owner_id
         self.btns = buttons
         self.paginator: ButtonPaginator = paginator
         for button in self.btns.keys():
@@ -38,28 +38,28 @@ class BPV(discord.ui.View):
                 x.emoji = button
 
     @discord.ui.button(emoji="", custom_id=ButtonType.left2, style=discord.ButtonStyle.gray)
-    async def left2(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
+    async def left2(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id == self.owner_id:
             await self.paginator._decrease(2)  # noqa
 
     @discord.ui.button(emoji="", custom_id=ButtonType.left1, style=discord.ButtonStyle.success)
-    async def left1(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
+    async def left1(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id == self.owner_id:
             await self.paginator._decrease(1)  # noqa
 
     @discord.ui.button(emoji="Capstop:928210625677656074", custom_id=ButtonType.stop, style=discord.ButtonStyle.danger)
-    async def _stop(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
+    async def _stop(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id == self.owner_id:
             await self.paginator.stop()
 
     @discord.ui.button(emoji="Capright:928210625669238794", custom_id=ButtonType.right1, style=discord.ButtonStyle.success)
-    async def right1(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
+    async def right1(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id == self.owner_id:
             await self.paginator._increase(1)  # noqa
 
     @discord.ui.button(emoji="Capright2:928210625652482048", custom_id=ButtonType.right2, style=discord.ButtonStyle.gray)
-    async def right2(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
+    async def right2(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id == self.owner_id:
             await self.paginator._increase(2)  # noqa
 
     async def on_timeout(self) -> None:
@@ -69,6 +69,7 @@ class BPV(discord.ui.View):
 class ButtonPaginator:
     def __init__(self,
                  ctx: commands.Context = None,
+                 interaction: discord.Interaction = None,
                  *,
                  pages: list[Union[discord.Embed, str]],
                  timeout: int = 180,
@@ -79,7 +80,13 @@ class ButtonPaginator:
                  force_embed=False,
                  buttons: dict = None
                  ):
-        self.ctx: commands.Context = ctx
+        if ctx is None and interaction is None:
+            raise ValueError("You must provide either a context or an interaction.")
+        if ctx is not None and interaction is not None:
+            raise ValueError("You must provide either a context or an interaction, not both.")
+        self.owner_id: int = interaction.user.id if interaction is not None else ctx.author.id
+        self.ctx: Optional[commands.Context] = ctx
+        self.interaction: Optional[discord.Interaction] = interaction
         self.pages: list = pages
         self.timeout: int = timeout
         self.color: discord.Color = color
@@ -97,14 +104,13 @@ class ButtonPaginator:
             "\U000027a1": ButtonType.right2
         }
         self._stopped: bool = False
-        self.view: BPV = BPV(ctx=self.ctx, buttons=self.buttons, paginator=self, timeout=self.timeout)
+        self.view: BPV = BPV(owner_id=self.owner_id, buttons=self.buttons, paginator=self, timeout=self.timeout)
 
-    async def start(self, ctx: Optional[commands.Context] = None):
+    async def start(self):
         """Starts the paginator,
         ctx is only needed if you want to use a different context than the one the paginator was created with"""
-        self.ctx = ctx or self.ctx
         await self._handle_sending()
-        self.view.ctx = self.ctx
+        self.view.owner_id = self.owner_id
 
     async def _edit_message(self):
         """
@@ -119,12 +125,21 @@ class ButtonPaginator:
             x = self.pages[self.index]
             x.description = self.prefix + x.description or x.title + self.suffix
             x.title = self.title
+            if self.interaction is not None:
+                await self.interaction.followup.edit_message(message_id=self.msg.id, content="", embed=x)
+                return
             await self.msg.edit(content="", embed=x)
         else:
             if self.force_embed:
                 x = discord.Embed(title=self.title, description=self.prefix + self.pages[self.index] + self.suffix, color=self.color)
+                if self.interaction is not None:
+                    await self.interaction.followup.edit_message(message_id=self.msg.id, content="", embed=x)
+                    return
                 await self.msg.edit(content="", embed=x)
             else:
+                if self.interaction is not None:
+                    await self.interaction.followup.edit_message(message_id=self.msg.id, content=self.prefix + self.pages[self.index] + self.suffix, embed=None)
+                    return
                 await self.msg.edit(content=self.prefix + self.pages[self.index] + self.suffix, embed=None)
 
     async def stop(self):
@@ -165,15 +180,12 @@ class ButtonPaginator:
         await self._edit_message()
 
     def _check(self, reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
-        return user.id == self.ctx.author.id
+        return user.id == self.owner_id
 
     async def _handle_sending(self):
         """Handles the sending of the paginator
         internal function. dont call unless you know what you are doing.
         """
-        if self.ctx is None:
-            raise ValueError(
-                "You need to provide a context to start the paginator, do this either in class init or in start()")
         if len(self.pages) == 0:
             raise ValueError("You need to provide at least one page")
         if self.force_embed:
@@ -185,4 +197,7 @@ class ButtonPaginator:
             else:
                 tobesent = self.pages[self.index]
                 tobesent.description = self.prefix + tobesent.description + self.suffix
+        if self.interaction is not None:
+            self.msg = await self.interaction.response.send_message(content=tobesent if isinstance(tobesent, str) else None, embed=tobesent if isinstance(tobesent, discord.Embed) else None, view=self.view)
+            return
         self.msg = await self.ctx.send(content=tobesent if isinstance(tobesent, str) else None, embed=tobesent if isinstance(tobesent, discord.Embed) else None, view=self.view)
