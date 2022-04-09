@@ -1,6 +1,9 @@
 import json
 import datetime
+from abc import ABC
+
 import discord
+from discord import app_commands
 from discord.ext import commands
 import asyncio
 import asqlite
@@ -117,7 +120,6 @@ class DurationConverter(commands.Converter):
             else:
                 return -1  # Idk what to put here so I might as well put -1
 
-
 class Duration:
     def __init__(self, seconds):
         self.total_seconds = seconds
@@ -172,3 +174,28 @@ class Duration:
 
     def time_left(self) -> int:  # Returns the time left in seconds.
         return self.epoch - int(datetime.datetime.now().timestamp())
+
+
+class DurationTransformer(app_commands.Transformer):
+    @classmethod
+    async def transform(cls, interaction: discord.Interaction, value: str):
+        if value.isdigit():
+            return Duration(int(value))
+        else:
+            values = {"w": 604800, "d": 86400, "h": 3600, "m": 60, "s": 1}
+            nums = []
+            tempnums = []
+            for char in value:
+                if char.isdigit():
+                    tempnums.append(char)
+                else:
+                    multiple = values.get(char)
+                    if multiple is None:
+                        return -1  # Temporary measure till I figure out which Exception to raise.
+                    num = int("".join(tempnums))
+                    tempnums.clear()
+                    nums.append(num * multiple)
+            if len(nums) > 0:
+                return Duration(sum(nums))
+            else:
+                return -1
