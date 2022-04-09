@@ -111,6 +111,28 @@ class ButtonPaginator:
         self.__view_interaction: Optional[discord.Interaction] = None
         self.view: BPV = BPV(owner_id=self.owner_id, buttons=self.buttons, paginator=self, timeout=self.timeout)
 
+    @staticmethod
+    def entries_to_pages(entries: list, joiner: str = "\n", embed: bool = True):
+        """
+        Splits entries into pages.
+        Set `embed` to True if you want to split the entries to use in embeds. Default is True.
+
+        Why doesn't the paginator accept entries and split it on it's own? Because I don't want to.
+
+        """
+        pages = []
+        temp = ""
+        for entry in entries:
+            if len(temp + entry + joiner) < (4096 if embed else 2000):
+                temp += entry + joiner
+            else:
+                pages.append(temp)
+                temp = ""
+        if temp != "":
+            pages.append(temp)
+        return pages
+
+
     async def start(self):
         """Starts the paginator,
         ctx is only needed if you want to use a different context than the one the paginator was created with"""

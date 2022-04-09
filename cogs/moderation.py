@@ -514,7 +514,7 @@ class Moderation(commands.Cog):
         paginator = Paginator(
             ctx,
             title=f"Warnings against {member}",
-            pages=["\n".join(entries[i:i + 10]) for i in range(0, len(entries), 10)],
+            pages=Paginator.entries_to_pages(entries),
             force_embed=True,
             timeout=120
         )
@@ -551,7 +551,7 @@ class Moderation(commands.Cog):
         paginator = Paginator(
             interaction=interaction,
             title=f"Warnings against {member}",
-            pages=["\n".join(entries[i:i + 10]) for i in range(0, len(entries), 10)],
+            pages=Paginator.entries_to_pages(entries),
             force_embed=True,
             timeout=120
         )
