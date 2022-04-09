@@ -25,14 +25,14 @@ class Moderation(commands.Cog):
         await sleep(0.5)
         await ctx.channel.purge(limit=15, check=lambda m: m.author.bot)
 
-    @app_commands.command(name="clean", description="Remove messages sent by bot in the current channel")
+    @app_commands.command(name="clean", description="Remove messages sent by bots in the current channel")
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.bot_has_permissions(manage_messages=True)
     @app_commands.guilds(config.slash_guild)
     async def clean_slash(self, interaction: discord.Interaction):
         await interaction.response.defer()
         await sleep(0.5)
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"Cleared {len(await (self.client.get_channel(interaction.channel_id)).purge(limit=15, check=lambda m: m.author.bot))} messages.")
 
     @commands.command(description='Purges messages from the current channel.',
@@ -72,7 +72,7 @@ class Moderation(commands.Cog):
         )
         embed.set_footer(icon_url=interaction.user.display_avatar.url,
                          text=f'Requested by: {interaction.user.name}')
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @commands.command(description="Bans a specified user.",
                       usage="<user> [duration] [reason]\n`user`: The user to be banned. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be banned. This is an optional argument.\n`reason`: The reason why the user is getting banned. This is an optional argument.")
@@ -118,11 +118,12 @@ class Moderation(commands.Cog):
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.guilds(config.slash_guild)
     async def ban_slash(self, interaction: discord.Interaction, member: discord.Member,
-                        duration: app_commands.Transform[typing.Union[Duration, int], DurationTransformer] = -1,
+                        duration: app_commands.Transform[typing.Union[Duration, int], DurationTransformer] = None,
                         reason: str = "No reason provided."):
         await interaction.response.defer()
+        duration = -1 if duration is None else duration
         if interaction.user.id == 742976057761726514:
-            return await interaction.response.send_message("Nah mate you have banned too many people by accident")
+            return await interaction.followup.send("Nah mate you have banned too many people by accident")
         if interaction.guild.get_member(interaction.user.id).top_role > member.top_role:
             embed = discord.Embed(
                 title=f'You were banned from {interaction.guild.name}',
@@ -136,7 +137,7 @@ class Moderation(commands.Cog):
                 pass
             try:
                 await interaction.guild.ban(member, reason=reason)
-                await interaction.response.send_message(f'**{interaction.user}** Yeeted **{member}' + (
+                await interaction.followup.send(f'**{interaction.user}** Yeeted **{member}' + (
                     f" for {str(duration)}.**" if int(duration) > 0 else "**"))
                 if (duration := int(duration)) > 0:
                     await asyncio.sleep(duration)
@@ -146,9 +147,9 @@ class Moderation(commands.Cog):
                     except discord.Forbidden:
                         pass
             except discord.Forbidden:
-                await interaction.response.send_message('above my top role, cant ban')
+                await interaction.followup.send('above my top role, cant ban')
         else:
-            await interaction.response.send_message('**role hierarchy moment**')
+            await interaction.followup.send('**role hierarchy moment**')
 
     @commands.command(description="Kicks a specified user.",
                       usage="<user> [reason]\n`user`: The user to be kicked. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting kicked. This is an optional argument.")
@@ -191,10 +192,9 @@ class Moderation(commands.Cog):
             except:
                 pass
             await interaction.guild.kick(member, reason=reason)
-            await interaction.response.send_message(f'**{interaction.user}** Slapped **{member}' + (
-                f".**" if reason is not None else "**"))
+            await interaction.followup.send(f'**{interaction.user}** Slapped **{member} out of the server')
         else:
-            await interaction.response.send_message('**role hierarchy moment**')
+            await interaction.followup.send('**role hierarchy moment**')
 
     @commands.command(description="Kicks a specified user and deletes their messages.",
                       usage="<user> [reason]\n`user`: The user to be silenced. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting silenced. This is an optional argument.")
@@ -239,10 +239,9 @@ class Moderation(commands.Cog):
                 pass
             await interaction.guild.ban(member, reason=reason)
             await interaction.guild.unban(discord.Object(id=member.id))
-            await interaction.response.send_message(f'**{interaction.user}** Slapped **{member}' + (
-                f".**" if reason is not None else "**"))
+            await interaction.followup.send(f'**{interaction.user}** Slapped **{member} out of the server\n(dont forget the censoring too)')
         else:
-            await interaction.response.send_message('**role hierarchy moment**')
+            await interaction.followup.send('**role hierarchy moment**')
 
     @commands.command(description="Unbans a specified user",
                       usage="<user> [reason]\n`user`: The user to be unbanned. This is a required argument and has to be a user ID.\n \
@@ -260,7 +259,7 @@ class Moderation(commands.Cog):
             await ctx.send("nice member :)")
 
     @app_commands.command(name="unban", description="Unbans a specified user")
-    @app_commands.describe(id="The user to be unbanned.")
+    @app_commands.describe(user_id="The user to be unbanned.")
     @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.guilds(config.slash_guild)
@@ -270,8 +269,8 @@ class Moderation(commands.Cog):
         try:
             await interaction.guild.unban(u)
         except discord.NotFound:
-            return await interaction.response.send_message("Member isn't banned or you may have passed an invalid ID!")
-        await interaction.response.send_message(f'**{interaction.user}** unbanned **{await self.client.fetch_user(user_id)}**')
+            return await interaction.followup.send("Member isn't banned or you may have passed an invalid ID!")
+        await interaction.followup.send(f'**{interaction.user}** unbanned **{await self.client.fetch_user(user_id)}**')
 
     @commands.command(description="Mutes a specified user.",
                       usage="<user> [duration] [reason]\n`user`: The user to be muted. This is a required argument and can either be a mention or a user ID.\n`duration`: The duration for which the user should be muted. This is an optional argument. \n`reason`: The reason why the user is getting muted. This is an optional argument.")
@@ -312,12 +311,13 @@ class Moderation(commands.Cog):
             await ctx.send('**role hierarchy moment**')
 
     @app_commands.command(name="mute", description="Mutes a specified user.")
-    @app_commands.describe(id="The user to be muted.", duration="The duration for which the user should be muted.", reason="The reason why the user is getting muted.")
+    @app_commands.describe(member="The user to be muted.", duration="The duration for which the user should be muted.", reason="The reason why the user is getting muted.")
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.bot_has_permissions(manage_roles=True, moderate_members=True)
     @app_commands.guilds(config.slash_guild)
     async def mute_slash(self, interaction: discord.Interaction, member: discord.Member, duration: app_commands.Transform[typing.Union[Duration, int], DurationTransformer] = None, reason: str = "No reason provided."):
         await interaction.response.defer()
+        duration = -1 if duration is None else duration
         guild = interaction.guild
         mutedRole = discord.utils.get(guild.roles, name="🔇 Muted")
 
@@ -331,7 +331,7 @@ class Moderation(commands.Cog):
             f" for {str(duration)}." if int(duration) > 0 else ""), colour=discord.Colour.red())
         if reason is not None:
             eh.add_field(name="Reason:", value=reason, inline=False)
-        await interaction.response.send_message(embed=eh)
+        await interaction.followup.send(embed=eh)
         if int(duration) < 2419300 and int(duration) > -0:
             await member.timeout(datetime.timedelta(seconds=int(duration)), reason=reason)
             await member.send(
@@ -365,7 +365,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=he)
 
     @app_commands.command(name="unmute", description="Unmutes a specified user.")
-    @app_commands.describe(id="The user to be unmuted.", reason="The reason why the user is getting unmuted.")
+    @app_commands.describe(member="The user to be unmuted.", reason="The reason why the user is getting unmuted.")
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.bot_has_permissions(manage_roles=True, moderate_members=True)
     @app_commands.guilds(config.slash_guild)
@@ -380,7 +380,7 @@ class Moderation(commands.Cog):
             pass
         he = discord.Embed(title="unmute", description=f"{interaction.user} unsilenced {member.mention}",
                            colour=discord.Colour.blurple())
-        await interaction.response.send_message(embed=he)
+        await interaction.followup.send(embed=he)
 
     @commands.command(description="Warns the specified user.",
                       usage="<user> <reason>\n`user`: The user to be warned. This is a required argument and can either be a mention or a user ID.\n`reason`: The reason why the user is getting warned. This is a required argument.")
@@ -436,10 +436,11 @@ class Moderation(commands.Cog):
             await ctx.send("**role hierarchy moment**")
 
     @app_commands.command(name="warn", description="Warns the specified user.")
-    @app_commands.describe(id="The user to be warned.", reason="The reason why the user is getting warned.")
+    @app_commands.describe(member="The user to be warned.", reason="The reason why the user is getting warned.")
     @app_commands.checks.has_permissions(kick_members=True)
     @app_commands.guilds(config.slash_guild)
     async def warn_slash(self, interaction: discord.Interaction, member: discord.Member, reason: str):
+        await interaction.response.defer()
         if interaction.guild.get_member(interaction.user.id).top_role > member.top_role:
             with open('warns.json', 'r+') as f:
                 warns = json.loads(f.read())
@@ -472,14 +473,14 @@ class Moderation(commands.Cog):
             # Send it.
             try:
                 await member.send(embed=embed)
-            except discord.Forbidden:  # Man, they got their DMs off.
+            except Exception:  # Man, they got their DMs off.
                 pass
             suffix = ['th', 'st', 'nd', 'rd', 'th'][min((warncount := len(warns[str(member.id)])) % 10, 4)]
             if 11 <= (warncount % 100) <= 13:
                 suffix = 'th'
-            await interaction.response.send_message(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
+            await interaction.followup.send(f"**{member}** has been warned. This is their **{str(warncount) + suffix}** warning.")
         else:
-            await interaction.response.send_message("**role hierarchy moment**")
+            await interaction.followup.send("**role hierarchy moment**")
 
     @commands.command(description="Shows the warnings against a user.",
                       usage="<user>\n`user`: The user to view the warnings of. This is a required argument and can either be a mention or a user ID.")
@@ -503,15 +504,18 @@ class Moderation(commands.Cog):
         # Get warnings and build embed
         embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
 
+        # Moved from discord.ext.buttons to Cap's paginator
+        entries = [f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] + [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+                f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+                f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
+                enumerate(warns[str(member.id)])]
+
         # Setup paginator
         paginator = Paginator(
             ctx,
             title=f"Warnings against {member}",
-            pages=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
-                  [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
-                   f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
-                   f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
-                   enumerate(warns[str(member.id)])],
+            pages=["\n".join(entries[i:i + 10]) for i in range(0, len(entries), 10)],
+            force_embed=True,
             timeout=120
         )
 
@@ -531,21 +535,24 @@ class Moderation(commands.Cog):
         try:
             warns[str(member.id)]
         except KeyError:
-            await interaction.response.send_message("This member has not been warned before!")
+            await interaction.followup.send("This member has not been warned before!")
             return
 
         # Get warnings and build embed
         embed = discord.Embed(title=f"Warnings against {member}", colour=discord.Colour.dark_blue())
 
+        entries = [f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] + [
+            f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
+            f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
+            f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
+            enumerate(warns[str(member.id)])]
+
         # Setup paginator
         paginator = Paginator(
             interaction=interaction,
             title=f"Warnings against {member}",
-            pages=[f"There are {len(warns[str(member.id)])} warning(s) logged against this user.\n"] +
-                  [f"**{i + 1} - {warns[str(member.id)][key]['reason']}**\n"
-                   f"Warning ID: {key} | Moderator: {warns[str(member.id)][key]['moderator']} "
-                   f"| Warned at <t:{warns[str(member.id)][key]['time']}:F>\n" for i, key in
-                   enumerate(warns[str(member.id)])],
+            pages=["\n".join(entries[i:i + 10]) for i in range(0, len(entries), 10)],
+            force_embed=True,
             timeout=120
         )
 
@@ -587,7 +594,7 @@ class Moderation(commands.Cog):
             await ctx.send("That warning ID doesn't exist!")
 
     @app_commands.command(name="delwarn", description="Deletes a warning against a user.")
-    @app_commands.describe(warn_id="The ID of the warning to delete. This is a required argument and must be a warning ID.")
+    @app_commands.describe(warn_id="The ID of the warning to delete.")
     @app_commands.checks.has_permissions(kick_members=True)
     @app_commands.guilds(config.slash_guild)
     async def removewarn_slash(self, interaction: discord.Interaction, warn_id: str):
@@ -601,20 +608,20 @@ class Moderation(commands.Cog):
                     try:
                         member = await interaction.guild.fetch_member(int(member))
                     except discord.NotFound:
-                        await interaction.response.send_message("This person is no longer in this server!")
+                        await interaction.followup.send("This person is no longer in this server!")
                         return
                     if interaction.guild.get_member(interaction.user.id).top_role > member.top_role:
                         warns[str(member.id)].pop(warn_id)
-                        await interaction.response.send_message(
+                        await interaction.followup.send(
                             f"Warning with ID {warn_id} logged against **{member}** has been revoked.")
                         f.seek(0)
                         f.write(json.dumps(warns))
                         f.truncate()
                         return
                     else:
-                        await interaction.response.send_message("**role hierarchy moment**")
+                        await interaction.followup.send("**role hierarchy moment**")
                         return
-            await interaction.response.send_message("That warning ID doesn't exist!")
+            await interaction.followup.send("That warning ID doesn't exist!")
 
     @commands.command(description="Removes all warnings against a user.",
                       usage="<user>\n`user`: The user to remove all warnings from. This is a required argument and can either be a mention or a user ID.")
@@ -645,7 +652,7 @@ class Moderation(commands.Cog):
             await ctx.send("**role hierarchy moment**")
 
     @app_commands.command(name="clearwarns", description="Removes all warnings against a user.")
-    @app_commands.describe(member="The user to remove all warnings from. This is a required argument and can either be a mention or a user ID.")
+    @app_commands.describe(member="The user to remove all warnings from.")
     @app_commands.checks.has_permissions(kick_members=True)
     @app_commands.guilds(config.slash_guild)
     async def clearwarns_slash(self, interaction: discord.Interaction, member: discord.Member):
@@ -658,16 +665,16 @@ class Moderation(commands.Cog):
                 try:
                     warns[str(member.id)]
                 except KeyError:
-                    await interaction.response.send_message("This member has not been warned before!")
+                    await interaction.followup.send("This member has not been warned before!")
                     return
 
                 warns[str(member.id)] = {}
                 f.seek(0)
                 f.write(json.dumps(warns))
                 f.truncate()
-                await interaction.response.send_message(f"All warnings against **{member}** have been revoked.")
+                await interaction.followup.send(f"All warnings against **{member}** have been revoked.")
         else:
-            await interaction.response.send_message("**role hierarchy moment**")
+            await interaction.followup.send("**role hierarchy moment**")
 
 
 async def setup(client):
