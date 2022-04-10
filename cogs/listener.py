@@ -1,18 +1,17 @@
-from discord.ext import commands
-import discord
-import traceback
 import datetime
-from discord.ext.commands import *
 import json
+import typing
 from traceback import *
+
 import crayons
+import discord
+from aiohttp import ClientSession as cs
+from discord import app_commands
+from discord.ext import commands
+
 from logger import logger
 from utility.paginators import ButtonPaginator as Paginator
 from utility.utils import database
-import asyncio
-from aiohttp import ClientSession as cs
-
-
 
 
 class Listener(commands.Cog):
@@ -21,6 +20,7 @@ class Listener(commands.Cog):
         self.client = client
         self.client.debug = False
         self.w = 794950846168432650
+        self.og_on_error = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -42,7 +42,8 @@ class Listener(commands.Cog):
             # This is fine, we can just ignore it.
 
         async with cs() as c:
-            x = await c.get("https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
+            x = await c.get(
+                "https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
             e = await x.text()
             b = []
             for index, line in enumerate(e.split("\n")):
@@ -97,7 +98,7 @@ class Listener(commands.Cog):
                     continue
                 _scam = True
                 break
-        
+
         if _scam:
             reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/MCfSX48Wtd> after securing your account."
             channel = self.client.get_channel(853191467941494784)
@@ -110,7 +111,6 @@ class Listener(commands.Cog):
             await message.delete()
             await channel.send(f"aou ban {message.author.id} {reason}", embed=embed)
             await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
-
 
     @commands.Cog.listener('on_message')
     async def on_message_two(self, message):
@@ -126,7 +126,8 @@ class Listener(commands.Cog):
                 pass
         """
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
-            await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
+            await message.reply(
+                'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
         await self.flag(message)
 
@@ -229,13 +230,14 @@ class Listener(commands.Cog):
                 if ctx.guild is None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
                     await ctx.reinvoke()
                 else:
-                    await ctx.send(f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+                    await ctx.send(
+                        f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
         elif isinstance(error, commands.NotOwner):
             await ctx.reply('Unowner moment')
         elif isinstance(error, commands.MemberNotFound):
             await ctx.reply('The member that you\'ve mentioned isn\'t in this server or does not exist.')
         elif ctx.command.name.lower() == 'purge':
-            if not isinstance(error, MissingPermissions):
+            if not isinstance(error, commands.MissingPermissions):
                 await ctx.send('Nice integer Mate, next time gimmie a number')
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'missing argument(s) `{error.param}`')
@@ -266,10 +268,10 @@ class Listener(commands.Cog):
             h = "".join(format_exception(e, e, e.__traceback__))
             if ctx.author.id not in self.client.get_bot_devs():
                 return
-            pager = Paginator(timeout=100, pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
-                        prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
+            pager = Paginator(ctx, timeout=100, pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
+                              prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
-            await pager.start(ctx)
+            await pager.start()
 
     @commands.command()
     @commands.is_owner()
@@ -307,6 +309,54 @@ class Listener(commands.Cog):
         if self.client.debug:
             logger.info(
                 f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
+
+    async def on_error(self, interaction: discord.Interaction,
+                       command: typing.Union[app_commands.Command, app_commands.ContextMenu],
+                       error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.MissingPermissions):
+            await interaction.response.send_message(
+                f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+        elif isinstance(error, app_commands.BotMissingPermissions):
+            await interaction.response.send_message(
+                f'I am missing the following permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+        else:
+            errorlog = self.client.get_channel(908402845383004171)
+            e = discord.Embed(
+                title="Error!",
+                description=f"Interaction Data: ```py\n{interaction.data}\n```",
+                colour=discord.Colour.red()
+            )
+            e.add_field(name="error", value=error)
+            try:
+                await errorlog.send(embed=e)
+            except AttributeError:
+                pass
+            await interaction.response.send_message(f'Error, This has been reported to the developers!\n{error}')
+            cmdlog = self.client.get_channel(896394252962123806)
+            embed = discord.Embed(
+                title="Error!",
+                description=error,
+                colour=discord.Colour.red()
+            )
+            embed.add_field(name="Interaction Data", value=f"```py\n{interaction.data}\n```")
+            embed.add_field(name="Command", value=command.name)
+            e = error
+            logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
+            h = "".join(format_exception(e, e, e.__traceback__))
+            if interaction.user.id not in self.client.get_bot_devs():
+                return
+            pager = Paginator(interaction=interaction, timeout=100,
+                              pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
+                              prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
+
+            await pager.start()
+
+    async def cog_load(self) -> None:
+        self.og_on_error = self.client.tree.on_error
+        self.client.tree.on_error = self.on_error
+
+    async def cog_unload(self) -> None:
+        self.client.tree.on_error = self.og_on_error
 
 
 async def setup(client):
