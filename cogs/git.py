@@ -43,8 +43,8 @@ class Git(commands.Cog):
     @git.command()
     @commands.is_owner()
     async def pull(self, ctx):
-        with open('config.json', 'r') as f:
-            config = load(f)
+        # with open('config.json', 'r') as f:
+        #     config = load(f)
         proc, stdout, stderr = await run(f"git pull")
         stdout, stderr = stdout.decode('utf-8'), stderr.decode('utf-8')
         await ctx.send("Pulled, reloading cogs!")
