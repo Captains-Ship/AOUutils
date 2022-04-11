@@ -1,7 +1,33 @@
-from os import system, listdir
+from os import listdir
 from json import load
 from discord.ext import commands
 import logger
+from utility.utils import run
+import re
+
+class AdminPanel(discord.ui.View):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @discord.ui.button(label="reload cogs")
+    async def reload_cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
+        final = ""
+        for cog in listdir("cogs"):
+            if cog.endswith(".py"):
+                try:
+                    await self.bot.reload_extension(f"cogs.{cog[:-3]}")
+                    final += f"\U00002705 cogs.{cog[:-3]}\n\n\n"
+                except Exception as e:
+                    final += f"\U0000274C cogs.{cog[:-3]}\n\n\n"
+                    logger.error(f"{cog[:-3]} failed to reload: {e}")
+        await interaction.response.send_message(final)
+
+    @discord.ui.button(label="restart bot")
+    async def restart_bot(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_message("restarting...")
+        await self.bot.close()  # use a process manager like pm2 or docker to restart the bot
+
+
 class Git(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -19,23 +45,34 @@ class Git(commands.Cog):
     async def pull(self, ctx):
         with open('config.json', 'r') as f:
             config = load(f)
-        system(f"git pull")
+        proc, stdout, stderr = await run(f"git pull")
+        stdout, stderr = stdout.decode('utf-8'), stderr.decode('utf-8')
         await ctx.send("Pulled, reloading cogs!")
-        for filename in listdir(r'./cogs'):
-            if filename.endswith('.py'):
-                try:
-                    self.client.reload_extension(f'cogs.{filename[:-3]}')
-                except Exception as e:
-                    logger.error(f"Error loading cog `cogs.{filename[:-3]}`, error:\n{e}")  # couldnt be bothered checking if it was new, cry about it
+        # make a regex and match it to the stdout for every file in cogs/
+        # if it matches, reload the cog
+        # if it doesn't match, don't reload the cog
+        reg = re.compile(r"cogs/(.*)\.py")
+        changed_cogs = reg.findall(stderr)  # git is dum and uses stderr
+        for cog in changed_cogs:
+            try:
+                await self.client.reload_extension(f"cogs.{cog}")
+            except Exception as e:
+                logger.error(f"{cog} failed to reload: {e}")
+                await ctx.send("failed to reload cogs." + cog)
+        await ctx.send(f"```sh\n{stderr}```", view=AdminPanel(self.client))
+
+
+
+
     @git.command()
     @commands.is_owner()
     async def push(self, ctx, *, message="Push through AOUutils"):
         with open('config.json', 'r') as f:
             config = load(f)
-        system("git add .")
-        system(f"git commit -a -m \"{message}\"")
+        await run("git add .")
+        await run(f"git commit -a -m \"{message}\"")
         # i fixed my problem with git not saving token so now i can just git push
-        system(f"git push")
+        await run(f"git push")
         await ctx.send("Pushed!")
 
 async def setup(client):
