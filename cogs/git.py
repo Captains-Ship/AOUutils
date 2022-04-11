@@ -54,7 +54,7 @@ class Git(commands.Cog):
         # if it matches, reload the cog
         # if it doesn't match, don't reload the cog
         reg = re.compile(r"cogs/(.*)\.py")
-        changed_cogs = reg.findall(stderr)  # git is dum and uses stderr
+        changed_cogs = reg.findall(stdout)
         for cog in changed_cogs:
             try:
                 await self.client.reload_extension(f"cogs.{cog}")
