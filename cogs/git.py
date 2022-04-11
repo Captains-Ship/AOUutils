@@ -60,12 +60,16 @@ class Git(commands.Cog):
         # if it doesn't match, don't reload the cog
         reg = re.compile(r"cogs/(.*)\.py")
         changed_cogs = reg.findall(stdout)
+        errors = []
         for cog in changed_cogs:
             try:
                 await self.client.reload_extension(f"cogs.{cog}")
             except Exception as e:
                 logger.error(f"{cog} failed to reload: {e}")
                 await ctx.send("failed to reload cogs." + cog)
+                errors.append(e)
+        if errors:
+            raise errors[0]
         await ctx.send(f"```sh\n{stdout}```", view=AdminPanel(bot=self.client))  # amogus
 
 
