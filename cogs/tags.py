@@ -10,7 +10,7 @@ from utility.utils import database, dev
 
 class tag_modal(discord.ui.Modal, title="Create tag"):
     name = discord.ui.TextInput(label="Tag name")
-    content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
+    content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984) # literally 1984
 
     async def on_submit(self, interaction: discord.Interaction):
         tag_name = self.name.value
@@ -161,7 +161,7 @@ class Tags(commands.Cog):
         self.cache = None
 
     class TagEditModal(discord.ui.Modal, title="Edit tag"):
-        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
+        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984)
 
         def __init__(self, tag_content, tagname):
             self.tag_content = tag_content
