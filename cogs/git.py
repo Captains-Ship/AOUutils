@@ -67,8 +67,8 @@ class Git(commands.Cog):
     @git.command()
     @commands.is_owner()
     async def push(self, ctx, *, message="Push through AOUutils"):
-        with open('config.json', 'r') as f:
-            config = load(f)
+        # with open('config.json', 'r') as f:
+        #     config = load(f)
         await run("git add .")
         await run(f"git commit -a -m \"{message}\"")
         # i fixed my problem with git not saving token so now i can just git push
