@@ -4,12 +4,13 @@ from discord.ext import commands
 import logger
 from utility.utils import run
 import re
+import discord
 
 class AdminPanel(discord.ui.View):
     def __init__(self, bot):
         self.bot = bot
 
-    @discord.ui.button(label="reload cogs")
+    @discord.ui.button(label="reload cogs", style=discord.ButtonStyle.blurple)
     async def reload_cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
         final = ""
         for cog in listdir("cogs"):
@@ -22,7 +23,7 @@ class AdminPanel(discord.ui.View):
                     logger.error(f"{cog[:-3]} failed to reload: {e}")
         await interaction.response.send_message(final)
 
-    @discord.ui.button(label="restart bot")
+    @discord.ui.button(label="restart bot", style=discord.ButtonStyle.danger)
     async def restart_bot(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message("restarting...")
         await self.bot.close()  # use a process manager like pm2 or docker to restart the bot
