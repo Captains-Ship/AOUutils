@@ -20,6 +20,7 @@ class Misc(commands.Cog):
     @commands.command()
     async def test(self, ctx):
         await ctx.send("robin is a stink")  # troll
+        THIS IS AN ERROR
 
     @dev()
     @commands.group()
