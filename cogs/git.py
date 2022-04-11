@@ -15,7 +15,7 @@ class AdminPanel(discord.ui.View):
     @discord.ui.button(label="reload cogs", style=discord.ButtonStyle.blurple)
     async def reload_cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id not in owners:
-            return await interaction.response.send_message("You are not an owner smh")
+            return await interaction.response.send_message("You are not an owner smh", ephemeral=True)
         final = ""
         for cog in listdir("cogs"):
             if cog.endswith(".py"):
@@ -30,7 +30,7 @@ class AdminPanel(discord.ui.View):
     @discord.ui.button(label="restart bot", style=discord.ButtonStyle.danger)
     async def restart_bot(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id not in owners:
-            return await interaction.response.send_message("You are not an owner smh")
+            return await interaction.response.send_message("You are not an owner smh", ephemeral=True)
         await interaction.response.send_message("restarting...")
         await self.bot.close()  # use a process manager like pm2 or docker to restart the bot
 
