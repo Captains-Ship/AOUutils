@@ -94,6 +94,8 @@ class Tags(commands.Cog):
         if interaction.user.id not in devs:
             return await interaction.response.send_message("You are not a developer", ephemeral=True)
         await interaction.response.send_modal(tag_modal())
+        delete self.cache
+
 
     async def tag_autocomplete(self, interaction: discord.Interaction, current: str):
         if not self.cache:
@@ -156,6 +158,7 @@ class Tags(commands.Cog):
         db = await database.init("tags")
         x = await db.exec("DELETE FROM tags WHERE tagname = ?", (tagname.lower()))
         await interaction.response.send_message("Tag deleted")
+        delete self.cache
 
     class TagEditModal(discord.ui.Modal, title="Edit tag"):
         content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
@@ -205,6 +208,7 @@ class Tags(commands.Cog):
             await db.exec("INSERT INTO tags VALUES (?, ?, ?, ?)", (content, tag_name.lower(), ctx.author.id, embed))
             # the above schema is weird but it is what it is
             await ctx.send("Created!")
+        delete self.cache
 
     @dev()
     @tag.command()
@@ -218,6 +222,8 @@ class Tags(commands.Cog):
             return await ctx.send("Unknown tag")
         e = await db.exec("DELETE FROM tags WHERE tagname = ?", tag_name)
         await ctx.send("Tag deleted")
+        delete self.cache
+
 
     @tag.command()
     async def info(self, ctx, *, tagname):
