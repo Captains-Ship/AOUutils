@@ -9,6 +9,7 @@ from aiohttp import ClientSession as cs
 from discord import app_commands
 from discord.ext import commands
 
+import config
 from logger import logger
 from utility.paginators import ButtonPaginator as Paginator
 from utility.utils import database
@@ -319,6 +320,10 @@ class Listener(commands.Cog):
         elif isinstance(error, app_commands.BotMissingPermissions):
             await interaction.response.send_message(
                 f'I am missing the following permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+        elif isinstance(error, app_commands.CommandNotFound):
+            await interaction.response.send_message(
+                f'This command may have been removed, you shouldn\'t be seeing this message again.')
+            await self.client.tree.sync(guild=interaction.guild if interaction.guild else config.slash_guild)
         else:
             errorlog = self.client.get_channel(908402845383004171)
             e = discord.Embed(
