@@ -10,7 +10,7 @@ class Example(commands.Cog):
     @app_commands.command(name="amogus", description="amogus'ing moment")
     @app_commands.guilds(slash_guild)
     async def amogus(self, interaction: discord.Interaction):
-        await interaction.send("amogus")
+        await interaction.response.send_message("amogus")
         print(interaction.user)
 
 
