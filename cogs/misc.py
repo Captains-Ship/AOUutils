@@ -19,7 +19,7 @@ class Misc(commands.Cog):
     @dev()
     @commands.command()
     async def test(self, ctx):
-        await ctx.send("robin stink.")
+        await ctx.send("robin is a stink")  # troll
 
     @dev()
     @commands.group()
