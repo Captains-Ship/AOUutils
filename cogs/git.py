@@ -4,6 +4,7 @@ from discord.ext import commands
 import logger
 from utility.utils import run
 import re
+from config import owners
 import discord
 
 class AdminPanel(discord.ui.View):
@@ -13,6 +14,8 @@ class AdminPanel(discord.ui.View):
 
     @discord.ui.button(label="reload cogs", style=discord.ButtonStyle.blurple)
     async def reload_cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id not in owners:
+            return await interaction.response.send_message("You are not an owner smh")
         final = ""
         for cog in listdir("cogs"):
             if cog.endswith(".py"):
@@ -26,6 +29,8 @@ class AdminPanel(discord.ui.View):
 
     @discord.ui.button(label="restart bot", style=discord.ButtonStyle.danger)
     async def restart_bot(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id not in owners:
+            return await interaction.response.send_message("You are not an owner smh")
         await interaction.response.send_message("restarting...")
         await self.bot.close()  # use a process manager like pm2 or docker to restart the bot
 
@@ -61,7 +66,7 @@ class Git(commands.Cog):
             except Exception as e:
                 logger.error(f"{cog} failed to reload: {e}")
                 await ctx.send("failed to reload cogs." + cog)
-        await ctx.send(f"```sh\n{stderr}```", view=AdminPanel(bot=self.client))  # amogus
+        await ctx.send(f"```sh\n{stdout}```", view=AdminPanel(bot=self.client))  # amogus
 
 
 
