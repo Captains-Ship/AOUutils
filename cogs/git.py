@@ -7,8 +7,9 @@ import re
 import discord
 
 class AdminPanel(discord.ui.View):
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, *args, **kwargs):
+        self.bot = kwargs.pop("bot")
+        super().__init__(*args, **kwargs)
 
     @discord.ui.button(label="reload cogs", style=discord.ButtonStyle.blurple)
     async def reload_cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
