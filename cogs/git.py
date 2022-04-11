@@ -61,7 +61,7 @@ class Git(commands.Cog):
             except Exception as e:
                 logger.error(f"{cog} failed to reload: {e}")
                 await ctx.send("failed to reload cogs." + cog)
-        await ctx.send(f"```sh\n{stderr}```", view=AdminPanel(bot=self.client))
+        await ctx.send(f"```sh\n{stderr}```", view=AdminPanel(bot=self.client))  # amogus
 
 
 
