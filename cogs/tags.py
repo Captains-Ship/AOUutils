@@ -10,7 +10,7 @@ from utility.utils import database, dev
 
 class tag_modal(discord.ui.Modal, title="Create tag"):
     name = discord.ui.TextInput(label="Tag name")
-    content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
+    content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984) # literally 1984
 
     async def on_submit(self, interaction: discord.Interaction):
         tag_name = self.name.value
@@ -94,6 +94,8 @@ class Tags(commands.Cog):
         if interaction.user.id not in devs:
             return await interaction.response.send_message("You are not a developer", ephemeral=True)
         await interaction.response.send_modal(tag_modal())
+        self.cache = None
+
 
     async def tag_autocomplete(self, interaction: discord.Interaction, current: str):
         if not self.cache:
@@ -156,9 +158,10 @@ class Tags(commands.Cog):
         db = await database.init("tags")
         x = await db.exec("DELETE FROM tags WHERE tagname = ?", (tagname.lower()))
         await interaction.response.send_message("Tag deleted")
+        self.cache = None
 
     class TagEditModal(discord.ui.Modal, title="Edit tag"):
-        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph)
+        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984)
 
         def __init__(self, tag_content, tagname):
             self.tag_content = tag_content
@@ -205,6 +208,7 @@ class Tags(commands.Cog):
             await db.exec("INSERT INTO tags VALUES (?, ?, ?, ?)", (content, tag_name.lower(), ctx.author.id, embed))
             # the above schema is weird but it is what it is
             await ctx.send("Created!")
+        self.cache = None
 
     @dev()
     @tag.command()
@@ -218,6 +222,8 @@ class Tags(commands.Cog):
             return await ctx.send("Unknown tag")
         e = await db.exec("DELETE FROM tags WHERE tagname = ?", tag_name)
         await ctx.send("Tag deleted")
+        self.cache = None
+
 
     @tag.command()
     async def info(self, ctx, *, tagname):

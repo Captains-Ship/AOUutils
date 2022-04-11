@@ -17,6 +17,11 @@ class Misc(commands.Cog):
         self.client = client
 
     @dev()
+    @commands.command()
+    async def test(self, ctx):
+        await ctx.send("robin is a stink")  # troll
+
+    @dev()
     @commands.group()
     async def youtube(self, ctx):
         pass
