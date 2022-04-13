@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -13,7 +15,7 @@ class Example(commands.Cog):
         await interaction.response.send_message("amogus")
         print(interaction.user)
 
-    @hybrid_command(name="sudo", description="superuser do")  # both message and slash command
+    @commands.hybrid_command(name="sudo", description="superuser do")  # both message and slash command
     @app_commands.guilds(slash_guild)  # do not forget this!
     async def sudo(self, ctx: commands.Context, *, command: str):
         await ctx.defer()
