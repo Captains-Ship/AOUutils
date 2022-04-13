@@ -1,0 +1,6 @@
+/config.json
+/.idea/
+/.vscode/
+/venv/
+/cogs/eval.py
+__pycache__/*
