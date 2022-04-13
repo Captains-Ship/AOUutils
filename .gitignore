@@ -1,7 +1,0 @@
-/config.json
-/.idea/
-/.vscode/
-/venv/
-/cogs/eval.py
-__pycache__/*
-*/__pycache__/
