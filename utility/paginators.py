@@ -76,7 +76,7 @@ class ButtonPaginator:
                  ctx: commands.Context = None,
                  interaction: discord.Interaction = None,
                  *,
-                 pages: list[Union[discord.Embed, str]],
+                 pages: list,
                  timeout: int = 180,
                  color: discord.Color = discord.Color.og_blurple(),
                  prefix: str = "",
