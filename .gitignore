@@ -4,3 +4,4 @@
 /venv/
 /cogs/eval.py
 __pycache__/*
+/tokens.py
