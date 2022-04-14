@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord import app_commands
 from config import slash_guild
 
+
 class Example(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,6 +22,7 @@ class Example(commands.Cog):
         await ctx.defer()
         await asyncio.sleep(5)
         await ctx.send(f"```sh\n{ctx.author}@Captain8771-mint:~$ {command}\noh no you don't```")
+
 
 async def setup(bot):  # async now
     await bot.add_cog(Example(bot))  # async now
