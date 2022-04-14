@@ -28,7 +28,6 @@ class Bot(commands.Bot):
         self.recentlyflagged = {}
         self.session: aiohttp.ClientSession = None
 
-
     async def setup_hook(self):
         """
         this is run when the bot is starting but not ready
@@ -46,11 +45,6 @@ class Bot(commands.Bot):
                     logger.error(f"Error loading cog `cogs.{filename[:-3]}`")
                     # format the traceback and print it to the console
                     logger.error("".join(format_exception(type(e), e, e.__traceback__)))
-
-
-
-    async def on_ready(self):
-        await self.tree.sync(guild=discord.Object(id=config.slash_guild))
 
     def get_general_staff(self):
         return self.get_server().get_role(config.staff_role)
@@ -104,7 +98,7 @@ bot = Bot(
     command_prefix=get_pre,
     case_insensitive=True,
     status=discord.Status.dnd,
-    activity=discord.Game(f'Installing cat...'),
+    activity=discord.Game(f'Loading' if not config.beta else f'AOUutils BETA'),
     intents=discord.Intents.all(),
     allowed_mentions=discord.AllowedMentions(
         users=True,

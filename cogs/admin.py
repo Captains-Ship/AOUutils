@@ -16,13 +16,17 @@ class Admin(commands.Cog):
         self.client = client
 
 
-
+    @commands.command()
+    @commands.is_owner()
+    async def sync(self, ctx, *, guild_id: int = None):
+        if guild_id is None:
+            guild_id = ctx.guild.id
+        await self.client.tree.sync(guild=discord.Object(id=guild_id))
 
     @commands.command()
     @commands.is_owner()
     async def reboot(self, ctx):
         await ctx.reply('ok')
-        os.system('run.bat')
         await self.client.close()
 
     @commands.command()

@@ -6,6 +6,9 @@ from utility.utils import run
 import re
 from config import owners
 import discord
+from discord import app_commands
+from config import slash_guild
+
 
 class AdminPanel(discord.ui.View):
     def __init__(self, *args, **kwargs):
@@ -39,17 +42,18 @@ class Git(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.group()
+    @commands.hybrid_group(name="git")
+    @app_commands.guilds(slash_guild)
     @commands.is_owner()
-    async def git(self, ctx):
+    async def git(self, ctx: commands.Context):
         """
         a variety of git commands
         """
         pass
 
-    @git.command()
+    @git.command(name="pull")
     @commands.is_owner()
-    async def pull(self, ctx):
+    async def pull(self, ctx: commands.Context):
         # with open('config.json', 'r') as f:
         #     config = load(f)
         proc, stdout, stderr = await run(f"git pull")
@@ -72,12 +76,9 @@ class Git(commands.Cog):
             raise errors[0]
         await ctx.send(f"```sh\n{stdout}```", view=AdminPanel(bot=self.client))  # amogus
 
-
-
-
-    @git.command()
+    @git.command(name="push")
     @commands.is_owner()
-    async def push(self, ctx, *, message="Push through AOUutils"):
+    async def push(self, ctx: commands.Context, *, message: str = "Push through AOUutils"):
         # with open('config.json', 'r') as f:
         #     config = load(f)
         await run("git add .")
@@ -85,6 +86,7 @@ class Git(commands.Cog):
         # i fixed my problem with git not saving token so now i can just git push
         await run(f"git push")
         await ctx.send("Pushed!")
+
 
 async def setup(client):
     await client.add_cog(Git(client))
