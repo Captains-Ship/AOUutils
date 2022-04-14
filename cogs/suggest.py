@@ -10,10 +10,12 @@ class Suggest(commands.Cog, name="Suggest"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='suggest', help="A command to Suggest things!", aliases=['request'],
-                      usage="<suggestion>\n`suggestion`: The suggestion that you want to give. This is a required argument.")
+    @commands.hybrid_command(name='suggest', description="A command to Suggest things!", aliases=['request'],
+                             usage="<suggestion>\n`suggestion`: The suggestion that you want to give. This is a required argument.")
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def h(self, ctx, *, suggestion=None):
+    @discord.app_commands.guilds(config.slash_guild)
+    @discord.app_commands.describe(suggestion="The suggestion that you want to give.")
+    async def h(self, ctx: commands.Context, *, suggestion: str = None) -> None:
         if suggestion:
             blacklist = [
                 328661975250894850,
@@ -41,27 +43,13 @@ class Suggest(commands.Cog, name="Suggest"):
             else:
                 await ctx.reply('blacklist moment')
         else:
+            if ctx.interaction is not None:
+                return await ctx.interaction.response.send_modal(SuggestModal())
             await ctx.send('actually give me a suggestion -_-')
 
     @h.error
-    async def h_error(self, ctx, error):
+    async def h_error(self, ctx: commands.Context, error: Exception) -> None:
         await ctx.send(error)
-
-    @discord.app_commands.command(name="suggest", description="Suggest something for the server or the bot!")
-    @discord.app_commands.guilds(config.slash_guild)
-    async def suggest(self, interaction: discord.Interaction):
-        blacklist = [
-            328661975250894850,
-            841330839685431336,
-            675474604533219360,
-            721745855207571627,
-            476549192362229791,
-            468134163493421076,
-            849939032410030080
-        ]
-        if interaction.user.id in blacklist:
-            return await interaction.response.send_message("blacklist moment")
-        await interaction.response.send_modal(SuggestModal())
 
 
 class SuggestModal(discord.ui.Modal, title="Suggest a new feature!"):
@@ -83,5 +71,5 @@ class SuggestModal(discord.ui.Modal, title="Suggest a new feature!"):
         await interaction.response.send_message('Suggestion Sent!')
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Suggest(bot))
