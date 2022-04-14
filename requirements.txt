@@ -14,7 +14,7 @@ click==8.0.1
 colorama==0.4.4
 crayons==0.4.0
 Deprecated==1.2.13
-discord.py @ git+https://github.com/Rapptz/discord.py@723584ca19e34604798043d6fa265785af794ebd
+discord.py @ git+https://github.com/Rapptz/discord.py@e541be0427101a4437ad777b7f1a692cc5b75e55
 Flask==2.0.2
 idna==3.2
 import-expression==1.1.4
