@@ -12,7 +12,7 @@ from discord.ext import commands
 import config
 from logger import logger
 from utility.paginators import ButtonPaginator as Paginator
-from utility.utils import database
+from utility.utils import database, Response
 
 
 class Listener(commands.Cog):
@@ -111,7 +111,7 @@ class Listener(commands.Cog):
             )
             await message.delete()
             await channel.send(f"aou ban {message.author.id} {reason}", embed=embed)
-            await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
+            await member.send(f'You have been automatically flagged for `scam` by the automod.')
 
     @commands.Cog.listener('on_message')
     async def on_message_two(self, message):
@@ -168,6 +168,7 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        resp = Response(ctx.locale)
         if isinstance(error, commands.CommandInvokeError):
             error = getattr(error, 'original', error)
         if isinstance(error, commands.CommandOnCooldown):
@@ -175,39 +176,15 @@ class Listener(commands.Cog):
                 await ctx.reinvoke()
             else:
                 if not ctx.author.guild_permissions.administrator:
-                    if ctx.command.name == 'work':
-                        try:
-                            with open('cur.json', 'r') as f:
-                                jason = json.load(f)
-                                if str(jason[str(ctx.author.id)]['wallet']) != '500':
-                                    timeleftins = error.retry_after
-                                    timeleftformat = str(datetime.timedelta(seconds=timeleftins))
-                                    timelol = timeleftformat.split(':')
-                                    s3 = timelol[2]
-                                    s2 = s3.split('.')
-                                    s = s2[0]
-                                    m = timelol[1]
-                                    if str(m) != "0":
-                                        await ctx.send(
-                                            f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
-                                    else:
-                                        await ctx.send(
-                                            f'This command is on cooldown. Please wait {s} seconds.')
-
-                                else:
-                                    await ctx.reinvoke()
-                        except:
-                            await ctx.reply('You dont have an account! do `aou start`')
-                    else:
-                        timeleftins = error.retry_after
-                        timeleftformat = str(datetime.timedelta(seconds=timeleftins))
-                        timelol = timeleftformat.split(':')
-                        s3 = timelol[2]
-                        s2 = s3.split('.')
-                        s = s2[0]
-                        m = timelol[1]
-                        await ctx.send(
-                            f'Error 429: You are being ratelimited. \nTry in a few minutes.')  # Please wait {m} minutes and {s} seconds.')
+                    timeleftins = error.retry_after
+                    timeleftformat = str(datetime.timedelta(seconds=timeleftins))
+                    timelol = timeleftformat.split(':')
+                    s3 = timelol[2]
+                    s2 = s3.split('.')
+                    s = s2[0]
+                    m = timelol[1]
+                    await ctx.send(
+                        resp.cooldown_min.format(m, s) if str(m) != "0" else resp.cooldown_sec.format(s))
                 else:
                     if ctx.command.name.lower() != 'jishaku':
                         if str(ctx.command.cog).lower() != 'admin':
@@ -215,35 +192,28 @@ class Listener(commands.Cog):
         elif isinstance(error, commands.CommandNotFound):
             h = ctx.invoked_with
             embed = discord.Embed(
-                title=f'Unknown Command "{h}"',
-                description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
+                title=resp.unknown_command.format(h),
+                description=resp.unknown_cmd_long.format(ctx.prefix),
                 colour=discord.Colour.red()
             )
             embed.set_thumbnail(url=self.client.user.display_avatar.url)
             await ctx.send(
-                'Error!',
                 embed=embed
             )
         elif isinstance(error, commands.MissingPermissions):
-            if ctx.author.id == 347366054806159360:
-                await ctx.reinvoke()
-            else:
-                if ctx.guild is None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
-                    await ctx.reinvoke()
-                else:
-                    await ctx.send(
-                        f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+            await ctx.send(
+                f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
         elif isinstance(error, commands.NotOwner):
-            await ctx.reply('Unowner moment')
+            await ctx.reply(resp.unowner)
         elif isinstance(error, commands.MemberNotFound):
-            await ctx.reply('The member that you\'ve mentioned isn\'t in this server or does not exist.')
+            await ctx.reply(resp.member_not_found)
         elif ctx.command.name.lower() == 'purge':
             if not isinstance(error, commands.MissingPermissions):
-                await ctx.send('Nice integer Mate, next time gimmie a number')
+                await ctx.send(resp.not_int)
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'missing argument(s) `{error.param}`')
+            await ctx.send(resp.missing_arg.format(error.param))
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send('You are probably not allowed to use this command.')
+            await ctx.send(resp.check_fail)
         elif isinstance(error, ValueError):
             print(error.args)
         else:
@@ -256,7 +226,7 @@ class Listener(commands.Cog):
             )
             e.add_field(name="error", value=error)
             await errorlog.send(embed=e)
-            await ctx.reply(f'Error, This has been reported to the developers!\n{error}')
+            await ctx.reply(resp.unknown_error.format(str(error)))
             cmdlog = self.client.get_channel(896394252962123806)
             embed = discord.Embed(
                 title="Error!",

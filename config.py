@@ -1,8 +1,8 @@
 from tokens import *
 """
 how the tokens.py file looks:
-token = ""  # type: str
-beta_token = ""  # type: str
+token = ""  # type: st??\..
+beta_token = ""  # type: str 
 """
 staff_role = 795007215786393631  # type: int
 dev_role = 849677048238833694  # type: int

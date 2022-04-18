@@ -199,3 +199,82 @@ class DurationTransformer(app_commands.Transformer):
                 return Duration(sum(nums))
             else:
                 return -1
+
+class ctx(commands.Context):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.locale = None
+        if self.interaction:
+            self.locale = self.interaction.locale
+        else:
+            self.locale = self.guild.preferred_locale
+        if not self.locale:
+            self.locale = "en-US"
+        self.locale = str(self.locale)
+
+class Response:
+    def __init__(self, locale: str):
+        self.locale = locale
+        self._responses = {
+            "en-US": {
+                "cant_echo_blank": 'I cannot send nothing',
+                "conv_bin_to_ascii": 'Converted Binary to ASCII',
+                "req_by": 'Requested by {}',
+                "info_title": 'Info About {}',
+                "info_owner": 'Owner: {}',
+                "channels": 'Channels',
+                "roles": 'Roles',
+                "member_count": 'MemberCount',
+                "members_online": 'Members Online',
+                "ping": 'Ping',
+                "staff_team_title": 'Staff Team of AOU',
+                "staff_team_desc": 'List of all Staff of AOU',
+                "wacky_imp": 'Values may or may not be incorrect due to the wacky way i implemented this.',
+                "join_date": 'Join Date',
+                "creation_date": 'Creation Date',
+                "conv_hex_to_ascii": 'Converted Hex to ASCII',
+                "purge_cmd": 'Purge Command',
+                "purged": 'Purged {} message(s)',
+                "purge_none": 'ah yes purge nothing',
+                "max_purge": 'Max to purge is `300`',
+                "bot_cant_ban": 'above my top role, cant ban',
+                "role_hierarchy": '**__Your top role is below their top role.__**',
+                "kick_none": 'You need to specify a user to kick.',
+                "missing_member": 'You need to specify a member.',
+                "member_not_banned": 'Member isn\'t banned!',
+                "member_not_warned": 'This member has not been warned before!',
+                "missing_id": 'You need to specify an ID.',
+                "member_gone": 'Member is not in this server.',
+                "invalid_id": 'Invalid ID.',
+                "warn_revoked": 'Warning with ID {0} logged against **{1}** has been revoked.',
+                "warns_cleared": 'All warnings against **{}** have been revoked.',
+                "afk_set": '{0} i set your afk: {1}',
+                "toggle": 'Successfully toggled to `{}`!',
+                "no_afk_perms": 'You do not have the permission to remove other\'s afk.',
+                "afk_removed": '{0} I have removed {1} AFK.',
+                "not_afk": '{} are not afk',
+                "cooldown_min": 'This command is on cooldown. Please wait {0} minutes and {1} seconds.',
+                "cooldown_sec": 'This command is on cooldown. Please wait {} seconds.',
+                "unknown_cmd": 'Unknown command "{}"',
+                "unknown_cmd_long": 'I do not recognize this command. run `{}help` for a list of commands.',
+                "unowner": 'You are not the owner of this bot.',
+                "member_not_found": 'The member that you\'ve mentioned isn\'t in this server or does not exist.',
+                "not_int": 'You did not provide a valid number.',
+                "missing_arg": 'missing argument(s) `{}`',
+                "check_fail": 'You are probably not allowed to use this command.',
+                "unknown_error": 'Error, This has been reported to the developers!\n{}'
+            }
+        }
+        self._responses["en-GB"] = self._responses["en-US"]
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def __getattr__(self, item):
+        r = self._responses.get(self.locale, None)
+        if r is None:
+            r = self._responses["en-US"]
+        r = r.get(item, None) or self._responses["en-US"].get(item, None)
+        if r is None:
+            raise AttributeError(f"Response object has no translation for {item}")
+        return r

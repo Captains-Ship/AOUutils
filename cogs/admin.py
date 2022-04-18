@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import datetime
+
+from config import slash_guild
 from utility.utils import *
 from discord.ext.commands import *
 import os
@@ -14,7 +16,6 @@ class Admin(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-
 
     @commands.command()
     @commands.is_owner()
@@ -35,7 +36,17 @@ class Admin(commands.Cog):
         await ctx.reply('ok')
         await self.client.close()
 
+    @commands.hybrid_command()
+    @app_commands.guilds(slash_guild)
+    @dev()
+    async def locale_test(self, ctx: commands.Context):
+        await ctx.reply(ctx.locale)
 
+    @commands.hybrid_command()
+    @app_commands.guilds(slash_guild)
+    @dev()
+    async def get_str(self, ctx: commands.Context, *, string: str):
+        await ctx.reply(Response(ctx.locale)[string])
 
     
     

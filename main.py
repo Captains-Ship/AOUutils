@@ -5,9 +5,9 @@ import os
 from jishaku.cog import Jishaku
 import discord
 from discord.ext import commands
-from apilol import start
+# from apilol import start
 from logger import logger
-from utility.utils import getconfig
+from utility.utils import getconfig, ctx
 from io import BytesIO
 import config
 import aiohttp
@@ -28,11 +28,17 @@ class Bot(commands.Bot):
         self.recentlyflagged = {}
         self.session: aiohttp.ClientSession = None
 
+    async def get_context(self, message, *, cls=None):
+        return await super().get_context(message, cls=ctx)
+
     async def setup_hook(self):
         """
         this is run when the bot is starting but not ready
         its async so you can await stuff
         """
+        os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
+        os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
+        os.environ["JISHAKU_HIDE"] = "True"
         await self.load_extension('jishaku')
         for filename in os.listdir(r'./cogs'):
             if filename.endswith('.py'):
