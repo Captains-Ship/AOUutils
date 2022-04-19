@@ -16,6 +16,11 @@ devs = [347366054806159360, 535059139999825922, 553677148611936267, 721745855207
 prefix = "dev2 "  # type: str # REMEMBER TO CHANGE TO AOU IN PRODUCTION, LOOKING AT YOU CAPTAIN
 owners = [347366054806159360, 813770420758511636]  # type: list
 blacklist = []  # type: list
+<<<<<<< Updated upstream
+=======
+token = ""  # type: str
+beta_token = "ODY4NDc2ODM3NjMyODMxNTU4.YPwOFQ.zJbI7YitGU08fV8qhI2AUtA-ksk"  # type: str
+>>>>>>> Stashed changes
 beta = True  # type: bool
 github_token = ""  # type: str
 slash_guild = 850668209148395520  # type: int
