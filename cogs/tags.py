@@ -7,7 +7,6 @@ import config
 from utility.paginators import ButtonPaginator as Paginator
 from utility.utils import database, dev
 from asyncio import run
-from discord.ext.buttons import Paginator
 from tagformatter import Parser
 import random
 
