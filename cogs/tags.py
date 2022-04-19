@@ -133,8 +133,8 @@ class Tags(commands.Cog):
                 "<", "<\\")
         l = l.lstrip("\n")
         l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
-        pag = Paginator(pages=l, timeout=100, title="Tags", color=discord.Color.red())
-        await pag.start(ctx)
+        pag = Paginator(ctx, pages=l, timeout=100, title="Tags", color=discord.Color.red())
+        await pag.start()
 
     @tag_group.command(name="create", description="Create a new tag.")
     async def tag_create(self, interaction: discord.Interaction):
