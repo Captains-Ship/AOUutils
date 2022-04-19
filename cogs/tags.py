@@ -136,7 +136,7 @@ class Tags(commands.Cog):
                 "<", "<\\")
         l = l.lstrip("\n")
         l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
-        pag = Paginator(ctx, pages=l, timeout=100, title="Tags", color=discord.Color.red())
+        pag = Paginator(ctx, pages=l, timeout=100, title="Tags", color=discord.Color.red(), force_embed=True)
         await pag.start()
         await db.close()
 
