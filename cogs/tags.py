@@ -6,6 +6,24 @@ from discord.ext import commands
 import config
 from utility.paginators import ButtonPaginator as Paginator
 from utility.utils import database, dev
+from asyncio import run
+from discord.ext.buttons import Paginator
+from tagformatter import Parser
+import random
+
+parser = Parser(case_insensitive=True)  # hate to have to do it this way
+
+@parser.tag('author', aliases=['member', 'user'])
+def a(env):
+    return env.author.name
+
+@a.tag('mention', alias='ping')
+def am(env):
+    return env.author.mention
+
+@a.tag('discriminator', alias='discrim')
+def ad(env):
+    return env.author.discriminator
 
 
 class tag_modal(discord.ui.Modal, title="Create tag"):
@@ -36,11 +54,44 @@ class tag_modal(discord.ui.Modal, title="Create tag"):
             # the above schema is weird but it is what it is
             await interaction.response.send_message("Created!")
 
+@a.tag('id')
+def ai(env):
+    return env.author.id
+
+@parser.tag('prefix')
+def p(env):
+    return env.prefix
+
+@parser.tag('random')
+def r(env, low: int, high:int):
+    return random.randint(low, high)
 
 class Tags(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.parser = parser
+
+    async def send_final_tag(self, ctx, tag):
+        env = {
+            "prefix": ctx.prefix,
+            "author": ctx.author
+            }
+        tagname = tag['name']
+        tagcontent = tag['content']
+        embed = tag['embed']
+        tagcontent = self.parser.parse(tagcontent, env)
+        if embed:
+            tosend = discord.Embed(
+                title=tagname,
+                description=tagcontent.replace("&l;", "{").replace("&r;", "}").replace("&amp;", "&"),
+                color=discord.Color.red()
+            )
+            await ctx.send(embed=tosend)
+        else:
+            tosend = tagcontent.replace("&l;", "{").replace("&r;", "}").replace("&amp;", "&")
+            await ctx.send(tosend, allowed_mentions=discord.AllowedMentions.none())
+
         self.tag_content = None
         self.cache = []
 
@@ -66,8 +117,7 @@ class Tags(commands.Cog):
                     description=content,
                     color=discord.Color.red()
                 )
-            await ctx.send(content if not embed else None, embed=embed if embed else None,
-                           allowed_mentions=discord.AllowedMentions.none())
+            await self.send_final_tag(ctx, {"name": tagname.lower(), "content": content, "embed": embed})
         except TypeError:
             await ctx.send("Unknown tag")
 
