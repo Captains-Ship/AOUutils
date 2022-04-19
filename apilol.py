@@ -62,7 +62,7 @@ def main():
 
 @app.route('/api/v1/membercount')
 def mc():
-    aou = client.get_aou()
+    aou = client.get_server()
     return r"{membercount:" + str(aou.member_count) + "}"
     with open('memcount.json', 'r') as f:
         mclol = json.load(f)

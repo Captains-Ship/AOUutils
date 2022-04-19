@@ -4,7 +4,8 @@ import discord
 from discord.ext import commands
 import datetime
 
-from discord.ext.buttons import Paginator
+from utility.paginators import ButtonPaginator as Paginator
+
 from discord.ext.commands import CommandError
 
 from logger import logger
@@ -80,9 +81,6 @@ class HelpUwU(commands.MinimalHelpCommand):
 
 
 class Help(commands.Cog):
-
-
-
     def __init__(self, client):
         attributes = {
             'name': "help"
@@ -95,5 +93,5 @@ class Help(commands.Cog):
         self.client.help_command = commands.DefaultHelpCommand()
 
 
-def setup(client):
-    client.add_cog(Help(client))
+async def setup(client):
+    await client.add_cog(Help(client))

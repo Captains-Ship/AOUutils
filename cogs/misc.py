@@ -1,6 +1,10 @@
+import typing
+
 import discord
 from discord.ext import commands
 import datetime
+
+from config import slash_guild
 from utility.utils import *
 from logger import logger
 from urllib.parse import quote
@@ -9,172 +13,51 @@ from typing import Union as union
 from discord.ext.commands import Greedy
 from utility.utils import run, dev
 from regex import regex
-from discord.ext.buttons import Paginator
+from utility.paginators import ButtonPaginator as Paginator
+
 
 class Misc(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-    @dev()
-    @commands.group()
-    async def youtube(self, ctx):
-        pass
-    
-    @dev() 
-    @youtube.command()
-    async def mp3(self, ctx, *, url):
-        url = url.rstrip(">").lstrip("<")
-        match = regex.match(r"(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?", url)
-        if match is None:
-            await ctx.send("URL doesnt match youtube regex!")
-            return
-        if not url.startswith("https://"):
-            url = "https://" + url
-        x = await ctx.send("<a:loading:917448795506241617> Downloading")
-        proc, stdout, stderr = await run(f"youtube-dl -x --audio-format mp3 {url}")
-        stdout = stdout.decode('utf-8')
-        # pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
-        #                 prefix="```sh\n", suffix="```")
-        # await pager.start(ctx)
-        lines = stdout.split("\n")
-        lines = lines[::-1]
-        stdout = lines[2]
-        filename = stdout.lstrip("[ffmpeg] Destination: ")
-        file = discord.File(filename)
-        await ctx.send(ctx.author.mention, file=file)
-        await x.delete()
-
-    @dev() 
-    @youtube.command()
-    async def mp4(self, ctx, *, url):
-        url = url.rstrip(">").lstrip("<")
-        match = regex.match(r"(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?", url)
-        if match is None:
-            await ctx.send("URL doesnt match youtube regex!")
-            return
-        if not url.startswith("https://"):
-            url = "https://" + url
-        x = await ctx.send("<a:loading:917448795506241617> Downloading")
-        proc, stdout, stderr = await run(f"youtube-dl {url}")
-        stdout = stdout.decode('utf-8')
-        # pager = Paginator(timeout=100, entries=[stdout[i: i + 2000] for i in range(0, len(stdout), 2000)], length=1,
-        #                 prefix="```sh\n", suffix="```")
-        # await pager.start(ctx)
-        print(stdout)
-        lines = stdout.split("\n")
-        lines = lines[::-1]
-        stdout = lines[2]
-        file = discord.File(filename)
-        await ctx.send(ctx.author.mention, file=file)
-        await x.delete()
-
-
-
-    @commands.group()
-    async def calculate(self, ctx: commands.Context):
-        pass
-
-    
-    @calculate.command()
-    async def add(self, ctx, num: Greedy[union[int, float]]):
-        final = num.pop(0)
-        for index, i in enumerate(num):
-            try:
-                final += i
-            except:
-                pass
-        await ctx.reply(f"```py\n{final}```")
-    
-    @calculate.command()
-    async def subtract(self, ctx, num: Greedy[union[int, float]]):
-        final = num.pop(0)
-        for index, i in enumerate(num):
-            try:
-                final -= i
-            except:
-                pass
-        await ctx.reply(f"```py\n{final}```")
-
-    @calculate.command()
-    async def multiply(self, ctx, num: Greedy[union[int, float]]):
-        final = num.pop(0)
-        for index, i in enumerate(num):
-            try:
-                final *= i
-            except:
-                pass
-        await ctx.reply(f"```py\n{final}```")
-
-    @calculate.command()
-    async def percentage(self, ctx, num1: union[int, float], num2: union[int, float]):
-        answer = (num1/num2) * 100
-        await ctx.reply(f"The answer is {answer}\n\n||*The equation used is (num1 / num2) \* 100*||")
-    
-    @calculate.command()
-    async def divide(self, ctx, num: Greedy[union[int, float]]):
-        final = num.pop(0)
-        for index, i in enumerate(num):
-            try:
-                final /= i
-            except:
-                pass
-        await ctx.reply(f"```py\n{final}```")
-
-    @commands.command(description="Chatbot")
-    @commands.cooldown(1, 3, type=discord.ext.commands.BucketType.user)
-    async def chat(self, ctx, *, text):
-        async with aiohttp.ClientSession() as cs:
-            text = quote(text, safe="")
-            key = getconfig()["tokens"]["nuggies"]
-            async with cs.get(f"https://api.nuggetdev.com/chat?message={text}&key={key}&userid={ctx.author.id}") as resp:
-                r = await resp.json()
-                if not r["error"]:
-                    reply = r['reply']
-                    embed = discord.Embed(
-                        title="ChatBot Response:",
-                        description=reply,
-                        color=discord.Color.red()
-                    )
-                    embed.set_footer(
-                        icon_url="https://cdn.discordapp.com/icons/780334622164254720/989ef4de769355ae0d0088e72403c076.webp?size=1024",
-                        text="Powered by nuggetdev.com"
-                        )
-                    await ctx.reply(embed=embed)
-
-
-    @commands.command(description='Makes the bot say something.')
+    @commands.hybrid_command(description='Makes the bot say something.')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
-    async def echo(self, ctx, *, text=" "):
-        if text != ' ':
+    async def echo(self, ctx, *, text: str = None):
+        if text:
             try:
                 await ctx.message.delete()
             except:
                 pass
             await ctx.send(text)
         else:
-            await ctx.reply('I cannot send nothing')
-    
-    @commands.command(description='Converts a hexadecimal string into an ASCII string.', usage='<hexadecimal string>\n`hexadecimal string`: The string that is to be converted into ASCII. This is a required argument.')
+            await ctx.reply(Response(ctx.locale).cant_echo_blank)
+
+    @commands.hybrid_command(description='Converts a hexadecimal string into an ASCII string.',
+                      usage='<hexadecimal string>\n`hexadecimal string`: The string that is to be converted into ASCII. This is a required argument.')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def hex(self, ctx, *, hexed):
+    async def hex(self, ctx, *, hexed: str):
+        resp = Response(ctx.locale)
         hex_string = hexed
         bytes_object = bytes.fromhex(hex_string)
         ascii_string = bytes_object.decode("ASCII")
         embed = discord.Embed(
-            title="Converted Hex to ASCII",
+            title=resp.conv_hex_to_ascii,
             description=f'{ascii_string}',
             colour=discord.Colour.red()
         )
-        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f'Requested by {ctx.message.author.name}')
+        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=resp.req_by.format(ctx.author.name))
         await ctx.reply(embed=embed)
 
-
-
-    @commands.command(aliases=['bin'], description='Converts a binary string into an ASCII string.', usage='<binary string>\n`binary string`: The string that is to be converted into ASCII. This is a required argument.')
+    @commands.hybrid_command(aliases=['bin'], description='Converts a binary string into an ASCII string.',
+                      usage='<binary string>\n`binary string`: The string that is to be converted into ASCII. This is a required argument.')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    async def binary(self, ctx, *, bin):
+    async def binary(self, ctx, *, bin: str):
+        resp = Response(ctx.locale)
         is_binary = True
         for letter in bin.replace(" ", ""):
             if letter != "0" and letter != "1":  # this syntax is cringe
@@ -189,71 +72,51 @@ class Misc(commands.Cog):
                 ascii_string += ascii_character
 
             embed = discord.Embed(
-                title="Converted Binary to ASCII",
+                title=resp.conv_bin_to_ascii,
                 description=f"{ascii_string}",
                 colour=discord.Colour.red()
             )
-            embed.set_footer(icon_url=ctx.message.author.display_avatar.url, text=f'Requested by {ctx.message.author.name}')
+            embed.set_footer(icon_url=ctx.message.author.display_avatar.url, text=resp.req_by.format(ctx.author.name))
             await ctx.reply(embed=embed)
 
-    @commands.command(description='Creates an embed.', usage='<colour> <description>\n`colour`: The colour of the embed. This is a required argument.\n`colour`: The colour of the embed. This is a required argument.\n`description`: The description of the embed. This is a required argument.')
-    @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    @commands.has_permissions(manage_messages=True)
-    async def embed(self, ctx, color='** **', *, emb="** **"):
-        gray = '#2f3136'
-        if not "#" in color:
-          dahex = '#' + color.upper()
-        else:
-            dahex = color
-        if len(color) == 7 or len(color) == 6:
-            sixteenIntegerHex = int(dahex.upper().replace("#", ""), 16)
-            readableHex = int(hex(sixteenIntegerHex), 0)
-            embed = discord.Embed(
-                description=emb,
-                colour=readableHex
-            )
-        else:
-            sixteenIntegerHex = int(gray.upper().replace("#", ""), 16)
-            readableHex = int(hex(sixteenIntegerHex), 0)
-            embed = discord.Embed(
-                description=f'{color} {emb}',
-                colour=readableHex
-            )
-        await ctx.send(embed=embed)
-        await ctx.message.delete()
-
-    @commands.command(help='info about AOU')
+    @commands.hybrid_command(help='info about AOU')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def info(self, ctx):
+        resp = Response(ctx.locale)
         embed = discord.Embed(
-            title=f'Info About {ctx.guild.name}',
-            description=f'Owner: {ctx.guild.owner}',
+            title=resp.info_title.format(ctx.guild.name),
+            description=resp.info_owner.format(ctx.guild.owner.name),
             colour=discord.Colour.red(),
             timestamp=datetime.datetime.utcnow()
         )
-        embed.add_field(name='Channels', value=len(ctx.guild.channels))
-        embed.add_field(name='Roles', value=len(ctx.guild.roles))
-        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f'requested by {ctx.author}')
-        embed.add_field(name='Membercount', value=memcount(ctx.guild))
-        embed.add_field(name='Members Online', value=countOnlineMember(ctx.guild))
+        embed.add_field(name=resp.channels, value=len(ctx.guild.channels))
+        embed.add_field(name=resp.roles, value=len(ctx.guild.roles))
+        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=resp.req_by.format(ctx.author.name))
+        embed.add_field(name=resp.member_count, value=memcount(ctx.guild))
+        embed.add_field(name=resp.members_online, value=countOnlineMember(ctx.guild))
         await ctx.reply(embed=embed)
-    
-    @commands.command(description='Returns the latency between the bot and Discord.')
+
+    @commands.hybrid_command(name="ping", description='Returns the latency between the bot and Discord.')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def ping(self, ctx):
+        resp = Response(ctx.locale)
         embed = discord.Embed(
-            title='Ping',
+            title=resp.ping,
             description=str(round(self.client.latency * 1000)) + "ms",
-            colour=discord.Colour.red() 
+            colour=discord.Colour.red()
         )
         await ctx.reply(embed=embed)
 
-    @commands.command(description='Returns a list of the staff members of AOU.')
+    @commands.hybrid_command(description='Returns a list of the staff members of AOU.')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 15, type=discord.ext.commands.BucketType.user)
     async def staff(self, ctx):
+        resp = Response(ctx.locale)
         embed = discord.Embed(
-            title = 'Staff Team of AOU',
-            description='List of all Staff of AOU',
+            title=resp.staff_list_title,
+            description=resp.staff_team_desc,
             colour=discord.Colour.blurple(),
             timestamp=datetime.datetime.utcnow()
         )
@@ -309,22 +172,24 @@ class Misc(commands.Cog):
         modteam = str(modteam).replace('\']', '\n')
         for team in teams:
             if team == 'android team':
-               embed.add_field(name=team, value=androidteam, inline=False)
+                embed.add_field(name=team, value=androidteam, inline=False)
             if team == 'dev team':
-               embed.add_field(name=team, value=devteam, inline=False)
+                embed.add_field(name=team, value=devteam, inline=False)
             if team == 'admin team':
-               embed.add_field(name=team, value=admteam, inline=False)
+                embed.add_field(name=team, value=admteam, inline=False)
             if team == 'moderator team':
-               embed.add_field(name=team, value=modteam, inline=False)
-                        
+                embed.add_field(name=team, value=modteam, inline=False)
 
-        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f'Requested by {ctx.author}')
-        embed.set_author(name='Values may or may not be incorrect due to the wacky way i implemented this.')
+        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=resp.req_by.format(ctx.author.name))
+        embed.set_author(name=resp.wacky_imp)
         await ctx.reply(embed=embed)
-    
-    @commands.command(description='Returns information about you or that of the mentioned user.', usage='<user>\n`user`: The user whose information you want to see. This is an optional argument and can be either a mention or a user ID')
+
+    @commands.hybrid_command(description='Returns information about you or that of the mentioned user.',
+                      usage='<user>\n`user`: The user whose information you want to see. This is an optional argument and can be either a mention or a user ID')
+    @app_commands.guilds(slash_guild)
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
     async def userinfo(self, ctx, member: discord.Member = None):
+        resp = Response(ctx.locale)
         member = member or ctx.author
         mention = [r.mention.replace(f"<@&{ctx.guild.id}>", "@everyone") for r in reversed(member.roles)]
         memberRole = ", ".join(mention)
@@ -333,18 +198,18 @@ class Misc(commands.Cog):
         memberIcon = member.display_avatar
         authorIcon = ctx.message.author.display_avatar
         embed = discord.Embed(
-            title=f'{member.name}#{member.discriminator}',
+            title=str(member),
             description=f'ID: {member.id}',
             colour=member.colour
         )
-        embed.add_field(name="Join Date", value=joinDate)
-        embed.add_field(name="Creation Date", value=creationDate, inline=True)
+        embed.add_field(name=resp.join_date, value=joinDate)
+        embed.add_field(name=resp.creation_date, value=creationDate, inline=True)
         embed.add_field(name=chr(173), value=chr(173))
-        embed.add_field(name="Roles", value=memberRole)
+        embed.add_field(name=resp.roles, value=memberRole)
         embed.set_thumbnail(url=memberIcon)
-        embed.set_footer(icon_url=authorIcon, text=f'Requested by {ctx.message.author.name}')
+        embed.set_footer(icon_url=authorIcon, text=resp.req_by.format(ctx.author.name))
         await ctx.send(embed=embed)
 
-            
-def setup(client):
-    client.add_cog(Misc(client))
+
+async def setup(client):
+    await client.add_cog(Misc(client))

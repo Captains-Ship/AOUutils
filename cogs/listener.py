@@ -1,17 +1,18 @@
-from discord.ext import commands
-import discord
-import traceback
 import datetime
-from discord.ext.commands import *
 import json
+import typing
 from traceback import *
-import crayons
-from logger import logger
-from discord.ext.buttons import Paginator as pag
-from utility.utils import database
-import asyncio
-from aiohttp import ClientSession as cs
 
+import crayons
+import discord
+from aiohttp import ClientSession as cs
+from discord import app_commands
+from discord.ext import commands
+
+import config
+from logger import logger
+from utility.paginators import ButtonPaginator as Paginator
+from utility.utils import database, Response
 
 
 class Listener(commands.Cog):
@@ -19,6 +20,8 @@ class Listener(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.client.debug = False
+        self.w = 794950846168432650
+        self.og_on_error = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -38,10 +41,10 @@ class Listener(commands.Cog):
             pass
             # The bot isn't in the AOU server, so we can't access the member count.
             # This is fine, we can just ignore it.
-        await self.client.refreshHttp()
 
         async with cs() as c:
-            x = await c.get("https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
+            x = await c.get(
+                "https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
             e = await x.text()
             b = []
             for index, line in enumerate(e.split("\n")):
@@ -49,7 +52,7 @@ class Listener(commands.Cog):
                     continue
                 b.append(line.lstrip("||").split("^")[0])
         self.client.scams = b
-        print(self.client.scams)
+        # print(self.client.scams)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -59,6 +62,15 @@ class Listener(commands.Cog):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name=f'AOU | {guild.member_count} members')
         )
+        welcome = self.client.get_channel(self.w)
+        embed = discord.Embed(
+            title=f"Welcome, {member}!",
+            description=f"{member.mention} has joined the server!\nWe are now at {member.guild.member_count} members.",
+            color=0xFF0000
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(name="All Of Us", icon_url=member.guild.icon.url)
+        await welcome.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -68,6 +80,15 @@ class Listener(commands.Cog):
             activity=discord.Activity(type=discord.ActivityType.watching,
                                       name=f'AOU | {guild.member_count} members')
         )
+        welcome = self.client.get_channel(self.w)
+        embed = discord.Embed(
+            title=f"Goodbye, {member} :(",
+            description=f"{member.mention} has left the server.\nWe are now at {member.guild.member_count} members.",
+            color=0xFF0000
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(name="All Of Us", icon_url=member.guild.icon.url)
+        await welcome.send(embed=embed)
 
     # flags a message for steam scam
     async def flag(self, message: discord.Message):
@@ -78,9 +99,9 @@ class Listener(commands.Cog):
                     continue
                 _scam = True
                 break
-        
+
         if _scam:
-            reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/S8waxK7QXd> after securing your account."
+            reason = "Scam; Your account may be hacked, please change your password. You may rejoin at <https://discord.gg/MCfSX48Wtd> after securing your account."
             channel = self.client.get_channel(853191467941494784)
             member = message.author
             embed = discord.Embed(
@@ -90,8 +111,7 @@ class Listener(commands.Cog):
             )
             await message.delete()
             await channel.send(f"aou ban {message.author.id} {reason}", embed=embed)
-            await member.send(f'You have been automatically flagged for `{reason}` by the automod.')
-
+            await member.send(f'You have been automatically flagged for `scam` by the automod.')
 
     @commands.Cog.listener('on_message')
     async def on_message_two(self, message):
@@ -107,7 +127,8 @@ class Listener(commands.Cog):
                 pass
         """
         if "mobile" in message.content.lower() and "aou" in message.content.lower():
-            await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
+            await message.reply(
+                'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
         await self.flag(message)
 
@@ -124,7 +145,7 @@ class Listener(commands.Cog):
 
     # anti hoist
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join_2(self, member):
         guild = member.guild
         for member in guild.members:
             if member.display_name.startswith('.'):
@@ -147,6 +168,7 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        resp = Response(ctx.locale)
         if isinstance(error, commands.CommandInvokeError):
             error = getattr(error, 'original', error)
         if isinstance(error, commands.CommandOnCooldown):
@@ -154,39 +176,15 @@ class Listener(commands.Cog):
                 await ctx.reinvoke()
             else:
                 if not ctx.author.guild_permissions.administrator:
-                    if ctx.command.name == 'work':
-                        try:
-                            with open('cur.json', 'r') as f:
-                                jason = json.load(f)
-                                if str(jason[str(ctx.author.id)]['wallet']) != '500':
-                                    timeleftins = error.retry_after
-                                    timeleftformat = str(datetime.timedelta(seconds=timeleftins))
-                                    timelol = timeleftformat.split(':')
-                                    s3 = timelol[2]
-                                    s2 = s3.split('.')
-                                    s = s2[0]
-                                    m = timelol[1]
-                                    if str(m) != "0":
-                                        await ctx.send(
-                                            f'This command is on cooldown. Please wait {m} minutes and {s} seconds.')
-                                    else:
-                                        await ctx.send(
-                                            f'This command is on cooldown. Please wait {s} seconds.')
-
-                                else:
-                                    await ctx.reinvoke()
-                        except:
-                            await ctx.reply('You dont have an account! do `aou start`')
-                    else:
-                        timeleftins = error.retry_after
-                        timeleftformat = str(datetime.timedelta(seconds=timeleftins))
-                        timelol = timeleftformat.split(':')
-                        s3 = timelol[2]
-                        s2 = s3.split('.')
-                        s = s2[0]
-                        m = timelol[1]
-                        await ctx.send(
-                            f'Error 429: You are being ratelimited. \nTry in a few minutes.')  # Please wait {m} minutes and {s} seconds.')
+                    timeleftins = error.retry_after
+                    timeleftformat = str(datetime.timedelta(seconds=timeleftins))
+                    timelol = timeleftformat.split(':')
+                    s3 = timelol[2]
+                    s2 = s3.split('.')
+                    s = s2[0]
+                    m = timelol[1]
+                    await ctx.send(
+                        resp.cooldown_min.format(m, s) if str(m) != "0" else resp.cooldown_sec.format(s))
                 else:
                     if ctx.command.name.lower() != 'jishaku':
                         if str(ctx.command.cog).lower() != 'admin':
@@ -194,34 +192,28 @@ class Listener(commands.Cog):
         elif isinstance(error, commands.CommandNotFound):
             h = ctx.invoked_with
             embed = discord.Embed(
-                title=f'Unknown Command "{h}"',
-                description=f'I do not recognize this command. run `{ctx.prefix}help` for a list of commands.',
+                title=resp.unknown_command.format(h),
+                description=resp.unknown_cmd_long.format(ctx.prefix),
                 colour=discord.Colour.red()
             )
             embed.set_thumbnail(url=self.client.user.display_avatar.url)
             await ctx.send(
-                'Error!',
                 embed=embed
             )
         elif isinstance(error, commands.MissingPermissions):
-            if ctx.author.id == 347366054806159360:
-                await ctx.reinvoke()
-            else:
-                if ctx.guild is None and ctx.command.name.lower() != 'jishaku' and ctx.command.cog_name.lower() != 'admin':
-                    await ctx.reinvoke()
-                else:
-                    await ctx.send(f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+            await ctx.send(
+                f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
         elif isinstance(error, commands.NotOwner):
-            await ctx.reply('Unowner moment')
+            await ctx.reply(resp.unowner)
         elif isinstance(error, commands.MemberNotFound):
-            await ctx.reply('The member that you\'ve mentioned isn\'t in this server or does not exist.')
+            await ctx.reply(resp.member_not_found)
         elif ctx.command.name.lower() == 'purge':
-            if not isinstance(error, MissingPermissions):
-                await ctx.send('Nice integer Mate, next time gimmie a number')
+            if not isinstance(error, commands.MissingPermissions):
+                await ctx.send(resp.not_int)
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'missing argument(s) `{error.param}`')
+            await ctx.send(resp.missing_arg.format(error.param))
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send('You are probably not allowed to use this command.')
+            await ctx.send(resp.check_fail)
         elif isinstance(error, ValueError):
             print(error.args)
         else:
@@ -234,7 +226,7 @@ class Listener(commands.Cog):
             )
             e.add_field(name="error", value=error)
             await errorlog.send(embed=e)
-            await ctx.reply(f'Error, This has been reported to the developers!\n{error}')
+            await ctx.reply(resp.unknown_error.format(str(error)))
             cmdlog = self.client.get_channel(896394252962123806)
             embed = discord.Embed(
                 title="Error!",
@@ -247,10 +239,10 @@ class Listener(commands.Cog):
             h = "".join(format_exception(e, e, e.__traceback__))
             if ctx.author.id not in self.client.get_bot_devs():
                 return
-            pager = discord.ext.buttons.Paginator(timeout=100, entries=[h[i: i + 2000] for i in range(0, len(h), 2000)], length=1,
-                        prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
+            pager = Paginator(ctx, timeout=100, pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
+                              prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
-            await pager.start(ctx)
+            await pager.start()
 
     @commands.command()
     @commands.is_owner()
@@ -259,7 +251,7 @@ class Listener(commands.Cog):
         await ctx.send(f"toggled debug to {self.client.debug}")
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join_three(self, member):
         logger.info("a member has joined AOU")
         if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
             chandler = member.guild.get_channel(852186132111556690)
@@ -275,7 +267,7 @@ class Listener(commands.Cog):
                 json.dump(memcount, f, indent=4)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove_two(self, member):
         logger.info("A member has left AOU")
         with open('memcount.json', 'r') as f:
             memcount = json.load(f)
@@ -289,6 +281,57 @@ class Listener(commands.Cog):
             logger.info(
                 f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
+    async def on_error(self, interaction: discord.Interaction,
+                       error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.MissingPermissions):
+            await interaction.response.send_message(
+                f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+        elif isinstance(error, app_commands.BotMissingPermissions):
+            await interaction.response.send_message(
+                f'I am missing the following permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+        elif isinstance(error, app_commands.CommandNotFound):
+            await interaction.response.send_message(
+                f'This command may have been removed, you shouldn\'t be seeing this message again.')
+            await self.client.tree.sync(guild=interaction.guild if interaction.guild else config.slash_guild)
+        else:
+            errorlog = self.client.get_channel(908402845383004171)
+            e = discord.Embed(
+                title="Error!",
+                description=f"Interaction Data: ```py\n{interaction.data}\n```",
+                colour=discord.Colour.red()
+            )
+            e.add_field(name="error", value=error)
+            try:
+                await errorlog.send(embed=e)
+            except AttributeError:
+                pass
+            await interaction.response.send_message(f'Error, This has been reported to the developers!\n{error}')
+            cmdlog = self.client.get_channel(896394252962123806)
+            embed = discord.Embed(
+                title="Error!",
+                description=error,
+                colour=discord.Colour.red()
+            )
+            embed.add_field(name="Interaction Data", value=f"```py\n{interaction.data}\n```")
+            embed.add_field(name="Command", value=interaction.command.name)
+            e = error
+            logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
+            h = "".join(format_exception(e, e, e.__traceback__))
+            if interaction.user.id not in self.client.get_bot_devs():
+                return
+            pager = Paginator(interaction=interaction, timeout=100,
+                              pages=[h[i: i + 2000] for i in range(0, len(h), 2000)],
+                              prefix="AOUutils has encountered an Exception:```py\n", suffix="```")
 
-def setup(client):
-    client.add_cog(Listener(client))
+            await pager.start()
+
+    async def cog_load(self) -> None:
+        self.og_on_error = self.client.tree.on_error
+        self.client.tree.on_error = self.on_error
+
+    async def cog_unload(self) -> None:
+        self.client.tree.on_error = self.og_on_error
+
+
+async def setup(client):
+    await client.add_cog(Listener(client))

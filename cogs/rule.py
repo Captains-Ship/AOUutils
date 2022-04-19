@@ -1,8 +1,9 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
+from config import slash_guild
 # from utility.rules import rules, ruleshort
-import urllib.request, json
-from logger import logger
+import config
 
 
 class Rule(commands.Cog):
@@ -21,7 +22,8 @@ class Rule(commands.Cog):
         "No harassment - If you are here just to harass others because of what they are, you need to leave. We do not "
         "accept this. Will result in a mute. Continuation will result in a ban.",
 
-        "NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will result in a kick and so "
+        "NO DRAMA - Arguments that happens in any chat will result in a mute. Continuation will result in a kick and "
+        "so "
         "on. Just bring it to DM's please.",
 
         "No Advertising - This includes DM advertising.",
@@ -83,7 +85,9 @@ class Rule(commands.Cog):
 
     ]
 
-    @commands.command(description="Get the rules for the server.", usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
+    @commands.hybrid_command(name="rule", description="Get the rules for the server.",
+                             usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
+    @app_commands.guilds(slash_guild)
     async def rule(self, ctx, rule: int = -1):
         try:
             if rule == -1:
@@ -106,13 +110,19 @@ class Rule(commands.Cog):
         except:
             await ctx.send('Unknown rule.')
 
-    @commands.command(description='Enforces a rule', usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
+    @rule.autocomplete('rule')
+    async def rule_ac(self, interaction: discord.Interaction, current: int):
+        return []
+
+    @commands.hybrid_command(name="enforce", description='Enforces a rule',
+                             usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
     @commands.has_permissions(kick_members=True)
-    async def enforce(self, ctx, user: discord.Member = None, rule: int = 9999):
-        if rule == 9999:
+    @app_commands.guilds(slash_guild)
+    async def enforce(self, ctx, user: discord.Member = None, rule: int = None):
+        if not rule:
             await ctx.send('bru nice rule man')
             return
-        if user == None:
+        if user is None:
             await ctx.send('Give me a user to warn!')
             return
         try:
@@ -129,5 +139,5 @@ class Rule(commands.Cog):
             await ctx.send(e)
 
 
-def setup(client):
-    client.add_cog(Rule(client))
+async def setup(client):
+    await client.add_cog(Rule(client))
