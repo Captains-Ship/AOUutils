@@ -72,6 +72,7 @@ class Tags(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.parser = parser
+        self.cache = []
 
     async def send_final_tag(self, ctx, tag):
         env = {
