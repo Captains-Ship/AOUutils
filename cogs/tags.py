@@ -52,7 +52,9 @@ class tag_modal(discord.ui.Modal, title="Create tag"):
                           (content, tag_name.lower(), interaction.user.id, embed))
             # the above schema is weird but it is what it is
             await interaction.response.send_message("Created!")
+        await db.close()
 
+        
 @a.tag('id')
 def ai(env):
     return env.author.id
@@ -119,6 +121,7 @@ class Tags(commands.Cog):
             await self.send_final_tag(ctx, {"name": tagname.lower(), "content": content, "embed": embed})
         except TypeError:
             await ctx.send("Unknown tag")
+        await db.close()
 
     @tag.command()
     async def list(self, ctx):
@@ -135,6 +138,7 @@ class Tags(commands.Cog):
         l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
         pag = Paginator(ctx, pages=l, timeout=100, title="Tags", color=discord.Color.red())
         await pag.start()
+        await db.close()
 
     @tag_group.command(name="create", description="Create a new tag.")
     async def tag_create(self, interaction: discord.Interaction):
@@ -151,6 +155,7 @@ class Tags(commands.Cog):
             db = await database.init("tags")
             x = await db.exec("SELECT * FROM tags")
             self.cache = [e[1] for e in [i for i in await x.fetchall()]]
+            await db.close()
         matches = difflib.get_close_matches(current, self.cache, n=10, cutoff=0.6)
         return list(set([discord.app_commands.Choice(name=e[:100], value=e) for e in matches] + [
             discord.app_commands.Choice(name=e[:100], value=e) for e in self.cache if current in e]))[:10]
@@ -176,6 +181,7 @@ class Tags(commands.Cog):
                                                     allowed_mentions=discord.AllowedMentions.none())
         except TypeError:
             await interaction.response.send_message("Unknown tag")
+        await db.close()
 
     @tag_group.command(name="list", description="List all the available tags.")
     async def tag_list(self, interaction: discord.Interaction):
@@ -195,6 +201,7 @@ class Tags(commands.Cog):
             color=discord.Color.red()
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
+        await db.close()
 
     @tag_group.command(name="delete", description="Delete a tag.")
     @discord.app_commands.describe(tagname="The tag to delete.")
@@ -208,6 +215,7 @@ class Tags(commands.Cog):
         x = await db.exec("DELETE FROM tags WHERE tagname = ?", (tagname.lower()))
         await interaction.response.send_message("Tag deleted")
         self.cache = None
+        await db.close()
 
     class TagEditModal(discord.ui.Modal, title="Edit tag"):
         content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984)
@@ -223,6 +231,7 @@ class Tags(commands.Cog):
             db = await database.init("tags")
             x = await db.exec("UPDATE tags SET content = ? WHERE tagname = ?", (self.content.value, self.tagname))
             await interaction.response.send_message("Tag edited")
+            await db.close()
 
     @tag_group.command(name="edit", description="Edit a tag.")
     @discord.app_commands.describe(tagname="The tag to edit.")
@@ -238,6 +247,7 @@ class Tags(commands.Cog):
         tag_content = tag_content[0]
         modal = self.TagEditModal(tag_content, tagname)
         await interaction.response.send_modal(modal)
+        await db.close()
 
     @dev()
     @tag.command()
@@ -258,6 +268,7 @@ class Tags(commands.Cog):
             # the above schema is weird but it is what it is
             await ctx.send("Created!")
         self.cache = None
+        await db.close()
 
     @dev()
     @tag.command()
@@ -272,6 +283,7 @@ class Tags(commands.Cog):
         e = await db.exec("DELETE FROM tags WHERE tagname = ?", tag_name)
         await ctx.send("Tag deleted")
         self.cache = None
+        await db.close()
 
 
     @tag.command()
@@ -301,6 +313,7 @@ class Tags(commands.Cog):
             await ctx.send(embed=embed)
         except TypeError:
             await ctx.send("Unknown tag")
+        await db.close()
 
 
 async def setup(client):
