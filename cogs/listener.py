@@ -282,7 +282,6 @@ class Listener(commands.Cog):
                 f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
 
     async def on_error(self, interaction: discord.Interaction,
-                       command: typing.Union[app_commands.Command, app_commands.ContextMenu],
                        error: app_commands.AppCommandError):
         if isinstance(error, app_commands.MissingPermissions):
             await interaction.response.send_message(
@@ -314,7 +313,7 @@ class Listener(commands.Cog):
                 colour=discord.Colour.red()
             )
             embed.add_field(name="Interaction Data", value=f"```py\n{interaction.data}\n```")
-            embed.add_field(name="Command", value=command.name)
+            embed.add_field(name="Command", value=interaction.command.name)
             e = error
             logger.error(f'An error was Caught!\n{crayons.white("".join(format_exception(e, e, e.__traceback__)))}')
             h = "".join(format_exception(e, e, e.__traceback__))
