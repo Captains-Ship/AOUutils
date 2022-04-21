@@ -130,7 +130,7 @@ class Listener(commands.Cog):
 
         if "install" in message.content.lower() \
             and ("how" in message.content.lower() or "mod" in message.content.lower()):
-                command = bot.get_command("tag")
+                command = self.client.get_command("tag")
                 await command(message.channel, tagname="astral")
 
         await self.flag(message)
