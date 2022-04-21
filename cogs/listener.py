@@ -129,7 +129,7 @@ class Listener(commands.Cog):
             await message.reply('The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
 
         if "install" in message.content.lower() \
-            and ("how", "mod") in message.content.lower():
+            and ("how" in message.content.lower() or "mod" in message.content.lower()):
                 command = bot.get_command("tag")
                 await command(message.channel, tagname="astral")
 
