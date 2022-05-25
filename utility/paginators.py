@@ -83,6 +83,7 @@ class ButtonPaginator:
                  suffix: str = "",
                  title: str = "",
                  force_embed=False,
+                 loop: bool = False,
                  buttons: dict = None
                  ):
         if ctx is None and interaction is None:
@@ -100,6 +101,7 @@ class ButtonPaginator:
         self.title: str = title
         self.force_embed: bool = force_embed
         self.index: int = 0
+        self.loop = loop
         self.buttons: dict = buttons or {  # ⬅️◀️⏹️▶️➡️
             "\U00002b05": ButtonType.left2,
             "\U000025c0": ButtonType.left1,
@@ -181,11 +183,11 @@ class ButtonPaginator:
         internal function. dont call unless you know what you are doing.
         """
         if amount == 2:
-            self.index = 0
+            self.index = (len(self.pages) - 1) if self.loop and self.index <= 0 else 0
         else:
             self.index -= amount
             if self.index < 0:
-                self.index = 0
+                self.index = (len(self.pages) - 1) if self.loop else 0
         await self._edit_message()
 
     async def _increase(self, amount: int):
@@ -194,11 +196,11 @@ class ButtonPaginator:
         internal function. dont call unless you know what you are doing.
         """
         if amount == 2:
-            self.index = len(self.pages) - 1
+            self.index = 0 if self.loop and self.index >= (len(self.pages) - 1) else len(self.pages) - 1
         else:
             self.index += amount
             if self.index >= len(self.pages):
-                self.index = len(self.pages) - 1
+                self.index = 0 if self.loop else (len(self.pages) - 1)
         await self._edit_message()
 
     def _check(self, reaction: discord.Reaction, user: Union[discord.User, discord.Member]):
