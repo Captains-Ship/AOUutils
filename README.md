@@ -1,3 +1,19 @@
+# The end of a journey.
+It's been fun developing this bot along with the others.
+
+Many things are still unfinished, so if you're gonna pick this project back up, keep that in mind.
+
+Also note: both the code and the commit naming are shitshows.
+
+
+
+## Old readme
+
+<details>
+<summary>
+Old README.md
+</summary>
+
 # AOUutils.py
 ## Setup
 
@@ -33,3 +49,4 @@
 - you can safely ignore this one, its due to the bot you are running not being in AOU, as a result, being unable to fetch its member count.
 
 
+</details>
