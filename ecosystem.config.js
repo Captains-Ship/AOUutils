@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
     name: "AOUutils",
-    script: "python3 main.py",
+    script: "venv/bin/python3 main.py",
   }]
 }
