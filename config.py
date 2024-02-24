@@ -15,6 +15,4 @@ beta = False  # type: bool
 prefix = "dev " if beta else "aou "  # type: str
 owners = [347366054806159360, 813770420758511636]  # type: list
 blacklist = []  # type: list
-github_token = ""  # type: str
 slash_guild = 850668209148395520  # type: int
-version = "1.0.0-dev"
