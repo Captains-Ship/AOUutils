@@ -1,5 +1,6 @@
 import datetime
 from traceback import *
+import traceback
 
 import crayons
 import discord
@@ -29,8 +30,12 @@ class Listener(commands.Cog):
 
         logger.info(f'Logged in as {self.client.user}. Good Morning.')
 
-        startup_channel = self.client.get_channel(854333051852685333)
-        await startup_channel.send('Bot is now up!')
+        startup_channel: discord.TextChannel = self.client.get_channel(854333051852685333)
+        try:
+            message = await startup_channel.fetch_message(1210908805953757274)
+            await message.edit(content="Last startup: <t:{0}:R> (<t:{0}:F>)".format(str(int(datetime.datetime.now().timestamp()))))
+        except Exception as e:
+            print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
         aou_guild = self.client.get_guild(794950428756410429)
         try:
             await self.client.change_presence(
