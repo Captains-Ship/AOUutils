@@ -97,13 +97,7 @@ class Tags(commands.Cog):
         self.tag_content = None
         self.cache = []
 
-    tag_group = discord.app_commands.Group(
-        name='tag',
-        description='Manage tags',
-        guild_ids=[config.slash_guild]
-    )
-
-    @commands.group(invoke_without_command=True)
+    @commands.hybrid_group(invoke_without_command=True)
     async def tag(self, ctx, *, tagname):
         """Tags"""
         db = await database.init("tags")
@@ -139,115 +133,6 @@ class Tags(commands.Cog):
         l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
         pag = Paginator(ctx, pages=l, timeout=100, title="Tags", color=discord.Color.red(), force_embed=True)
         await pag.start()
-        await db.conn.close()
-
-    @tag_group.command(name="create", description="Create a new tag.")
-    async def tag_create(self, interaction: discord.Interaction):
-        devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
-                813770420758511636]
-        if interaction.user.id not in devs:
-            return await interaction.response.send_message("You are not a developer", ephemeral=True)
-        await interaction.response.send_modal(tag_modal())
-        self.cache = None
-
-
-    async def tag_autocomplete(self, interaction: discord.Interaction, current: str):
-        if not self.cache:
-            db = await database.init("tags")
-            x = await db.exec("SELECT * FROM tags")
-            self.cache = [e[1] for e in [i for i in await x.fetchall()]]
-            await db.conn.close()
-        matches = difflib.get_close_matches(current, self.cache, n=10, cutoff=0.6)
-        return list(set([discord.app_commands.Choice(name=e[:100], value=e) for e in matches] + [
-            discord.app_commands.Choice(name=e[:100], value=e) for e in self.cache if current in e]))[:10]
-
-    @tag_group.command(name="view", description="View a tag.")
-    @discord.app_commands.describe(tagname="The tag to view.")
-    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
-    async def tag_view(self, interaction: discord.Interaction, tagname: str):
-        db = await database.init("tags")
-        x = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
-        try:
-            t = await x.fetchone()
-            e = [x for x in t]
-            content = e[0]
-            embed = bool(e[3])
-            if embed:
-                embed = discord.Embed(
-                    title=tagname.lower(),
-                    description=content,
-                    color=discord.Color.red()
-                )
-            await interaction.response.send_message(content if not embed else None, embed=embed if embed else None,
-                                                    allowed_mentions=discord.AllowedMentions.none())
-        except TypeError:
-            await interaction.response.send_message("Unknown tag")
-        await db.conn.close()
-
-    @tag_group.command(name="list", description="List all the available tags.")
-    async def tag_list(self, interaction: discord.Interaction):
-        db = await database.init("tags")
-        x = await db.exec("SELECT * FROM tags")
-        x = await x.fetchall()
-        l = ""
-        for i in x:
-            l += f"\n{[e for e in i][1]}".replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`",
-                                                                                                                "\\`").replace(
-                "<", "<\\")
-        l = l.lstrip("\n")
-        l = [l[i: i + 2000] for i in range(0, len(l), 2000)]
-        embed = discord.Embed(
-            title="Tags",
-            description="".join(l),
-            color=discord.Color.red()
-        )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-        await db.conn.close()
-
-    @tag_group.command(name="delete", description="Delete a tag.")
-    @discord.app_commands.describe(tagname="The tag to delete.")
-    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
-    async def tag_delete(self, interaction: discord.Interaction, tagname: str):
-        devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922,
-                813770420758511636]
-        if interaction.user.id not in devs:
-            return await interaction.response.send_message("You are not a developer", ephemeral=True)
-        db = await database.init("tags")
-        x = await db.exec("DELETE FROM tags WHERE tagname = ?", (tagname.lower()))
-        await interaction.response.send_message("Tag deleted")
-        self.cache = None
-        await db.conn.close()
-
-    class TagEditModal(discord.ui.Modal, title="Edit tag"):
-        content = discord.ui.TextInput(label="Tag content", style=discord.TextStyle.paragraph, max_length=1984)
-
-        def __init__(self, tag_content, tagname):
-            self.tag_content = tag_content
-            self.tagname = tagname
-            self.content._underlying.value = tag_content
-            self.content._value = tag_content
-            super().__init__()
-
-        async def on_submit(self, interaction: discord.Interaction):
-            db = await database.init("tags")
-            x = await db.exec("UPDATE tags SET content = ? WHERE tagname = ?", (self.content.value, self.tagname))
-            await interaction.response.send_message("Tag edited")
-            await db.conn.close()
-
-    @tag_group.command(name="edit", description="Edit a tag.")
-    @discord.app_commands.describe(tagname="The tag to edit.")
-    @discord.app_commands.autocomplete(tagname=tag_autocomplete)
-    async def tag_edit(self, interaction: discord.Interaction, tagname: str):
-        db = await database.init("tags")
-        tag_content = await db.exec("SELECT * FROM tags WHERE tagname = ?", tagname.lower())
-        tag_content = await tag_content.fetchone()
-        try:
-            tag_content = [x for x in tag_content]
-        except TypeError:
-            return await interaction.response.send_message("Unknown tag")
-        tag_content = tag_content[0]
-        modal = self.TagEditModal(tag_content, tagname)
-        await interaction.response.send_modal(modal)
         await db.conn.close()
 
     @dev()

@@ -230,3 +230,4 @@ class ButtonPaginator:
                     embed=tobesent if isinstance(tobesent, discord.Embed) else None, view=self.view)
             return
         self.msg = await self.ctx.send(content=tobesent if isinstance(tobesent, str) else None, embed=tobesent if isinstance(tobesent, discord.Embed) else None, view=self.view)
+        

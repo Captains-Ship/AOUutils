@@ -1,6 +1,4 @@
 import datetime
-import json
-import typing
 from traceback import *
 
 import crayons
@@ -25,34 +23,36 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        # tags database initialization
         self.client.tag_db = await database.init("tags")
         await self.client.tag_db.execute("CREATE TABLE IF NOT EXISTS tags (name, content, creator)")
+
         logger.info(f'Logged in as {self.client.user}. Good Morning.')
-        chandler = self.client.get_channel(854333051852685333)
-        await chandler.send('Bot is now up!')
-        guild = self.client.get_guild(794950428756410429)
+
+        startup_channel = self.client.get_channel(854333051852685333)
+        await startup_channel.send('Bot is now up!')
+        aou_guild = self.client.get_guild(794950428756410429)
         try:
             await self.client.change_presence(
                 status=discord.Status.dnd,
                 activity=discord.Activity(type=discord.ActivityType.watching,
-                                          name=f'AOU | {guild.member_count} members')
+                                          name=f'AOU | {aou_guild.member_count} members')
             )
         except:  # noqa
             pass
             # The bot isn't in the AOU server, so we can't access the member count.
             # This is fine, we can just ignore it.
 
-        async with cs() as c:
-            x = await c.get(
+        async with cs() as ClientSession:
+            URLs = await ClientSession.get(
                 "https://raw.githubusercontent.com/xXBuilderBXx/DiscordScamBrowserFilter/main/filterlist.txt")
-            e = await x.text()
-            b = []
-            for index, line in enumerate(e.split("\n")):
+            URLsPlaintext = await URLs.text()
+            UrlsArray = []
+            for index, line in enumerate(URLsPlaintext.split("\n")):
                 if index < 13:
                     continue
-                b.append(line.lstrip("||").split("^")[0])
-        self.client.scams = b
-        # print(self.client.scams)
+                UrlsArray.append(line.lstrip("||").split("^")[0])
+        self.client.scams = UrlsArray
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -91,6 +91,7 @@ class Listener(commands.Cog):
         await welcome.send(embed=embed)
 
     # flags a message for steam scam
+    # TODO: rewrite the entire flag system
     async def flag(self, message: discord.Message):
         _scam = False
         for scam in self.client.scams:
@@ -105,7 +106,7 @@ class Listener(commands.Cog):
             channel = self.client.get_channel(853191467941494784)
             member = message.author
             embed = discord.Embed(
-                title=f'Message Flagged for {reason}!',
+                title=f'Message Flagged for scam!',
                 description=f'{member} ({member.id}) sent the following in {message.channel.mention}:\n```{message.content}```\n\nTo ban the user run the following command:\n```{message.guild.me.mention} softban {message.author.id} {reason}```',
                 colour=discord.Colour.red()
             )
@@ -114,63 +115,29 @@ class Listener(commands.Cog):
             await member.send(f'You have been automatically flagged for `scam` by the automod.')
 
     @commands.Cog.listener('on_message')
-    async def on_message_two(self, message):
+    async def keyword_listener(self, message):
         if message.author.bot:
             return
-        """
-        if self.client.http.token in message.content:
-            cap = self.client.get_user(347366054806159360)
-            await cap.send('OH GOD OH FUCK RESET THE FUCKING TOKEN NOW ITS BEEN LEAKED')
-            try:
-                await message.delete()
-            except:
-                pass
-        """
-        if "mobile" in message.content.lower() and "aou" in message.content.lower():
-            await message.reply(
-                'The AOU Mod is not for mobile.\n**However, the 100 Player Battle Royale mode works on any device if you can connect to the server!**')
+        keywords = [
+            (["mobile", "aou"], "The AOU mod is not for mobile.")
+        ]
+        for kwords, response in keywords:
+            send = True
+            for word in kwords:
+                if not word.lower() in message.content:
+                    send = False
+            if send:
+                await message.reply(response)
 
         await self.flag(message)
-
-        """
-        elif isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(
-                title='Error!',
-                description='Command Not Found!',
-                colour=discord.Colour.blurple(),
-                timestamp=datetime.datetime.utcnow()
-            )
-            await ctx.reply(embed=embed)
-        """
-
-    # anti hoist
-    @commands.Cog.listener()
-    async def on_member_join_2(self, member):
-        guild = member.guild
-        for member in guild.members:
-            if member.display_name.startswith('.'):
-                await member.edit(nick=member.display_name.replace('.', ''))
-            elif member.display_name.startswith('\''):
-                await member.edit(nick=member.display_name.replace('\'', ''))
-            elif member.display_name.startswith('!'):
-                await member.edit(nick=member.display_name.replace('!', ''))
-
-    @commands.Cog.listener()
-    async def on_member_update(self, b, a):
-        member = a
-        guild = member.guild
-        if member.display_name.startswith('.'):
-            await member.edit(nick=member.display_name.replace('.', ''))
-        elif member.display_name.startswith('\''):
-            await member.edit(nick=member.display_name.replace('\'', ''))
-        elif member.display_name.startswith('!'):
-            await member.edit(nick=member.display_name.replace('!', ''))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         resp = Response(ctx.locale)
+
         if isinstance(error, commands.CommandInvokeError):
             error = getattr(error, 'original', error)
+
         if isinstance(error, commands.CommandOnCooldown):
             if ctx.author.id in self.client.get_bot_devs():
                 await ctx.reinvoke()
@@ -189,6 +156,7 @@ class Listener(commands.Cog):
                     if ctx.command.name.lower() != 'jishaku':
                         if str(ctx.command.cog).lower() != 'admin':
                             await ctx.reinvoke()
+
         elif isinstance(error, commands.CommandNotFound):
             h = ctx.invoked_with
             embed = discord.Embed(
@@ -200,20 +168,27 @@ class Listener(commands.Cog):
             await ctx.send(
                 embed=embed
             )
+
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send(
                 f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+            
         elif isinstance(error, commands.NotOwner):
             await ctx.reply(resp.unowner)
+
         elif isinstance(error, commands.MemberNotFound):
             await ctx.reply(resp.member_not_found)
+
         elif ctx.command.name.lower() == 'purge':
             if not isinstance(error, commands.MissingPermissions):
                 await ctx.send(resp.not_int)
+
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(resp.missing_arg.format(error.param))
+
         elif isinstance(error, commands.CheckFailure):
             await ctx.send(resp.check_fail)
+
         elif isinstance(error, ValueError):
             print(error.args)
         else:
@@ -244,51 +219,17 @@ class Listener(commands.Cog):
 
             await pager.start()
 
-    @commands.command()
-    @commands.is_owner()
-    async def debugger(self, ctx):
-        self.client.debug = not self.client.debug
-        await ctx.send(f"toggled debug to {self.client.debug}")
-
-    @commands.Cog.listener()
-    async def on_member_join_three(self, member):
-        logger.info("a member has joined AOU")
-        if "h0nde" in member.name.lower() or "h0nda" in member.name.lower():
-            chandler = member.guild.get_channel(852186132111556690)
-            await chandler.send(f'{member.mention} has been banned due to the keyword "h0nde"')
-            await member.send(
-                'Hi! you have been removed from the server due to a keyword, if this was a mistake add Captain#3175')
-            await member.guild.ban(member, reason='h o n d a')
-        else:
-            with open('memcount.json', 'r') as f:
-                memcount = json.load(f)
-                memcount['membercount'] = member.guild.member_count
-            with open('memcount.json', 'w') as f:
-                json.dump(memcount, f, indent=4)
-
-    @commands.Cog.listener()
-    async def on_member_remove_two(self, member):
-        logger.info("A member has left AOU")
-        with open('memcount.json', 'r') as f:
-            memcount = json.load(f)
-            memcount['membercount'] = member.guild.member_count
-        with open('memcount.json', 'w') as f:
-            json.dump(memcount, f, indent=4)
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if self.client.debug:
-            logger.info(
-                f"{message.author} ({message.author.id}): \n{message.content}\n\nthe message contains {len(message.embeds)} embed(s)")
-
     async def on_error(self, interaction: discord.Interaction,
                        error: app_commands.AppCommandError):
+        
         if isinstance(error, app_commands.MissingPermissions):
             await interaction.response.send_message(
                 f'Missing permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+            
         elif isinstance(error, app_commands.BotMissingPermissions):
             await interaction.response.send_message(
                 f'I am missing the following permissions: {", ".join([perm.title().replace("_", " ") for perm in error.missing_permissions])}')
+            
         elif isinstance(error, app_commands.CommandNotFound):
             await interaction.response.send_message(
                 f'This command may have been removed, you shouldn\'t be seeing this message again.')

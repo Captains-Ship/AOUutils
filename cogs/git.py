@@ -1,5 +1,4 @@
 from os import listdir
-from json import load
 from discord.ext import commands
 import logger
 from utility.utils import run
@@ -42,7 +41,7 @@ class Git(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.hybrid_group(name="git")
+    @commands.group(name="git")
     @app_commands.guilds(slash_guild)
     @commands.is_owner()
     async def git(self, ctx: commands.Context):

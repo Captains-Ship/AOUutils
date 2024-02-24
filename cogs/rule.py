@@ -4,6 +4,7 @@ from discord.ext import commands
 from config import slash_guild
 # from utility.rules import rules, ruleshort
 import config
+from utility.utils import Command
 
 
 class Rule(commands.Cog):
@@ -85,9 +86,8 @@ class Rule(commands.Cog):
 
     ]
 
-    @commands.hybrid_command(name="rule", description="Get the rules for the server.",
+    @Command(name="rule", description="Get the rules for the server.",
                              usage="[rule number]\n`rule number`: The specific rule that you want to view. This is an optional argument and must be an integer.")
-    @app_commands.guilds(slash_guild)
     async def rule(self, ctx, rule: int = -1):
         try:
             if rule == -1:
@@ -113,30 +113,6 @@ class Rule(commands.Cog):
     @rule.autocomplete('rule')
     async def rule_ac(self, interaction: discord.Interaction, current: int):
         return []
-
-    @commands.hybrid_command(name="enforce", description='Enforces a rule',
-                             usage='<rule number>\n`rule number`: The specific rule that you want to enforce. This is a required argument and must be an integer.')
-    @commands.has_permissions(kick_members=True)
-    @app_commands.guilds(slash_guild)
-    async def enforce(self, ctx, user: discord.Member = None, rule: int = None):
-        if not rule:
-            await ctx.send('bru nice rule man')
-            return
-        if user is None:
-            await ctx.send('Give me a user to warn!')
-            return
-        try:
-            embed = discord.Embed(
-                title='Enforced!',
-                colour=discord.Colour.red()
-            )
-            embed.add_field(name=f'Rule #{rule}', value=self.rules[rule - 1], inline=False)
-            await ctx.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:',
-                           embed=embed)
-            await user.send(f'{user.mention} Please follow our rules. You have been warned for rule {rule}:',
-                            embed=embed)
-        except Exception as e:
-            await ctx.send(e)
 
 
 async def setup(client):

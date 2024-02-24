@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 # from apilol import start
 from logger import logger
-from utility.utils import getconfig, ctx
+from utility.utils import Command, ctx
 from io import BytesIO
 import config
 import aiohttp
@@ -74,11 +74,6 @@ class Bot(commands.Bot):
         async with aiohttp.ClientSession() as self.session:
             await super().start(*args, **kwargs)
 
-    async def get_cdn(self, filename):
-        x = "https://" + config.cdn + "/" + filename
-        async with self.session.get(x) as resp:
-            return BytesIO(await resp.read())
-
     def get_bot_devs(self):
         return config.devs
 
@@ -88,16 +83,6 @@ class Bot(commands.Bot):
 
 async def get_pre(client, message):
     return commands.when_mentioned_or(config.prefix)(client, message)
-    # if not message.guild:
-    #     return ''
-    # else:
-    #     with open('prefixes.json', 'r') as f:
-    #         prefixes = json.load(f)
-    #         try:
-    #             h = prefixes[str(message.author.id)]
-    #             return commands.when_mentioned_or(prefixes[str(message.author.id)])(client, message)
-    #         except KeyError:
-    #             return commands.when_mentioned_or(config.prefix)(client, message)
 
 
 bot = Bot(
@@ -118,22 +103,17 @@ bot = Bot(
 bot.debug = False
 
 
-# start(client) # this used to start the API nobody uses
-# disabled for now because it's not needed
-# also performance poggers
-
-
-@bot.command()
-async def prefix(ctx, *, prefix=config.prefix):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
-        if prefix == 'aou':
-            prefixes[str(ctx.author.id)] = 'aou '
-        else:
-            prefixes[str(ctx.author.id)] = str(prefix)
-    with open('prefixes.json', 'w') as f:
-        json.dump(prefixes, f, indent=4)
-        await ctx.send(f'Changed your prefix to `{prefix}`!')
+# @Command()
+# async def prefix(ctx, *, prefix=config.prefix):
+#     with open('prefixes.json', 'r') as f:
+#         prefixes = json.load(f)
+#         if prefix == 'aou':
+#             prefixes[str(ctx.author.id)] = 'aou '
+#         else:
+#             prefixes[str(ctx.author.id)] = str(prefix)
+#     with open('prefixes.json', 'w') as f:
+#         json.dump(prefixes, f, indent=4)
+#         await ctx.send(f'Changed your prefix to `{prefix}`!')
 
 
 @bot.event

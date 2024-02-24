@@ -1,12 +1,27 @@
 import json
 import datetime
-from abc import ABC
-
+import config
 import discord
 from discord import app_commands
 from discord.ext import commands
 import asyncio
 import asqlite
+
+def Command(*args, **kwargs):
+    def inner(func):
+        func = commands.hybrid_command(*args, **kwargs)(func)
+        return func
+    return inner
+
+def DevCommand(*args, **kwargs):
+    def inner(func):
+        func = commands.command(*args, **kwargs)(func)
+        func = dev()(func)
+        return func
+    return inner
+
+
+
 
 class database:
     def __init__(self, conn=None, cursor=None):
@@ -30,11 +45,10 @@ class database:
 
 
 def dev():
-        async def predicate(ctx):
-            devs = [553677148611936267, 742976057761726514, 347366054806159360, 721745855207571627, 535059139999825922, 813770420758511636]
-            return ctx.author.id in devs
+    async def predicate(ctx):
+        return ctx.author.id in config.devs
 
-        return commands.check(predicate)
+    return commands.check(predicate)
 
 
 async def run(cmd):
@@ -48,18 +62,6 @@ async def run(cmd):
     if stderr:
         print(f'[stderr]\n{stderr.decode()}')
     return (proc, stdout, stderr)
-
-
-def getconfig(config: str = 'config'):
-    if config == 'config':
-        with open('config.json', 'r') as config:
-            return json.load(config)
-    elif config == 'cur':
-        with open('cur.json', 'r') as f:
-            return json.load(f)
-    elif config == 'warn':
-        with open('warns.json', 'r') as f:
-            return json.load(f)
 
 
 # Members online
@@ -265,7 +267,7 @@ class Response:
                 "unknown_error": 'Error, This has been reported to the developers!\n{}'
             }
         }
-        self._responses["en-GB"] = self._responses["en-US"]
+        self._responses["en-GB"] = self._responses["en-US"] # not lazy at all :P
 
     def __getitem__(self, item):
         return getattr(self, item)

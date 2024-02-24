@@ -4,16 +4,16 @@ import urllib
 from logger import logger
 
 import config
+from utility.utils import Command
 
 
 class Suggest(commands.Cog, name="Suggest"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command(name='suggest', description="A command to Suggest things!", aliases=['request'],
+    @Command(name='suggest', description="A command to Suggest things!", aliases=['request'],
                              usage="<suggestion>\n`suggestion`: The suggestion that you want to give. This is a required argument.")
     @commands.cooldown(1, 5, type=discord.ext.commands.BucketType.user)
-    @discord.app_commands.guilds(config.slash_guild)
     @discord.app_commands.describe(suggestion="The suggestion that you want to give.")
     async def h(self, ctx: commands.Context, *, suggestion: str = None) -> None:
         if suggestion:
@@ -24,7 +24,8 @@ class Suggest(commands.Cog, name="Suggest"):
                 721745855207571627,
                 476549192362229791,
                 468134163493421076,
-                849939032410030080
+                849939032410030080,
+                742976057761726514
             ]
             if ctx.author.id not in blacklist:
                 guild = self.bot.get_guild(850668209148395520)
