@@ -61,6 +61,8 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        if member.guild.id != 794950428756410429: 
+            return
         guild = self.client.get_guild(794950428756410429)
         await self.client.change_presence(
             status=discord.Status.dnd,
@@ -79,6 +81,8 @@ class Listener(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
+        if member.guild.id != 794950428756410429: 
+            return
         guild = self.client.get_guild(794950428756410429)
         await self.client.change_presence(
             status=discord.Status.dnd,
